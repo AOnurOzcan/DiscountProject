@@ -1,0 +1,18 @@
+{
+  "project": "discount-project-web",
+  "database": {
+    "host": "37.139.26.44",
+    "database": "DiscountProject",
+    "user": "ooar",
+    "password": "Kajmerap123.",
+    "protocol": "mysql",
+    "port": "3306",
+    "query": {
+      "debug": true
+    }
+  },
+  "port": "3032",
+  "logger": {
+    "requestLogger": "true"
+  }
+}

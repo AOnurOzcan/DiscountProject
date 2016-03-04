@@ -1,0 +1,21 @@
+{
+  "name": "discount-project-web",
+  "version": "1.0.0",
+  "description": "discount-project-web",
+  "main": "src/server.js",
+  "author": "ooar",
+  "license": "PERSONAL",
+  "private": true,
+  "dependencies": {
+    "body-parser": "^1.14.1",
+    "config": "^1.17.1",
+    "express": "^4.13.3",
+    "express-session": "^1.13.0",
+    "ezlogger": "^1.5.2",
+    "js-md5": "^0.3.0",
+    "json-stringify-safe": "^5.0.1",
+    "mysql": "^2.9.0",
+    "orm": "^2.1.29",
+    "require-dir": "^0.3.0"
+  }
+}
