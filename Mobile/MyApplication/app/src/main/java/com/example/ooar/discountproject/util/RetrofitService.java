@@ -1,4 +1,4 @@
-package com.example.ooar.discountproject;
+package com.example.ooar.discountproject.util;
 
 import com.example.ooar.discountproject.model.Company;
 

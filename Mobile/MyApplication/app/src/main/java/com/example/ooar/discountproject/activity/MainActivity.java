@@ -5,7 +5,7 @@ import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 
-import com.example.ooar.discountproject.RetrofitConfiguration;
+import com.example.ooar.discountproject.util.RetrofitConfiguration;
 
 public class MainActivity extends AppCompatActivity {
 

@@ -1,4 +1,4 @@
-package com.example.ooar.discountproject;
+package com.example.ooar.discountproject.util;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
@@ -11,7 +11,7 @@ import retrofit.converter.GsonConverter;
  */
 public class RetrofitConfiguration {
 
-    private static final String API_URL = "http://10.0.2.2:3032";
+    private static final String API_URL = "http://192.168.1.34:3032";
     private static RetrofitService retrofitService;
 
     public RetrofitConfiguration(){
