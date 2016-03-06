@@ -43,10 +43,10 @@ orm.connect(config.get("database"), function (err, db) { // create connection fr
   project.app = app;
 
   project.util = {
-    //BodyControl: require("./util/BodyControl"),
+    BodyControl: require("./util/BodyControl"),
     //Get: require("./util/Get"),
     //RequestLogger: require("./util/RequestLogger"),
-    //AuthorizedRoute: require("./util/AuthorizedRoute")
+    AuthorizedRoute: require("./util/AuthorizedRoute")
   };
   project.router = requireDir('./api', {recurse: true});
 
