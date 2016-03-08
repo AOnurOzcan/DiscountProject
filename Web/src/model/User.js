@@ -1,6 +1,6 @@
 var City = require("../model/City");
 
-var User = project.db.define('', {
+var User = project.db.define('User', {
   id: {type: 'serial'},
   firstName: String,
   lastName: String,
@@ -10,6 +10,6 @@ var User = project.db.define('', {
   notificationOpen: Boolean
 });
 
-User.hasOne('City', City, {field: 'cityId'});
+User.hasOne('City', City, {field: 'cityId', autoFetch: true});
 
 module.exports = User;

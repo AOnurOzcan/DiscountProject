@@ -10,6 +10,7 @@ import android.widget.EditText;
 
 import com.example.ooar.discountproject.R;
 import com.example.ooar.discountproject.fragment.PhoneNumberFragment;
+import com.example.ooar.discountproject.fragment.UserPreferencesFragment;
 import com.example.ooar.discountproject.util.FragmentChangeListener;
 
 
@@ -25,7 +26,7 @@ public class RegisterActivity extends FragmentActivity implements FragmentChange
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.register_layout);
-        replaceFragment(new PhoneNumberFragment());
+        replaceFragment(new UserPreferencesFragment());
     }
 
     @Override
