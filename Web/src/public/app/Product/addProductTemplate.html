@@ -1,0 +1,92 @@
+<h1 class="page-header">Ürün Ekle</h1>
+
+<div class="panel panel-primary">
+    <div class="panel-heading">Ürün Ekle</div>
+    <div class="panel-body">
+        <form class="form" role="form" method="post" enctype="multipart/form-data">
+
+            <div class="form-group">
+                <label class="control-label">Ürün Resmi :</label>
+
+                <div>
+                    <input type="file" name="imageURL">
+                    <span class="help-block"></span>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label class="control-label">Kategori :</label>
+
+                <div>
+                    <select class="form-control" id="productMainCategorySelect">
+                        {{#mainCategories}}
+                        <option value="{{id}}">{{categoryName}}</option>
+                        {{/mainCategories}}
+                    </select>
+                    <span class="help-block"></span>
+                </div>
+            </div>
+            <div class="form-group">
+                <label class="control-label">Alt Kategori :</label>
+
+                <div>
+                    <select class="form-control" name="categoryId" id="productSubCategorySelect">
+                        <option>Üst Kategori Seçiniz</option>
+                    </select>
+                    <span class="help-block"></span>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label class="control-label">Ürün Adı :</label>
+
+                <div>
+                    <input type="text" class="form-control" name="productName">
+                    <span class="help-block"></span>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label class="control-label">Ürün Fiyatı :</label>
+
+                <div>
+                    <input type="text" class="form-control" name="price">
+                    <span class="help-block"></span>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label class="control-label">Ürün Eski Fiyatı :</label>
+
+                <div>
+                    <input type="text" class="form-control" name="previousPrice">
+                    <span class="help-block"></span>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label class="control-label">Stok :</label>
+
+                <div>
+                    <input type="text" class="form-control" name="stock">
+                    <span class="help-block"></span>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label class="control-label">Ürün açıklaması :</label>
+
+                <div>
+                    <textarea class="form-control" name="productDescription"></textarea>
+                    <span class="help-block"></span>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <div>
+                    <button class="btn btn-primary btn-lg" id="addProductButton">Ekle</button>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>

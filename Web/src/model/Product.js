@@ -1,4 +1,5 @@
 var Category = require("../model/Category");
+var Company = require("../model/Company");
 
 var Product = project.db.define('Product', {
   id: {type: 'serial'},
@@ -11,5 +12,6 @@ var Product = project.db.define('Product', {
 });
 
 Product.hasOne('Category', Category, {field: 'categoryId'});
+Product.hasOne('Company', Company, {field: 'companyId'});
 
 module.exports = Product;
