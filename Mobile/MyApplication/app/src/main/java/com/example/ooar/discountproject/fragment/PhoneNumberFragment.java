@@ -48,6 +48,7 @@ public class PhoneNumberFragment extends Fragment {
             @Override
             public void failure(RetrofitError error) {
                 Toast.makeText(getActivity().getApplicationContext(), "Bir Hata Oluştu!", Toast.LENGTH_LONG).show();
+                Toast.makeText(getActivity().getApplicationContext(), error.toString(), Toast.LENGTH_LONG).show();
             }
         };
 
