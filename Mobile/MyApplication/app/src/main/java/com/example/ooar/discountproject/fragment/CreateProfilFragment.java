@@ -110,11 +110,11 @@ public class CreateProfilFragment extends Fragment {
                 SharedPreferences.Editor editor = getActivity().getSharedPreferences("Session", Activity.MODE_PRIVATE).edit();
                 editor.putString("tokenKey", String.valueOf(o)).commit();
                 callbackUserSuccess = true;
-                if(callbackCategorySuccess == true){
+                if (callbackCategorySuccess == true) {
                     //Spinner kapat
                     FragmentChangeListener fc = (FragmentChangeListener) getActivity();
                     fc.replaceFragment(new UserPreferencesFragment());
-                }else {
+                } else {
                     //Spinner devam edecek
                 }
             }
@@ -152,13 +152,13 @@ public class CreateProfilFragment extends Fragment {
         RetrofitConfiguration.getRetrofitService().getAllCity(callback);
     }
 
-    public void getAllCategories(){
+    public void getAllCategories() {
         Callback callback = new Callback() {
             @Override
             public void success(Object o, Response response) {
                 UserPreferencesFragment.categoryList = (List<Category>) o;
                 callbackCategorySuccess = true;
-                if(callbackUserSuccess == true){
+                if (callbackUserSuccess == true) {
                     //spinner kapat
                     FragmentChangeListener fc = (FragmentChangeListener) getActivity();
                     fc.replaceFragment(new UserPreferencesFragment());
