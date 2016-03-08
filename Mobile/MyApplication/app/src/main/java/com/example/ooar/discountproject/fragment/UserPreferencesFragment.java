@@ -2,8 +2,6 @@ package com.example.ooar.discountproject.fragment;
 
 import android.app.Fragment;
 import android.os.Bundle;
-import android.text.Layout;
-import android.text.method.PasswordTransformationMethod;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -22,80 +20,19 @@ import java.util.List;
  */
 public class UserPreferencesFragment extends Fragment {
 
-    private List<Category> categoryList;
+    public static List<Category> categoryList;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        Category parentCategory = new Category();
-        Category category = new Category();
-
-        categoryList = new ArrayList<Category>();
-        parentCategory.setCategoryName("Teknoloji");
-        parentCategory.setId(1);
-        parentCategory.setParentCategory(null);
-        categoryList.add(parentCategory);
-
-        category = new Category();
-        category.setCategoryName("Cep Telefonu");
-        category.setParentCategory(parentCategory);
-        category.setId(2);
-        categoryList.add(category);
-
-        category = new Category();
-        category.setCategoryName("Bilgisayar");
-        category.setParentCategory(parentCategory);
-        category.setId(3);
-        categoryList.add(category);
-
-        category = new Category();
-        category.setCategoryName("Tablet");
-        category.setParentCategory(parentCategory);
-        category.setId(4);
-        categoryList.add(category);
-
-        category = new Category();
-        category.setCategoryName("Elektrikli ev aletleri");
-        category.setParentCategory(parentCategory);
-        category.setId(5);
-        categoryList.add(category);
-
-        parentCategory = new Category();
-
-        parentCategory.setCategoryName("Gıda");
-        parentCategory.setId(6);
-        parentCategory.setParentCategory(null);
-        categoryList.add(parentCategory);
-
-        category = new Category();
-        category.setCategoryName("Kırmızı Et");
-        category.setParentCategory(parentCategory);
-        category.setId(7);
-        categoryList.add(category);
-
-        category = new Category();
-        category.setCategoryName("Sucuk");
-        category.setParentCategory(parentCategory);
-        category.setId(8);
-        categoryList.add(category);
-
-        category = new Category();
-        category.setCategoryName("Salam");
-        category.setParentCategory(parentCategory);
-        category.setId(9);
-        categoryList.add(category);
-
-        category = new Category();
-        category.setCategoryName("Peynir");
-        category.setParentCategory(parentCategory);
-        category.setId(10);
-        categoryList.add(category);
-
         return inflater.inflate(R.layout.create_preferences, container, false);
     }
 
     @Override
     public void onViewCreated(final View view, Bundle savedInstanceState) {
+        renderLayout(view);
+    }
 
+    public void renderLayout(View view) {
         LinearLayout rootLayout = (LinearLayout) view.findViewById(R.id.root_layout);
         LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.FILL_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT);
         List<Category> parentCategoryList = new ArrayList<Category>();
@@ -129,8 +66,14 @@ public class UserPreferencesFragment extends Fragment {
 
             CheckBox checkBox = new CheckBox(getActivity());
             checkBox.setText("Hepsini Seç");
+            checkBox.setId(category.getId());
             checkBox.setLayoutParams(params);
-            checkBox.setOnClickListener();
+            checkBox.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+
+                }
+            });
             checkboxIdList.add(checkBox);
             newLayout.addView(checkBox);
 
@@ -153,14 +96,14 @@ public class UserPreferencesFragment extends Fragment {
 
             rootLayout.addView(newLayout);
         }
-        for(final Button button: buttonIdList){
+        for (final Button button : buttonIdList) {
             button.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    for (LinearLayout linearLayout : layoutIdList){
-                        if (linearLayout.getId() == button.getId()){
+                    for (LinearLayout linearLayout : layoutIdList) {
+                        if (linearLayout.getId() == button.getId()) {
                             linearLayout.setVisibility(View.VISIBLE);
-                        }else{
+                        } else {
                             linearLayout.setVisibility(View.GONE);
                         }
                     }

@@ -16,6 +16,7 @@ import android.widget.Spinner;
 import android.widget.Toast;
 
 import com.example.ooar.discountproject.R;
+import com.example.ooar.discountproject.model.Category;
 import com.example.ooar.discountproject.model.City;
 import com.example.ooar.discountproject.model.User;
 import com.example.ooar.discountproject.util.FragmentChangeListener;
@@ -43,6 +44,8 @@ public class CreateProfilFragment extends Fragment {
     RadioButton radioSexButton;
     Spinner citySpinner;
     Button button;
+    boolean callbackCategorySuccess = false;
+    boolean callbackUserSuccess = false;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -52,6 +55,7 @@ public class CreateProfilFragment extends Fragment {
     @Override
     public void onViewCreated(final View view, Bundle savedInstanceState) {
         getAllCity(view);
+        getAllCategories();
         setOnClickListener(view);
     }
 
@@ -70,11 +74,11 @@ public class CreateProfilFragment extends Fragment {
                 citySpinner = (Spinner) view.findViewById(R.id.citySpinner);
                 city.setCityName(citySpinner.getSelectedItem().toString());
 
-                Map<String,Object> validationMapper = new Hashtable<String, Object>();
-                validationMapper.put("firstName",firstNameText.getText());
+                Map<String, Object> validationMapper = new Hashtable<String, Object>();
+                validationMapper.put("firstName", firstNameText.getText());
                 validationMapper.put("lastName", lastNameText.getText());
 
-                if(Util.checkValidation(validationMapper)){
+                if (Util.checkValidation(validationMapper)) {
 
                     user.setFirstName(String.valueOf(firstNameText.getText()));
                     user.setLastName(String.valueOf(lastNameText.getText()));
@@ -82,14 +86,15 @@ public class CreateProfilFragment extends Fragment {
                     user.setNotificationOpen(true);
                     user.setBirthday(new Date());
                     user.setCityId(city);
-//TODO date parse eklenecek
+//TODO date parse eklenecek spinner başlayacak
                     if (radioSexButton.getText().equals("Erkek")) {
                         user.setGender(true);
                     } else {
                         user.setGender(false);
                     }
                     createUserProfil(user);
-                }else{
+
+                } else {
                     Toast.makeText(getActivity().getApplicationContext(), "Hatalı Giriş", Toast.LENGTH_LONG).show();
                 }
             }
@@ -104,9 +109,14 @@ public class CreateProfilFragment extends Fragment {
 
                 SharedPreferences.Editor editor = getActivity().getSharedPreferences("Session", Activity.MODE_PRIVATE).edit();
                 editor.putString("tokenKey", String.valueOf(o)).commit();
-
-                FragmentChangeListener fc = (FragmentChangeListener) getActivity();
-                fc.replaceFragment(new UserPreferencesFragment());
+                callbackUserSuccess = true;
+                if(callbackCategorySuccess == true){
+                    //Spinner kapat
+                    FragmentChangeListener fc = (FragmentChangeListener) getActivity();
+                    fc.replaceFragment(new UserPreferencesFragment());
+                }else {
+                    //Spinner devam edecek
+                }
             }
 
             @Override
@@ -140,5 +150,27 @@ public class CreateProfilFragment extends Fragment {
         };
 
         RetrofitConfiguration.getRetrofitService().getAllCity(callback);
+    }
+
+    public void getAllCategories(){
+        Callback callback = new Callback() {
+            @Override
+            public void success(Object o, Response response) {
+                UserPreferencesFragment.categoryList = (List<Category>) o;
+                callbackCategorySuccess = true;
+                if(callbackUserSuccess == true){
+                    //spinner kapat
+                    FragmentChangeListener fc = (FragmentChangeListener) getActivity();
+                    fc.replaceFragment(new UserPreferencesFragment());
+                }
+            }
+
+            @Override
+            public void failure(RetrofitError error) {
+                Toast.makeText(getActivity().getApplicationContext(), error.toString(), Toast.LENGTH_LONG).show();
+            }
+        };
+
+        RetrofitConfiguration.getRetrofitService().getAllCategories(callback);
     }
 }

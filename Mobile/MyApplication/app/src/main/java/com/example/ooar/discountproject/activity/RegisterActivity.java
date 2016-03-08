@@ -26,7 +26,7 @@ public class RegisterActivity extends FragmentActivity implements FragmentChange
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.register_layout);
-        replaceFragment(new UserPreferencesFragment());
+        replaceFragment(new PhoneNumberFragment());
     }
 
     @Override

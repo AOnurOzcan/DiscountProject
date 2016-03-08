@@ -2,6 +2,7 @@ package com.example.ooar.discountproject.util;
 
 import android.text.Editable;
 
+import com.example.ooar.discountproject.model.Category;
 import com.example.ooar.discountproject.model.City;
 import com.example.ooar.discountproject.model.Company;
 import com.example.ooar.discountproject.model.User;
@@ -35,4 +36,7 @@ public interface RetrofitService {
 
     @POST("/user/createprofil")
     void createUser(@Body User user,Callback<Object> callback);
+
+    @GET("/getAllCategories")
+    void getAllCategories(Callback<List<Category>> callback);
 }
