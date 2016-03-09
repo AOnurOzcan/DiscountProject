@@ -10,6 +10,7 @@ import android.widget.EditText;
 
 import com.example.ooar.discountproject.R;
 import com.example.ooar.discountproject.fragment.PhoneNumberFragment;
+import com.example.ooar.discountproject.fragment.UserPreferencesFragment;
 import com.example.ooar.discountproject.util.FragmentChangeListener;
 
 

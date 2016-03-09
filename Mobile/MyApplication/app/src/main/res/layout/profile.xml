@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/main_background"
+    android:orientation="vertical"
+    android:paddingLeft="@dimen/horizantol_padding"
+    android:paddingRight="@dimen/horizantol_padding"
+    android:paddingTop="@dimen/vertical_padding"
+    android:paddingBottom="@dimen/vertical_padding">
+
+
+    <EditText
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:inputType="textPersonName"
+            android:ems="10"
+            android:hint="@string/name"
+            style="@style/profileEditText"
+            android:id="@+id/nameEditText" />
+
+        <EditText
+            style="@style/profileEditText"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:inputType="textPersonName"
+            android:hint="@string/lastName"
+            android:ems="10"
+            android:id="@+id/lastNameEditText" />
+
+    <EditText
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:inputType="phone"
+        android:ems="10"
+        style="@style/profileEditText"
+        android:hint="Telefon Numarası"
+        android:id="@+id/phoneEditText" />
+
+    <EditText
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:inputType="date"
+            android:ems="10"
+            style="@style/profileEditText"
+            android:hint="Doğum Tarihi"
+            android:id="@+id/birthDayEditText" />
+
+    <EditText
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:inputType="textPersonName"
+        style="@style/profileEditText"
+        android:hint="Cinsiyet"
+        android:ems="10"
+        android:id="@+id/genderEditText" />
+
+    <EditText
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:inputType="textPersonName"
+        style="@style/profileEditText"
+        android:hint="Şehir"
+        android:ems="10"
+        android:id="@+id/cityEditText" />
+
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Profil Bilgilerimi Kaydet"
+        android:id="@+id/btnEditProfile" />
+
+</LinearLayout>

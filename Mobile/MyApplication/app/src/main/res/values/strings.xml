@@ -1,3 +1,27 @@
 <resources>
     <string name="app_name">DiscountProject</string>
+    <!-- User Activity Strings Starts. -->
+    <string name="Notifications">Bildirimler</string>
+    <string name="Choice">Tercihler</string>
+    <string name="Profile">Profil</string>
+    <string-array name="tab_title_array">
+        <item>@string/Notifications</item>
+        <item>@string/Choice</item>
+        <item>@string/Profile</item>
+    </string-array>
+    <!-- User Activity Strings End. -->
+    <!-- Profile Fragment Strings Starts. -->
+    <string name="name">Ad</string>
+    <string name="lastName">Soyad</string>
+    <string name="phoneNumber">Telefon Numarası</string>
+    <string name="birthDay">Doğum Tarihi</string>
+    <string name="gender">Cinsiyet</string>
+    <string name="City">Şehir</string>
+    <!-- Profile Fragment Strings End. -->
+
+
+
+
+    <string name="from_date">From Date</string>
+    <string name="to_date">To Date</string>
 </resources>

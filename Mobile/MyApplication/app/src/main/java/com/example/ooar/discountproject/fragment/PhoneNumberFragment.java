@@ -14,6 +14,10 @@ import android.widget.Toast;
 import com.example.ooar.discountproject.R;
 import com.example.ooar.discountproject.util.FragmentChangeListener;
 import com.example.ooar.discountproject.util.RetrofitConfiguration;
+import com.example.ooar.discountproject.util.Util;
+
+import java.util.Hashtable;
+import java.util.Map;
 
 import retrofit.Callback;
 import retrofit.RetrofitError;
@@ -34,6 +38,10 @@ public class PhoneNumberFragment extends Fragment {
 
     @Override
     public void onViewCreated(final View view, Bundle savedInstanceState) {
+        setOnClickButton(view);
+    }
+
+    public void setOnClickButton(final View view) {
         final Callback callback = new Callback() {
             @Override
             public void success(Object o, Response response) {
@@ -48,6 +56,7 @@ public class PhoneNumberFragment extends Fragment {
             @Override
             public void failure(RetrofitError error) {
                 Toast.makeText(getActivity().getApplicationContext(), "Bir Hata Oluştu!", Toast.LENGTH_LONG).show();
+                Toast.makeText(getActivity().getApplicationContext(), error.toString(), Toast.LENGTH_LONG).show();
             }
         };
 
@@ -56,10 +65,17 @@ public class PhoneNumberFragment extends Fragment {
             @Override
             public void onClick(View v) {
                 editText = (EditText) view.findViewById(R.id.telNo);
-                RetrofitConfiguration.getRetrofitService().getConfirmationCode(String.valueOf(editText.getText()), callback);
+
+                Map<String, Object> validationMapper = new Hashtable<String, Object>();
+                validationMapper.put("phoneNumber", String.valueOf(editText.getText()));
+                if (Util.checkValidation(validationMapper)) {
+                    RetrofitConfiguration.getRetrofitService().getConfirmationCode(String.valueOf(editText.getText()), callback);
+                } else {
+                    Toast.makeText(getActivity().getApplicationContext(), "Hatalı Giriş", Toast.LENGTH_LONG).show();
+                }
+
             }
         });
     }
-
 
 }

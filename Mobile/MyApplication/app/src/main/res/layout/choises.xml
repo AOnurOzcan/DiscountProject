@@ -1,0 +1,176 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/root_layout"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
+    android:layout_weight="1"
+    android:background="#FFFFFFFF"
+    android:orientation="vertical">
+
+    <LinearLayout
+        android:id="@+id/panelSwitch"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:background="#FFFFFFFF"
+        android:orientation="vertical">
+
+        <LinearLayout
+            android:id="@+id/panelSwitch1"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:background="#FFFFFFFF"
+            android:orientation="horizontal">
+
+            <TextView
+                android:id="@+id/NotificationsTextView"
+                android:layout_width="216dp"
+                android:layout_height="wrap_content"
+                android:text="Bilfirimleri Aç Kapat"
+                android:textSize="20dp" />
+
+            <Switch
+                android:id="@+id/openCloseNotificationsSwitch"
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content" />
+        </LinearLayout>
+    </LinearLayout>
+
+    <Button
+        android:id="@+id/btnProfile"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:text="Teknoloji"
+        android:textColor="#FFFFFFFF" />
+
+    <LinearLayout
+        android:id="@+id/panelProfile"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:background="#FFFFFFFF"
+        android:orientation="vertical">
+
+        <LinearLayout
+            android:id="@+id/panelProfile1"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:background="#FFFFFFFF"
+            android:orientation="horizontal">
+
+            <CheckBox
+                android:id="@+id/Telefon"
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="Telefon"
+                android:textColor="#ff355689"></CheckBox>
+
+            <CheckBox
+                android:id="@+id/Bilgisayar"
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="Bilgisayar"
+                android:textColor="#ff355689"></CheckBox>
+
+            <CheckBox
+                android:id="@+id/Tablet"
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="Tablet"
+                android:textColor="#ff355689"></CheckBox>
+        </LinearLayout>
+    </LinearLayout>
+
+    <Button
+        android:id="@+id/btnSettings"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:text="Gıda"
+        android:textColor="#FFFFFFFF" />
+
+    <LinearLayout
+        android:id="@+id/panelSettings"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:background="#FFFFFFFF"
+        android:orientation="vertical">
+
+        <LinearLayout
+            android:id="@+id/panelSettings1"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:background="#FFFFFFFF"
+            android:orientation="horizontal">
+
+            <CheckBox
+                android:id="@+id/EgzotikMeyveler"
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="Egzotik Meyveler"
+                android:textColor="#ff355689"></CheckBox>
+
+            <CheckBox
+                android:id="@+id/KavunKarpuz"
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="Kavun-Karpuz"
+                android:textColor="#ff355689"></CheckBox>
+
+            <CheckBox
+                android:id="@+id/TazeMeyveler"
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="Taze Meyveler"
+                android:textColor="#ff355689"></CheckBox>
+        </LinearLayout>
+    </LinearLayout>
+
+    <Button
+        android:id="@+id/btnPrivacy"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:text="Kozmetik"
+        android:textColor="#FFFFFFFF" />
+
+    <LinearLayout
+        android:id="@+id/panelPrivacy"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:background="#FFFFFFFF"
+        android:orientation="vertical">
+
+        <CheckBox
+            android:id="@+id/checkFacebook"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="Saçm Bakım"
+            android:textColor="#ff355689"></CheckBox>
+
+        <CheckBox
+            android:id="@+id/checkLinkedIn"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="Parfumeri"
+            android:textColor="#ff355689"></CheckBox>
+
+        <CheckBox
+            android:id="@+id/checkTwitter"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="Tıraş Malzemeleri"
+            android:textColor="#ff355689"></CheckBox>
+    </LinearLayout>
+
+</LinearLayout>

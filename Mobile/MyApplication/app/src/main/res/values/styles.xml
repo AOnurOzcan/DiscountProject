@@ -8,4 +8,24 @@
         <item name="colorAccent">@color/colorAccent</item>
     </style>
 
+    <!-- Action bar styles  Start-->
+    
+    <style name="AppTheme." parent="Theme.AppCompat.Light.DarkActionBar">
+        <item name="android:actionBarStyle">@style/MyActionBar</item>
+        <item name="actionBarStyle">@style/MyActionBar</item>
+    </style>
+    
+    <style name="MyActionBar" parent="@style/Base.Widget.AppCompat.Light.ActionBar.Solid">
+        <item name="android:background">@color/action_bar_backgorund</item>
+        <item name="background">@color/action_bar_backgorund</item>
+        <item name="android:backgroundStacked">@color/action_bar_backgorund</item>
+        <item name="backgroundStacked">@color/action_bar_backgorund</item>
+    </style>
+    
+    <!-- Action bar styles  End-->
+    <!-- Profile Fragment Style Starts. -->
+    <style name="profileEditText">
+    <item name="android:layout_marginBottom">@dimen/profile_edit_text_margin</item>
+    </style>
+    <!-- Profile Fragment Style End. -->
 </resources>

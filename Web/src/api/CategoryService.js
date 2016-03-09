@@ -64,3 +64,24 @@ project.app.get("/getMainCategories", function (req, res) {
     res.json(mainCategories);
   });
 });
+
+/**
+ * Bu fonksiyon tüm kategorileri getirir.
+ */
+project.app.get("/getAllCategories", function (req, res) {
+
+  Category.find(function (err, categories) {
+
+    if (err) {
+      return res.unknown();
+    }
+    categories.forEach(function (category) {
+      if (category.parentCategory != null) {
+        category.parentCategory = category.parent;
+        delete category['parent'];
+      }
+    });
+
+    res.json(categories);
+  });
+});
