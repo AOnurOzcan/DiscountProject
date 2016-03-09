@@ -3,6 +3,7 @@ window.define(['backbone'], function (Backbone) {
   return Backbone.View.extend({
 
     showView: function (view, params) {
+      debugger;
       var $content = this.$('.page');
       $content.children().detach();
       if (view.constructor === Array) {
@@ -11,13 +12,9 @@ window.define(['backbone'], function (Backbone) {
           view.load.call(view, params);
           var $el = $(view.el);
 
-          if (view.el.className == "menu") {
-            $content.append($el);
-          } else {
             $el.hide();
             $content.append($el);
             $el.fadeIn(500);
-          }
         });
       } else {
 
