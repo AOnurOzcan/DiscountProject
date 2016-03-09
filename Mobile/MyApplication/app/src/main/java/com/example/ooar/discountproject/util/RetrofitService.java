@@ -5,7 +5,6 @@ import android.text.Editable;
 import com.example.ooar.discountproject.model.Category;
 import com.example.ooar.discountproject.model.City;
 import com.example.ooar.discountproject.model.Company;
-import com.example.ooar.discountproject.model.CompanyCategory;
 import com.example.ooar.discountproject.model.User;
 import com.squareup.okhttp.Call;
 
@@ -41,6 +40,4 @@ public interface RetrofitService {
     @GET("/getAllCategories")
     void getAllCategories(Callback<List<Category>> callback);
 
-    @GET("/company/withcategory")
-    void getAllCompanyWithCategory(Callback<List<CompanyCategory>> callback);
 }
