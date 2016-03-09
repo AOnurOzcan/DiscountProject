@@ -29,7 +29,7 @@ define([
 
   var AddProductView = core.CommonView.extend({
     autoLoad: true,
-    el: $(".page"),
+    el: ".page",
     events: {
       'click #addProductButton': 'addProduct',
       'change #productMainCategorySelect': 'getSubCategories'
@@ -63,7 +63,7 @@ define([
 
   var ListProductView = core.CommonView.extend({
     autoLoad: true,
-    el: $(".page"),
+    el: ".page",
     initialize: function () {
       this.productCollection = new ProductsCollection();
     },
