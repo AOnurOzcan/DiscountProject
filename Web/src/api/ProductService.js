@@ -61,9 +61,9 @@ s3fsImpl.create();
  */
 project.app.post("/testUpload", multipartyMiddleware, function (req, res) {
   var file = req.files.file;
-  console.log(req.files);
+  console.log(file);
   var stream = fs.createReadStream(file.path);
-  return s3fsImpl.writeFile(file.originalFilename, stream).then(function () {
+  return s3fsImpl.writeFile(new Date().getTime() + file.originalFilename, stream, {"ContentType": "image/jpg"}).then(function () {
     fs.unlink(file.path, function (err) {
       if (err) {
         console.error(err);
