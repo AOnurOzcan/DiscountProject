@@ -3,14 +3,28 @@
 <div class="panel panel-primary">
     <div class="panel-heading">Ürün Ekle</div>
     <div class="panel-body">
-        <form class="form" role="form" method="post" enctype="multipart/form-data">
+        <form class="form" role="form" method="post" enctype="multipart/form-data" id="addProductForm">
 
-            <div class="form-group">
-                <label class="control-label">Ürün Resmi :</label>
+            <div class="form-group text-center">
+                <label class="control-label">Ürün Resmi</label>
 
                 <div>
-                    <input type="file" name="imageURL">
-                    <span class="help-block"></span>
+                    <div class="fileinput fileinput-new" data-provides="fileinput">
+                        <div class="fileinput-new thumbnail hidden" style="width: 200px; height: 150px;">
+                            <img>
+                        </div>
+                        <div class="fileinput-preview fileinput-exists thumbnail"
+                             style="max-width: 200px; max-height: 150px;"></div>
+                        <div>
+                        <span class="btn btn-default btn-file">
+                            <span class="fileinput-new">Resim Seçiniz</span>
+                            <span class="fileinput-exists">Değiştir</span>
+                            <input type="file" name="imageURL" id="imageURL">
+                        </span>
+                            <a href="#" class="btn btn-danger fileinput-exists" data-dismiss="fileinput">Sil</a>
+                        </div>
+                        <span class="fileinput-filename"></span>
+                    </div>
                 </div>
             </div>
 
@@ -26,6 +40,7 @@
                     <span class="help-block"></span>
                 </div>
             </div>
+
             <div class="form-group">
                 <label class="control-label">Alt Kategori :</label>
 

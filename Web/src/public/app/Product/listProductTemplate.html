@@ -1,12 +1,12 @@
 <h1 class="page-header">Ürünlerim</h1>
-<table class="table table-bordered">
+<table class="table table-bordered text-center">
     <thead>
     <tr>
         <th>Ürün Adı</th>
         <th>Ürün Fiyatı</th>
         <th>Alt Kategori</th>
         <th>Stok</th>
-        <th>Ürün Resmi</th>
+        <th class="col-md-1">Ürün Resmi</th>
         <th>İşlemler</th>
     </tr>
     </thead>
@@ -17,7 +17,12 @@
         <td>{{price}}</td>
         <td>{{categoryId}}</td>
         <td>{{stock}}</td>
-        <td>{{imageURL}}</td>
+        <td>
+            <img src="{{imageURL}}" alt="resim yok" class="thumbnail" align="middle">
+        </td>
+        <td>
+            <button class="btn btn-danger">Sil</button>
+        </td>
     </tr>
     {{/products}}
     </tbody>
