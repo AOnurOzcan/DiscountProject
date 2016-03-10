@@ -22,9 +22,14 @@ define([
     }
   });
 
-  var ProductsCollection = Backbone.Collection.extend({
-    url: "/allProducts"
+  var ProductModel = Backbone.Model.extend({
+    urlRoot: "/deleteProduct"
   });
+  var ProductsCollection = Backbone.Collection.extend({
+    url: "/allProducts",
+    model: ProductModel
+  });
+
 
   var AddProductView = core.CommonView.extend({
     autoLoad: true,
@@ -84,11 +89,35 @@ define([
   var ListProductView = core.CommonView.extend({
     autoLoad: true,
     el: ".page",
+    events: {
+      'click #deleteProductButton': 'deleteProduct'
+    },
     initialize: function () {
       this.productCollection = new ProductsCollection();
     },
+
+    deleteProduct: function (e) {
+      var that = this;
+      var productId = $(e.currentTarget).attr("data-id");
+      this.productCollection.get(productId).destroy({
+        wait: true, //wait until server response to remove model from collection
+        success: function (model) { //If success
+          //self.deleteItem(model); //Remove row from table
+          that.render();
+          if (that.productCollection._modelCount == 0) {
+            $("#listProductForm").append('<tr><td colspan="100%" class="emptyRows">Hiç ürün kalmadı. Lütfen yeni ürün ekleyin.</td></tr>');
+          }
+        },
+        error: function (model, response) {
+        }
+      });
+    },
+
     render: function () {
       this.$el.html(listProductTemplate({products: this.productCollection.toJSON()}));
+      if (this.productCollection.length == 0) {
+        $("#listProductForm").append('<tr><td colspan="100%" class="emptyRows">Hiç ürün kalmadı. Lütfen yeni ürün ekleyin.</td></tr>');
+      }
     }
   });
 

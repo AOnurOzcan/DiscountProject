@@ -7,7 +7,7 @@ define([
 
   var Router = Backbone.Router.extend({
     routes: {
-      'login': 'Login',
+      '': 'Login',
       'cHomepage': 'CompanyHomepage',
       'product/add': 'AddProduct',
       'product/list': 'ListProduct'

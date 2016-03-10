@@ -27,7 +27,7 @@ define(['backbone',
       var logoutModel = new LogoutModel();
       logoutModel.fetch({
         success: function () {
-          window.location.hash = 'login';
+          window.location.hash = ''; // Go login
         }
       });
     },

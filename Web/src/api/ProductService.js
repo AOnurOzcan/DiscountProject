@@ -89,3 +89,11 @@ project.app.post("/testUpload", multipartyMiddleware, function (req, res) {
   });
 });
 
+project.app.delete("/deleteProduct/:id", function (req, res) {
+  Product.find({id: req.params.id}).remove(function (err) {
+    if (err) {
+      res.unknown();
+    }
+    res.json({status: "success"});
+  })
+});

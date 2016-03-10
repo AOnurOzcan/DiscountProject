@@ -55,7 +55,7 @@ require([
 
   $(document).ajaxError(function (event, xhr, settings, object) {
     if (xhr.status == 401) {
-      window.location.hash = "login";
+      window.location.hash = ""; // Go login page
     }
   });
 });
