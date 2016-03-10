@@ -16,13 +16,13 @@ public class MainActivity extends AppCompatActivity {
 //        setContentView(R.layout.activity_main);
         final RetrofitConfiguration retrofitConfiguration = new RetrofitConfiguration();
 
-        boolean session = getSharedPreferences("Session", Activity.MODE_PRIVATE).getBoolean("session",false);
+        boolean session = getSharedPreferences("Session", Activity.MODE_PRIVATE).getBoolean("session", false);
 
-        if(session){//oturum varsa
+        if (session) {//oturum varsa
             Intent intent = new Intent(this, UserActivity.class);
             this.startActivity(intent);
-        }else{ //oturum yoksa
-            Intent intent = new Intent(this, UserActivity.class);
+        } else { //oturum yoksa
+            Intent intent = new Intent(this, RegisterActivity.class);
             this.startActivity(intent);
         }
     }

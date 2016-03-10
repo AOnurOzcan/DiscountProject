@@ -18,6 +18,7 @@ import android.widget.Toast;
 import com.example.ooar.discountproject.R;
 import com.example.ooar.discountproject.model.Category;
 import com.example.ooar.discountproject.model.City;
+import com.example.ooar.discountproject.model.CompanyCategory;
 import com.example.ooar.discountproject.model.User;
 import com.example.ooar.discountproject.util.FragmentChangeListener;
 import com.example.ooar.discountproject.util.RetrofitConfiguration;
@@ -46,6 +47,7 @@ public class CreateProfilFragment extends Fragment {
     Button button;
     boolean callbackCategorySuccess = false;
     boolean callbackUserSuccess = false;
+    boolean callbackCompanySuccess = false;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -56,6 +58,7 @@ public class CreateProfilFragment extends Fragment {
     public void onViewCreated(final View view, Bundle savedInstanceState) {
         getAllCity(view);
         getAllCategories();
+        getAllCompanyWithCategory();
         setOnClickListener(view);
     }
 
@@ -110,7 +113,7 @@ public class CreateProfilFragment extends Fragment {
                 SharedPreferences.Editor editor = getActivity().getSharedPreferences("Session", Activity.MODE_PRIVATE).edit();
                 editor.putString("tokenKey", String.valueOf(o)).commit();
                 callbackUserSuccess = true;
-                if (callbackCategorySuccess == true) {
+                if (callbackCategorySuccess == true && callbackCompanySuccess == true) {
                     //Spinner kapat
                     FragmentChangeListener fc = (FragmentChangeListener) getActivity();
                     fc.replaceFragment(new UserPreferencesFragment());
@@ -158,7 +161,7 @@ public class CreateProfilFragment extends Fragment {
             public void success(Object o, Response response) {
                 UserPreferencesFragment.categoryList = (List<Category>) o;
                 callbackCategorySuccess = true;
-                if (callbackUserSuccess == true) {
+                if (callbackUserSuccess == true && callbackCompanySuccess == true) {
                     //spinner kapat
                     FragmentChangeListener fc = (FragmentChangeListener) getActivity();
                     fc.replaceFragment(new UserPreferencesFragment());
@@ -172,5 +175,27 @@ public class CreateProfilFragment extends Fragment {
         };
 
         RetrofitConfiguration.getRetrofitService().getAllCategories(callback);
+    }
+
+    public void getAllCompanyWithCategory() {
+        Callback callback = new Callback() {
+            @Override
+            public void success(Object o, Response response) {
+                UserPreferencesFragment.companyList = (List<CompanyCategory>) o;
+                callbackCompanySuccess = true;
+                if (callbackUserSuccess == true && callbackCategorySuccess == true) {
+                    //spinner kapat
+                    FragmentChangeListener fc = (FragmentChangeListener) getActivity();
+                    fc.replaceFragment(new UserPreferencesFragment());
+                }
+            }
+
+            @Override
+            public void failure(RetrofitError error) {
+                Toast.makeText(getActivity().getApplicationContext(), error.toString(), Toast.LENGTH_LONG).show();
+            }
+        };
+
+        RetrofitConfiguration.getRetrofitService().getAllCompanyWithCategory(callback);
     }
 }
