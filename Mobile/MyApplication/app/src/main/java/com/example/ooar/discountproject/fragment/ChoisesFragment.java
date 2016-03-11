@@ -17,6 +17,7 @@ import com.example.ooar.discountproject.model.Category;
 import com.example.ooar.discountproject.util.FragmentChangeListener;
 import com.example.ooar.discountproject.util.RetrofitConfiguration;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import retrofit.Callback;
@@ -28,6 +29,7 @@ import retrofit.client.Response;
  */
 public class ChoisesFragment extends Fragment {
     private static List<Category> categoryList;
+    List<LinearLayout> linearLayoutList = new ArrayList<LinearLayout>();
 
     public void getAllCategories() {
         Callback callback = new Callback() {
@@ -122,33 +124,51 @@ public class ChoisesFragment extends Fragment {
         LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.FILL_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT);
         LinearLayout rootLayout = (LinearLayout) getView().findViewById(R.id.userChoisesRoot_Layout);
         for (Category categoryItem : categoryList) {
+            LinearLayout linearLayout = new LinearLayout(getActivity());
             if (categoryItem.getParentCategory() == null) {
-                LinearLayout linearLayout = new LinearLayout(getActivity());
-                rootLayout.addView(linearLayout);
                 linearLayout.setOrientation(LinearLayout.VERTICAL);
                 linearLayout.setLayoutParams(params);
-                linearLayout.setId(categoryItem.getId());
 
-                Button button = new Button(getActivity());
+                linearLayout.setId(categoryItem.getId());
+                linearLayoutList.add(linearLayout);
+                final Button button = new Button(getActivity());
                 button.setText(categoryItem.getCategoryName());
                 button.setId(categoryItem.getId());
                 button.setLayoutParams(params);
-                linearLayout.addView(button);
+                rootLayout.addView(button);
+                rootLayout.addView(linearLayout);
 
                 CheckBox chk = new CheckBox(getActivity());
                 chk.setLayoutParams(params);
                 chk.setId(categoryItem.getId());
                 chk.setText("Hepsini Seç");
                 linearLayout.addView(chk);
+                button.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        for (LinearLayout linearLayout : linearLayoutList) {
+                            if (linearLayout.getId() == button.getId()) {
+                                linearLayout.setVisibility(View.VISIBLE);
+                            } else {
+                                linearLayout.setVisibility(View.GONE);
+                            }
+                        }
+                    }
+                });
 
             } else {
                 CheckBox chk = new CheckBox(getActivity());
-                chk.setId(categoryItem.getId());
+                chk.setId(categoryItem.getParentCategory().getId());
                 chk.setText(categoryItem.getCategoryName());
                 chk.setLayoutParams(params);
-                LinearLayout childLayout = (LinearLayout) getView().findViewById(categoryItem.getParentCategory().getId());
-                childLayout.addView(chk);
+                for (LinearLayout linearLayouts : linearLayoutList) {
+                    if (linearLayouts.getId() == chk.getId()) {
+                        linearLayouts.addView(chk);
+                    }
+                }
             }
         }
     }
+
+
 }

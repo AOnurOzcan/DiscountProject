@@ -22,7 +22,7 @@ public class MainActivity extends AppCompatActivity {
             Intent intent = new Intent(this, UserActivity.class);
             this.startActivity(intent);
         } else { //oturum yoksa
-            Intent intent = new Intent(this, RegisterActivity.class);
+            Intent intent = new Intent(this, UserActivity.class);
             this.startActivity(intent);
         }
     }
