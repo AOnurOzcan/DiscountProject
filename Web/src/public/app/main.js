@@ -7,12 +7,16 @@ require.config({
     'underscore': '../lib/underscore-min',
     'handlebars': '../lib/handlebars-v4.0.5',
     'bootstrapJs': '../lib/bootstrap.min',
+    'jasnyBootstrap': '../lib/jasny-bootstrap.min',
     'jquerySerialize': '../lib/jquery-serialize-object',
     'core': 'Util/core',
     'outer': 'Util/outer'
   },
   shim: {
     bootstrapJs: {
+      deps: ['jquery']
+    },
+    jasnyBootstrap: {
       deps: ['jquery']
     },
     jquery: {
@@ -39,7 +43,8 @@ require([
   'outer',
   'handlebars',
   'bootstrapJs',
-  'jquerySerialize'
+  'jquerySerialize',
+  'jasnyBootstrap'
 ], function ($, _, Backbone, Core, Outer) {
   window.outer = new Outer();
   window.core = Core;
@@ -50,7 +55,7 @@ require([
 
   $(document).ajaxError(function (event, xhr, settings, object) {
     if (xhr.status == 401) {
-      window.location.hash = "login";
+      window.location.hash = ""; // Go login page
     }
   });
 });

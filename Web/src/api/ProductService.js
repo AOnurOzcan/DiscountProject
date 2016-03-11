@@ -60,16 +60,40 @@ s3fsImpl.create();
  * IMAGE UPLOAD SERVICE TEST
  */
 project.app.post("/testUpload", multipartyMiddleware, function (req, res) {
-  var file = req.files.file;
-  console.log(file);
+  var file = req.files.imageURL;
+  var product = {};
+  product.productName = req.body.productName;
+  product.categoryId = req.body.categoryId;
+  product.previousPrice = req.body.previousPrice;
+  product.price = req.body.price;
+  product.stock = req.body.stock;
+  product.productDescription = req.body.productDescription;
+  product.companyId = req.session.admin.companyId;
   var stream = fs.createReadStream(file.path);
-  return s3fsImpl.writeFile(new Date().getTime() + file.originalFilename, stream, {"ContentType": "image/jpg"}).then(function () {
+  var fileName = new Date().getTime() + file.originalFilename;
+  return s3fsImpl.writeFile(fileName, stream, {"ContentType": "image/jpg"}).then(function () {
     fs.unlink(file.path, function (err) {
       if (err) {
         console.error(err);
+        res.unknown();
       }
+      product.imageURL = "https://s3.amazonaws.com/ooar1/" + fileName;
+      Product.create(product, function (err, product) {
+        if (err) {
+          console.error(err);
+          res.unknown()
+        }
+        res.json(product);
+      });
     });
-    res.send("OK");
   });
 });
 
+project.app.delete("/deleteProduct/:id", function (req, res) {
+  Product.find({id: req.params.id}).remove(function (err) {
+    if (err) {
+      res.unknown();
+    }
+    res.json({status: "success"});
+  })
+});
