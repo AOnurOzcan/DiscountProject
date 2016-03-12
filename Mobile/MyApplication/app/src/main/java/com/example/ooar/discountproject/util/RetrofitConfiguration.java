@@ -11,8 +11,8 @@ import retrofit.converter.GsonConverter;
  */
 public class RetrofitConfiguration {
 
-   // private static final String API_URL = "http://192.168.1.2:3032";//local
-    private static final String API_URL = "http://37.139.11.216";//remote
+    private static final String API_URL = "http://192.168.1.2";//local
+//    private static final String API_URL = "http://37.139.11.216";//remote
 
     private static RetrofitService retrofitService;
 

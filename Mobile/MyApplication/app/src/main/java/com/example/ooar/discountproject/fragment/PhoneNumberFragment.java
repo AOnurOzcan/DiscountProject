@@ -45,9 +45,10 @@ public class PhoneNumberFragment extends Fragment {
         final Callback callback = new Callback() {
             @Override
             public void success(Object o, Response response) {
-                SharedPreferences settings = getActivity().getSharedPreferences("Session", Activity.MODE_PRIVATE);
-                SharedPreferences.Editor editor = settings.edit();
+                SharedPreferences.Editor editor = getActivity().getSharedPreferences("Session", Activity.MODE_PRIVATE).edit();
                 editor.putString("phoneNumber", String.valueOf(editText.getText())).commit();
+
+                Toast.makeText(getActivity(), o.toString(), Toast.LENGTH_LONG).show();
 
                 FragmentChangeListener fc = (FragmentChangeListener) getActivity();
                 fc.replaceFragment(new ConfirmationCodeFragment());

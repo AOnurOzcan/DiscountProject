@@ -46,7 +46,8 @@ orm.connect(config.get("database"), function (err, db) { // create connection fr
     BodyControl: require("./util/BodyControl"),
     //Get: require("./util/Get"),
     //RequestLogger: require("./util/RequestLogger"),
-    AuthorizedRoute: require("./util/AuthorizedRoute")
+    AuthorizedRoute: require("./util/AuthorizedRoute"),
+    AuthorizedRouteForUser: require("./util/AuthorizedRouteForUser")
   };
   project.router = requireDir('./api', {recurse: true});
 

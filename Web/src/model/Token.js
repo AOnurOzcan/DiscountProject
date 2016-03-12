@@ -9,6 +9,6 @@ var Token = project.db.define('Token', {
   tokenKey: String,
 });
 
-Token.hasOne('User', User, {field: 'userId', autoFetch: true});
+Token.hasOne('User', User, {field: 'userId'});
 
 module.exports = Token;
