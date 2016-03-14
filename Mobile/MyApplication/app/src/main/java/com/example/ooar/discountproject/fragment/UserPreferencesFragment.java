@@ -93,7 +93,6 @@ public class UserPreferencesFragment extends Fragment {
 
             rootLayout.addView(newLayout);
         }
-
         Button button = Util.createButton(getActivity(), 0, params, "Tercihlerimi Kaydet");//Firma seç butonu
         button.setOnClickListener(new View.OnClickListener() {
 
