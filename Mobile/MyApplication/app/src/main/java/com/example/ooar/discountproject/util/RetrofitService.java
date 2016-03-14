@@ -28,16 +28,16 @@ import retrofit.http.Query;
 
 public interface RetrofitService {
 
-    @POST("/checkconfirmationcode")
+    @POST("/confirmationcode/check")
     void checkConfirmationCode(@Body ConfirmationCode confirmationCode, Callback<Map<String, String>> callback);
 
-    @GET("/sendconfirmationcode/{phoneNumber}")
+    @GET("/confirmationcode/send/{phoneNumber}")
     void getConfirmationCode(@Path("phoneNumber") String phoneNumber, Callback<Object> callback);
 
     @GET("/city/all")
     void getAllCity(Callback<List<City>> callback);
 
-    @POST("/user/createprofil")
+    @POST("/user/profile/create")
     void createUser(@Body User user, Callback<Object> callback);
 
     @GET("/getAllCategories")
@@ -46,6 +46,6 @@ public interface RetrofitService {
     @GET("/company/withcategory")
     void getAllCompanyWithCategory(Callback<List<CompanyCategory>> callback);
 
-    @POST("/user/createpreferences")
+    @POST("/user/preference/create")
     void createUserPreferences(@Query("tokenKey") String tokenKey, @Body List<CompanyCategory> selectedCompanies, Callback<Object> callback);
 }

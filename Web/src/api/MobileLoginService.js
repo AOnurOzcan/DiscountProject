@@ -4,10 +4,9 @@
 
 var ConfirmationCode = require('../model/ConfirmationCode');
 var User = require('../model/User');
-var Token = require('../model/Token');
 var randtoken = require('rand-token');
 
-project.app.get("/sendconfirmationcode/:phoneNumber", function (req, res) {
+project.app.get("/confirmationcode/send/:phoneNumber", function (req, res) {
 
   var phoneNumber = req.params.phoneNumber;
   var confirmationCode = Math.floor(Math.random() * (9999 - 1000) + 1000);
@@ -41,7 +40,7 @@ project.app.get("/sendconfirmationcode/:phoneNumber", function (req, res) {
   });
 });
 
-project.app.post("/checkconfirmationcode", function (req, res) {
+project.app.post("/confirmationcode/check", function (req, res) {
   var confirmationCodeJSON = req.body;
 
   ConfirmationCode.find(confirmationCodeJSON, function (err, confirmationCodeResult) {
@@ -61,23 +60,14 @@ project.app.post("/checkconfirmationcode", function (req, res) {
         if (userResult.length == 0) {// kullanıcı ilk kez kayıt oluşturuyo
           res.json({confirmationCode: 'true', tokenKey: 'err'})
         } else {//kullanıcı var. oturum kapatmış. yeni token oluştur.
-          Token.find({userId: userResult[0].id}, function (err, tokenResult) {
+
+          userResult[0].tokenKey = randtoken.generate(20);
+          userResult[0].save(function (err) {
             if (err) {
               res.unknown();
             }
-
-            if (tokenResult.length != 0) {
-              tokenResult[0].tokenKey = randtoken.generate(20);
-              tokenResult[0].save(function (err) {
-
-                if (err) {
-                  res.unknown();
-                }
-
-                res.json({confirmationCode: 'true', tokenKey: tokenResult[0].tokenKey});
-              });
-            }
-          })
+            res.json({confirmationCode: 'true', tokenKey: tokenResult[0].tokenKey});
+          });
         }
       });
     }

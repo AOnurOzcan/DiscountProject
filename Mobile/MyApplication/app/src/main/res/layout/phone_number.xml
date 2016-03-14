@@ -1,38 +1,84 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:orientation="vertical" android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    xmlns:fbutton="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="#d9534f"
+    android:orientation="vertical">
 
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Telefon numaranızı giriniz"
-        android:id="@+id/textView3"
+
+    <LinearLayout
+        android:id="@+id/linearLayout2"
+        android:layout_width="fill_parent"
+        android:layout_height="40dp"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true"
         android:layout_alignParentTop="true"
-        android:layout_centerHorizontal="true"
-        android:layout_marginTop="90dp"
-        android:textStyle="bold"
-        android:layout_gravity="center_horizontal" />
+        android:layout_marginTop="88dp"
+        android:background="@drawable/text_view"
+        android:orientation="horizontal">
 
-    <EditText
-        android:layout_width="wrap_content"
+        <TextView
+            android:id="@+id/textView2"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_vertical"
+            android:allowUndo="false"
+            android:autoText="false"
+            android:text="Telefon numaranızı giriniz"
+            android:textAlignment="center"
+            android:textIsSelectable="false"
+            android:textSize="18dp"
+            android:textStyle="bold"
+            android:textColor="#a94442" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/linearLayout"
+        android:layout_width="fill_parent"
         android:layout_height="wrap_content"
-        android:inputType="phone"
-        android:ems="10"
-        android:id="@+id/telNo"
-        android:layout_marginTop="42dp"
-        android:layout_gravity="center_vertical"
-        android:layout_below="@+id/textView3"
-        android:layout_centerHorizontal="true" />
+        android:layout_above="@+id/linearLayout3"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true"
+        android:layout_marginBottom="51dp"
 
-    <Button
-        android:layout_width="wrap_content"
+        android:orientation="vertical">
+
+        <EditText
+            android:id="@+id/telNo"
+            android:layout_width="220dp"
+            android:layout_height="40dp"
+            android:layout_gravity="center_horizontal"
+            android:background="@drawable/edit_text"
+            android:ems="10"
+            android:hint="(5xx) xxx-xxxx"
+            android:inputType="phone"
+            android:letterSpacing="0.25"
+            android:textAlignment="center"
+            android:textStyle="bold" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/linearLayout3"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Onay Kodu Gönder"
-        android:id="@+id/postConfirmationCode"
-        android:layout_gravity="center_horizontal"
-        android:layout_centerInParent="true" />
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true"
+        android:layout_centerVertical="true"
+        android:orientation="vertical">
 
-
-
+        <info.hoang8f.widget.FButton
+            android:id="@+id/postConfirmationCode"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerHorizontal="true"
+            android:layout_gravity="center_horizontal"
+            android:text="   Onay Kodu Gönder   "
+            android:textColor="#d9534f"
+            android:textStyle="bold"
+            fbutton:buttonColor="#fcf8e3"
+            fbutton:cornerRadius="10dp"
+            fbutton:shadowEnabled="true"
+            fbutton:shadowHeight="4dp" />
+    </LinearLayout>
 </RelativeLayout>

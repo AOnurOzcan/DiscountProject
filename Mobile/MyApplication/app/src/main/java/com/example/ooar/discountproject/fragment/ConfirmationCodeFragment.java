@@ -55,7 +55,7 @@ public class ConfirmationCodeFragment extends Fragment {
             sendConfirmationCode = (Button) view.findViewById(R.id.sendConfirmationCode);
             confirmationCodeInput = (EditText) view.findViewById(R.id.confirmationCodeInput);
 
-            textTelNo.setText(phoneNumber);
+            textTelNo.setText(phoneNumber + " nolu telefon numarası için");
 
             final Callback callback = new Callback() {
                 @Override

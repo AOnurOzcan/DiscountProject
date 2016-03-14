@@ -3,11 +3,10 @@
  */
 var City = require('../model/City');
 var User = require('../model/User');
-var Token = require('../model/Token');
 var Preference = require('../model/Preference');
 var randtoken = require('rand-token');
 
-project.app.post("/user/createprofil", function (req, res) {
+project.app.post("/user/profile/create", function (req, res) {
   var user = req.body;
 
   City.find({cityName: user.cityId.cityName}, 1, function (err, result) {
@@ -15,6 +14,7 @@ project.app.post("/user/createprofil", function (req, res) {
       res.send('error');
     }
     user.cityId = result[0].id;
+    user.tokenKey = randtoken.generate(20);
     //var date = new Date();
     //user.birthday = date.getFullYear() + "-" + date.getMonth() + "-" + date.getDay();
     User.create(user, function (err, userResult) {
@@ -22,18 +22,28 @@ project.app.post("/user/createprofil", function (req, res) {
       if (err) {
         res.send(err);
       }
-      var tokenKey = randtoken.generate(20);
-      Token.create({userId: userResult.id, tokenKey: tokenKey}, function (err, tokenResult) {
-        if (err) {
-          res.unknown();
-        }
-        res.json(tokenKey);
-      });
+      res.json(userResult.tokenKey);
     });
   });
 });
 
-project.app.post("/user/createpreferences", function (req, res) {
+project.app.get("/user/profile/get", function (req, res) {
+
+  project.util.AuthorizedRouteForUser(req, res, function (userId) {
+    User.find({id: userId}, function (err, user) {
+      if (err) {
+        res.unknown();
+      }
+
+      user.id = null;
+      user.phone = null;
+      user.tokenKey = null;
+      res.json(user);
+    });
+  });
+});
+
+project.app.post("/user/preference/create", function (req, res) {
 //TODO kullanıcının takip ettiği kategori firma ikilisini yeniden kayıt edilmeye çalışırken hata oluyo bunu gider.
   project.util.AuthorizedRouteForUser(req, res, function (userId) {
     var preferences = req.body;
@@ -51,5 +61,17 @@ project.app.post("/user/createpreferences", function (req, res) {
       res.send('true');
     });
   });
-
 });
+
+project.app.get("/user/preference/all", function (req, res) {
+  project.util.AuthorizedRouteForUser(req, res, function (userId) {
+    Preference.find({userId: userId}, function (err, preferences) {
+      if (err) {
+        res.unknown();
+      }
+      res.json(preferences);
+    });
+  });
+});
+
+

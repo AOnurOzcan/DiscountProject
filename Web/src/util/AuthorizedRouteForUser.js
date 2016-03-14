@@ -3,18 +3,22 @@
  */
 
 require("./GenericResponse");
-var Token = require("../model/Token");
+var User = require("../model/User");
 module.exports = function (req, res, callback) {
   var tokenKey = req.query.tokenKey;
 
   if (tokenKey == undefined) {
     res.unauthorized();
   } else {
-    Token.find({tokenKey: tokenKey}, function (err, result) {
+    User.find({tokenKey: tokenKey}, function (err, result) {
       if (err) {
         res.unauthorized();
       } else {
-        callback(result[0].userId);
+        if (result.length > 1) {
+          //TODO aynı tokena sahip 1 den fazla kullanıcı varsa haber ver
+        } else {
+          callback(result[0].id);
+        }
       }
     });
   }

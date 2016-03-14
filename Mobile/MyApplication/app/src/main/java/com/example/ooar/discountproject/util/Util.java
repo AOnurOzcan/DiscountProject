@@ -24,7 +24,7 @@ public class Util {
 
             switch (entry.getKey()) {
                 case "phoneNumber":
-                    pattern = "^05[0-9]{9}$";
+                    pattern = "^5[3-5]{1}[0-9]{8}$";
                     regex = Pattern.compile(pattern);
                     m = regex.matcher(entry.getValue().toString());
                     if (!m.find()) {

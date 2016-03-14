@@ -14,6 +14,7 @@ public class User {
     private boolean notificationOpen;
     private Date birthday;
     private City cityId;
+    private String tokenKey;
 
     public Integer getId() {
         return id;
@@ -77,5 +78,13 @@ public class User {
 
     public void setCityId(City cityId) {
         this.cityId = cityId;
+    }
+
+    public String getTokenKey() {
+        return tokenKey;
+    }
+
+    public void setTokenKey(String tokenKey) {
+        this.tokenKey = tokenKey;
     }
 }

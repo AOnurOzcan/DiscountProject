@@ -26,4 +26,5 @@ dependencies {
     compile 'com.squareup.retrofit:retrofit:1.9.0'
     compile 'com.squareup.okhttp:okhttp:2.7.2'
     compile 'com.google.code.gson:gson:2.3'
+    compile 'info.hoang8f:fbutton:1.0.5'
 }

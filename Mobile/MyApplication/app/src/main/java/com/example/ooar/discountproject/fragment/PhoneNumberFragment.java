@@ -4,6 +4,9 @@ import android.app.Activity;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.app.Fragment;
+import android.telephony.PhoneNumberFormattingTextWatcher;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -38,15 +41,19 @@ public class PhoneNumberFragment extends Fragment {
 
     @Override
     public void onViewCreated(final View view, Bundle savedInstanceState) {
+        editText = (EditText) view.findViewById(R.id.telNo);
+        editText.addTextChangedListener(new PhoneNumberFormattingTextWatcher());
         setOnClickButton(view);
+        setChangeText(view);
     }
 
     public void setOnClickButton(final View view) {
+        final String[] phoneNumber = new String[1];
         final Callback callback = new Callback() {
             @Override
             public void success(Object o, Response response) {
                 SharedPreferences.Editor editor = getActivity().getSharedPreferences("Session", Activity.MODE_PRIVATE).edit();
-                editor.putString("phoneNumber", String.valueOf(editText.getText())).commit();
+                editor.putString("phoneNumber", phoneNumber[0]).commit();
 
                 Toast.makeText(getActivity(), o.toString(), Toast.LENGTH_LONG).show();
 
@@ -65,18 +72,39 @@ public class PhoneNumberFragment extends Fragment {
         button.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                editText = (EditText) view.findViewById(R.id.telNo);
-
                 Map<String, Object> validationMapper = new Hashtable<String, Object>();
-                validationMapper.put("phoneNumber", String.valueOf(editText.getText()));
+                phoneNumber[0] = editText.getText().toString().replace("(", "").replace(")", "").replace("-", "").replace(" ", "");
+                validationMapper.put("phoneNumber", phoneNumber[0]);
                 if (Util.checkValidation(validationMapper)) {
-                    RetrofitConfiguration.getRetrofitService().getConfirmationCode(String.valueOf(editText.getText()), callback);
+                    RetrofitConfiguration.getRetrofitService().getConfirmationCode(String.valueOf(phoneNumber[0]), callback);
                 } else {
                     Toast.makeText(getActivity().getApplicationContext(), "Hatalı Giriş", Toast.LENGTH_LONG).show();
                 }
-
             }
         });
     }
 
+    public void setChangeText(View view) {
+        editText.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+                String tempText = s.toString();
+                if (tempText.length() > 14) {
+                    tempText = tempText.substring(0, 14);
+                    editText.setText(tempText);
+                    editText.setSelection(start);
+                }
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+
+            }
+        });
+    }
 }
