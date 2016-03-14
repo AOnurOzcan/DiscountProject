@@ -122,7 +122,7 @@ public class UserPreferencesFragment extends Fragment {
 
     public void setEvents(List<Button> buttonList, List<CheckBox> allSelectCheckBox, final List<LinearLayout> linearLayoutList, final List<Button> selectCompanyButtonList) {
 
-        for (final Button button : buttonList) {//Ana kategori butonları için event oluşturuluyor
+        for (final Button button : buttonList) {//Ana kategori butonları için event oluşturuluyor. adssda
             button.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
