@@ -9,6 +9,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.CheckBox;
+import android.widget.CompoundButton;
 import android.widget.LinearLayout;
 import android.widget.Toast;
 
@@ -124,8 +125,9 @@ public class ChoisesFragment extends Fragment {
         LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.FILL_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT);
         LinearLayout rootLayout = (LinearLayout) getView().findViewById(R.id.userChoisesRoot_Layout);
         for (Category categoryItem : categoryList) {
-            LinearLayout linearLayout = new LinearLayout(getActivity());
+            final LinearLayout linearLayout = new LinearLayout(getActivity());
             if (categoryItem.getParentCategory() == null) {
+
                 linearLayout.setOrientation(LinearLayout.VERTICAL);
                 linearLayout.setLayoutParams(params);
 
@@ -138,7 +140,7 @@ public class ChoisesFragment extends Fragment {
                 rootLayout.addView(button);
                 rootLayout.addView(linearLayout);
 
-                CheckBox chk = new CheckBox(getActivity());
+                final CheckBox chk = new CheckBox(getActivity());
                 chk.setLayoutParams(params);
                 chk.setId(categoryItem.getId());
                 chk.setText("Hepsini Seç");
@@ -155,20 +157,63 @@ public class ChoisesFragment extends Fragment {
                         }
                     }
                 });
+                chk.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+                    @Override
+                    public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                        for (LinearLayout linearLayout : linearLayoutList) {
+                            if (linearLayout.getId() == chk.getId()) {
+                                if (chk.isChecked()) {
+                                    for (int i = 0; i < linearLayout.getChildCount(); i++) {
+                                        try {
+                                            CheckBox checkBoxItem = (CheckBox) linearLayout.getChildAt(i);
+                                            checkBoxItem.setChecked(true);
+                                        } catch (Exception ignored) {
+                                        }
+                                    }
+                                } else {
+                                    for (int i = 0; i < linearLayout.getChildCount(); i++) {
+                                        try {
+                                            CheckBox checkBoxItem = (CheckBox) linearLayout.getChildAt(i);
+                                            checkBoxItem.setChecked(false);
+                                        } catch (Exception ignored) {
+                                        }
+                                    }
+                                }
+                                break;
+                            }
+                        }
+                    }
+                });
+
 
             } else {
                 CheckBox chk = new CheckBox(getActivity());
-                chk.setId(categoryItem.getParentCategory().getId());
+                chk.setId(categoryItem.getId());
                 chk.setText(categoryItem.getCategoryName());
                 chk.setLayoutParams(params);
+
                 for (LinearLayout linearLayouts : linearLayoutList) {
-                    if (linearLayouts.getId() == chk.getId()) {
+                    if (linearLayouts.getId() == categoryItem.getParentCategory().getId()) {
                         linearLayouts.addView(chk);
+                    }
+                    else{
+
                     }
                 }
             }
         }
+        for (LinearLayout linearLayouts : linearLayoutList) {
+            Button buttonCompany = new Button(getActivity());
+            buttonCompany.setId(linearLayouts.getId());
+            buttonCompany.setText("Firma Seç");
+            buttonCompany.setLayoutParams(params);
+            linearLayouts.addView(buttonCompany);
+            buttonCompany.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    //Firma dialog açılacak
+                }
+            });
+        }
     }
-
-
 }
