@@ -1,7 +1,10 @@
 package com.example.ooar.discountproject.fragment;
 
+import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.Fragment;
+import android.content.DialogInterface;
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -10,10 +13,18 @@ import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
 import android.widget.LinearLayout;
+import android.widget.Toast;
 
 import com.example.ooar.discountproject.R;
+import com.example.ooar.discountproject.activity.UserActivity;
 import com.example.ooar.discountproject.model.Category;
 import com.example.ooar.discountproject.model.CompanyCategory;
+import com.example.ooar.discountproject.util.RetrofitConfiguration;
+import com.example.ooar.discountproject.util.Util;
+
+import retrofit.Callback;
+import retrofit.RetrofitError;
+import retrofit.client.Response;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -25,6 +36,7 @@ public class UserPreferencesFragment extends Fragment {
 
     public static List<Category> categoryList;
     public static List<CompanyCategory> companyList;
+    public List<CompanyCategory> selectedCompanyList = new ArrayList<>();
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -57,51 +69,59 @@ public class UserPreferencesFragment extends Fragment {
         }
         for (Category category : parentCategoryList) {
 
-            Button button = new Button(getActivity());//Ana kategori butonu oluşturuluyor
-            button.setText(category.getCategoryName());
-            button.setLayoutParams(params);
-            button.setId(category.getId());
+            Button button = Util.createButton(getActivity(), category.getId(), params, category.getCategoryName());//Ana kategori butonu oluşturuluyor
             buttonList.add(button);
             rootLayout.addView(button);
 
-            LinearLayout newLayout = new LinearLayout(getActivity());
-            newLayout.setOrientation(LinearLayout.VERTICAL);
-            newLayout.setVisibility(View.GONE);
-            newLayout.setId(category.getId());
+            LinearLayout newLayout = Util.createLinearLayout(getActivity(), category.getId(), LinearLayout.VERTICAL, View.GONE);
             linearLayoutList.add(newLayout);
 
-            CheckBox checkBox = new CheckBox(getActivity());//Hepsini seç checkbox'ı oluşturuluyor
-            checkBox.setText("Hepsini Seç");
-            checkBox.setId(category.getId());
-            checkBox.setLayoutParams(params);
+            CheckBox checkBox = Util.createCheckbox(getActivity(), category.getId(), params, "HepsiniSeç");//Hepsini seç checkbox'ı oluşturuluyor
             allSelectCheckBox.add(checkBox);
-
             newLayout.addView(checkBox);
 
             for (Category subCategory : childCategoryList) { //alt kategoriler için checkbox oluşturuluyor
                 if (subCategory.getParentCategory().getId() == category.getId()) {
-                    checkBox = new CheckBox(getActivity());
-                    checkBox.setText(subCategory.getCategoryName());
-                    checkBox.setLayoutParams(params);
-                    checkBox.setId(subCategory.getId());
+                    checkBox = Util.createCheckbox(getActivity(), subCategory.getId(), params, subCategory.getCategoryName());
                     checkboxList.add(checkBox);
                     newLayout.addView(checkBox);
                 }
             }
-            button = new Button(getActivity());//Firma seç butonu
-            button.setText("Firma Seç");
-            button.setLayoutParams(params);
-            button.setId(category.getId());
+            button = Util.createButton(getActivity(), category.getId(), params, "Firma Seç");//Firma seç butonu
             selectCompanyButtonList.add(button);
             newLayout.addView(button);
 
             rootLayout.addView(newLayout);
         }
 
+        Button button = Util.createButton(getActivity(), 0, params, "Tercihlerimi Kaydet");//Firma seç butonu
+        button.setOnClickListener(new View.OnClickListener() {
+
+            final Callback callback = new Callback() {
+                @Override
+                public void success(Object o, Response response) {
+                    Intent intent = new Intent(getActivity(), UserActivity.class);
+                    getActivity().startActivity(intent);
+                }
+
+                @Override
+                public void failure(RetrofitError error) {
+                    Toast.makeText(getActivity(), error.toString(), Toast.LENGTH_LONG).show();
+                }
+            };
+
+            @Override
+            public void onClick(View v) {
+                String tokenKey = getActivity().getSharedPreferences("Session", Activity.MODE_PRIVATE).getString("tokenKey", "");
+                RetrofitConfiguration.getRetrofitService().createUserPreferences(tokenKey, selectedCompanyList, callback);
+            }
+        });
+        rootLayout.addView(button);
+
         setEvents(buttonList, allSelectCheckBox, linearLayoutList, selectCompanyButtonList);
     }
 
-    public void setEvents(List<Button> buttonList, List<CheckBox> allSelectCheckBox, final List<LinearLayout> linearLayoutList, List<Button> selectCompanyButtonList) {
+    public void setEvents(List<Button> buttonList, List<CheckBox> allSelectCheckBox, final List<LinearLayout> linearLayoutList, final List<Button> selectCompanyButtonList) {
 
         for (final Button button : buttonList) {//Ana kategori butonları için event oluşturuluyor
             button.setOnClickListener(new View.OnClickListener() {
@@ -122,23 +142,19 @@ public class UserPreferencesFragment extends Fragment {
             checkBox.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
                 @Override
                 public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                    boolean checked = false;
                     for (LinearLayout linearLayout : linearLayoutList) {
                         if (linearLayout.getId() == checkBox.getId()) {
                             if (checkBox.isChecked()) {
-                                for (int i = 0; i < linearLayout.getChildCount(); i++) {
-                                    try {
-                                        CheckBox checkBoxItem = (CheckBox) linearLayout.getChildAt(i);
-                                        checkBoxItem.setChecked(true);
-                                    } catch (Exception ignored) {
-                                    }
-                                }
+                                checked = true;
                             } else {
-                                for (int i = 0; i < linearLayout.getChildCount(); i++) {
-                                    try {
-                                        CheckBox checkBoxItem = (CheckBox) linearLayout.getChildAt(i);
-                                        checkBoxItem.setChecked(false);
-                                    } catch (Exception ignored) {
-                                    }
+                                checked = false;
+                            }
+                            for (int i = 0; i < linearLayout.getChildCount(); i++) {
+                                try {
+                                    CheckBox checkBoxItem = (CheckBox) linearLayout.getChildAt(i);
+                                    checkBoxItem.setChecked(checked);
+                                } catch (Exception ignored) {
                                 }
                             }
                             break;
@@ -148,13 +164,17 @@ public class UserPreferencesFragment extends Fragment {
             });
         }
 
-        for (final Button button : selectCompanyButtonList) {
+        for (final Button button : selectCompanyButtonList) {//firma seçmek için event oluşturuluyor
+            final List<CheckBox> companyCategoryCheckedList = new ArrayList<>();
+            final List<CheckBox> tempCompanyCategoryCheckedList = new ArrayList<>();
+
             button.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
                     List<Integer> categoryIdList = new ArrayList<Integer>();
                     List<Integer> companyIdList = new ArrayList<Integer>();
-                    for (LinearLayout linearLayout : linearLayoutList) {
+
+                    for (LinearLayout linearLayout : linearLayoutList) {//seçili olan kategorileri bulmak için
                         if (linearLayout.getId() == button.getId()) {
                             for (int i = 0; i < linearLayout.getChildCount(); i++) {
                                 try {
@@ -167,26 +187,69 @@ public class UserPreferencesFragment extends Fragment {
                             }
                         }
                     }
-                    AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
+                    final AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
                     builder.setTitle("Firmalarınızı Seçiniz");
 
                     LinearLayout newLayout = new LinearLayout(getActivity());
                     newLayout.setOrientation(LinearLayout.VERTICAL);
 
-                    for (int categoryId : categoryIdList) {
+                    for (final int categoryId : categoryIdList) {
                         for (CompanyCategory companyCategory : companyList) {
                             if (categoryId == companyCategory.getCategoryId().getId() && companyIdList.indexOf(companyCategory.getCompanyId().getId()) == -1) {
                                 companyIdList.add(companyCategory.getCompanyId().getId());
+                                final CheckBox checkBox = Util.createCheckbox(getActivity(), companyCategory.getId(), new LinearLayout.LayoutParams(LinearLayout.LayoutParams.FILL_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT), companyCategory.getCompanyId().getCompanyName());
 
-                                CheckBox checkBox = new CheckBox(getActivity());
-                                checkBox.setId(companyCategory.getId());
-                                checkBox.setText(companyCategory.getCompanyId().getCompanyName());
-                                checkBox.setLayoutParams(new LinearLayout.LayoutParams(LinearLayout.LayoutParams.FILL_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT));
+                                if (Util.companyCategoryFindId(selectedCompanyList, companyCategory.getId()) != -1) {
+                                    checkBox.setChecked(true);
+                                }
+                                checkBox.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+                                    @Override
+                                    public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                                        if (checkBox.isChecked() && Util.findIndexForCheckboxList(companyCategoryCheckedList, checkBox) == -1) {
+                                            companyCategoryCheckedList.add(checkBox);
+                                        } else if (!checkBox.isChecked()) {
+                                            int removeCheckboxIndex = Util.findIndexForCheckboxList(companyCategoryCheckedList, checkBox);
+                                            int removeCompanyCategoryIndex = Util.companyCategoryFindId(selectedCompanyList, checkBox.getId());
+                                            if (removeCheckboxIndex != -1) {
+                                                companyCategoryCheckedList.remove(removeCheckboxIndex);
+                                                if (removeCompanyCategoryIndex != -1) {
+                                                    selectedCompanyList.remove(removeCompanyCategoryIndex);
+                                                }
+                                            }
+                                        }
+                                    }
+                                });
                                 newLayout.addView(checkBox);
                             }
                         }
                     }
 
+                    builder.setPositiveButton("Firmaları Kaydet", new DialogInterface.OnClickListener() {
+                        public void onClick(DialogInterface dialog, int id) {
+                            tempCompanyCategoryCheckedList.removeAll(tempCompanyCategoryCheckedList);
+                            for (CheckBox checkbox : companyCategoryCheckedList) {
+                                tempCompanyCategoryCheckedList.add(checkbox);
+                                for (CompanyCategory companyCategory : companyList) {
+                                    if (checkbox.getId() == companyCategory.getId() && selectedCompanyList.indexOf(companyCategory) == -1) {
+                                        selectedCompanyList.add(companyCategory);
+                                    }
+                                }
+                            }
+                        }
+                    }).setNegativeButton("Vazgeç", new DialogInterface.OnClickListener() {
+                        public void onClick(DialogInterface dialog, int id) {
+                            companyCategoryCheckedList.removeAll(companyCategoryCheckedList);
+                            for (CheckBox checkBox : tempCompanyCategoryCheckedList) {
+                                companyCategoryCheckedList.add(checkBox);
+                                for (CompanyCategory companyCategory : companyList) {
+                                    if (checkBox.getId() == companyCategory.getId() && selectedCompanyList.indexOf(companyCategory) == -1) {
+                                        selectedCompanyList.add(companyCategory);
+                                    }
+                                }
+                            }
+                            dialog.cancel();
+                        }
+                    });
                     builder.setView(newLayout).show();
                 }
             });
