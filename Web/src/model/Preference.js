@@ -7,8 +7,8 @@ var Preference = project.db.define('Preference', {
 });
 
 Preference.hasOne('User', User, {field: 'userId'});
-Preference.hasOne('Category', Category, {field: 'categoryId'});
-Preference.hasOne('Company', Company, {field: 'companyId'});
+Preference.hasOne('Category', Category, {field: 'categoryId', autoFetch: true});
+Preference.hasOne('Company', Company, {field: 'companyId', autoFetch: true});
 
 module.exports = Preference;
 

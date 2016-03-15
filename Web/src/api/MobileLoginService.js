@@ -66,10 +66,56 @@ project.app.post("/confirmationcode/check", function (req, res) {
             if (err) {
               res.unknown();
             }
-            res.json({confirmationCode: 'true', tokenKey: tokenResult[0].tokenKey});
+            res.json({confirmationCode: 'true', tokenKey: userResult[0].tokenKey});
           });
         }
       });
     }
+  });
+});
+
+project.app.post("/session/create", function (req, res) {
+
+  var phoneNumber = req.body.phoneNumber;
+  User.find({phone: phoneNumber}, function (err, user) {
+    if (err) {
+      res.unknown();
+    }
+
+    if (user.length == 0) {
+      res.json({tokenKey: 'err'});
+    } else {
+      var tokenKey = randtoken.generate(20);
+      user[0].tokenKey = tokenKey;
+      user[0].save(function (err) {
+        if (err) {
+          res.unknown();
+        }
+        res.json({tokenKey: tokenKey});
+      });
+    }
+  });
+});
+
+project.app.post("/session/delete", function (req, res) {
+
+  var phoneNumber = req.body.phoneNumber;
+
+  User.find({phone: phoneNumber}, function (err, user) {
+    if (err) {
+      res.unknown();
+    }
+
+    if (user.length == 0) {
+      res.json({tokenKey: 'err'});
+    }
+
+    user[0].tokenKey = "";
+    user[0].save(function (err) {
+      if (err) {
+        res.unknown();
+      }
+      res.json({tokenKey: ""});
+    });
   });
 });

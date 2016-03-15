@@ -51,6 +51,9 @@ project.app.post("/user/preference/create", function (req, res) {
       preference.categoryId = preference.categoryId.id;
       preference.companyId = preference.companyId.id;
       preference.userId = userId;
+      if (preference.id != undefined) {
+        delete preference['id'];
+      }
     });
 
     Preference.create(preferences, function (err, result) {
@@ -58,7 +61,7 @@ project.app.post("/user/preference/create", function (req, res) {
         res.unknown();
       }
 
-      res.send('true');
+      res.json('true');
     });
   });
 });
@@ -69,6 +72,17 @@ project.app.get("/user/preference/all", function (req, res) {
       if (err) {
         res.unknown();
       }
+      if (preferences.length == 0) {
+        res.json({});
+      }
+      preferences.forEach(function (preference) {
+        preference.userId = null;
+        preference.categoryId = preference.Category;
+        preference.companyId = preference.Company;
+
+        delete preference['Category'];
+        delete preference['Company'];
+      });
       res.json(preferences);
     });
   });
