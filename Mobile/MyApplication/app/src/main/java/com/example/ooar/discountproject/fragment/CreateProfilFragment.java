@@ -1,9 +1,12 @@
 package com.example.ooar.discountproject.fragment;
 
 import android.app.Activity;
+import android.app.DialogFragment;
 import android.app.Fragment;
 import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -13,6 +16,7 @@ import android.widget.EditText;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
 import android.widget.Spinner;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.ooar.discountproject.R;
@@ -41,6 +45,7 @@ public class CreateProfilFragment extends Fragment {
 
     EditText firstNameText;
     EditText lastNameText;
+    EditText birthDayText;
     RadioGroup radioSexGroup;
     RadioButton radioSexButton;
     Spinner citySpinner;
@@ -60,6 +65,57 @@ public class CreateProfilFragment extends Fragment {
         getAllCategories();
         getAllCompanyWithCategory();
         setOnClickListener(view);
+
+        firstNameText = (EditText) view.findViewById(R.id.firstName);
+        firstNameText.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+                TextView textView = (TextView) view.findViewById(R.id.firstnameText);
+                if (s.toString().length() > 0) {
+                    textView.setVisibility(View.VISIBLE);
+                } else {
+                    textView.setVisibility(View.INVISIBLE);
+                }
+            }
+        });
+        lastNameText = (EditText) view.findViewById(R.id.lastName);
+        lastNameText.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+                TextView textView = (TextView) view.findViewById(R.id.lastnameText);
+                if (s.toString().length() > 0) {
+                    textView.setVisibility(View.VISIBLE);
+                } else {
+                    textView.setVisibility(View.INVISIBLE);
+                }
+            }
+        });
+        radioSexGroup = (RadioGroup) view.findViewById(R.id.radioSexGroup);
+        radioSexButton = (RadioButton) view.findViewById(radioSexGroup.getCheckedRadioButtonId());
+        citySpinner = (Spinner) view.findViewById(R.id.citySpinner);
+        birthDayText = (EditText) view.findViewById(R.id.birthDayEditText);
+        birthDayText.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                showDatePickerDialog(v);
+            }
+        });
     }
 
     public void setOnClickListener(final View view) {
@@ -70,11 +126,6 @@ public class CreateProfilFragment extends Fragment {
                 User user = new User();
                 City city = new City();
 
-                firstNameText = (EditText) view.findViewById(R.id.firstName);
-                lastNameText = (EditText) view.findViewById(R.id.lastName);
-                radioSexGroup = (RadioGroup) view.findViewById(R.id.radioSexGroup);
-                radioSexButton = (RadioButton) view.findViewById(radioSexGroup.getCheckedRadioButtonId());
-                citySpinner = (Spinner) view.findViewById(R.id.citySpinner);
                 city.setCityName(citySpinner.getSelectedItem().toString());
 
                 Map<String, Object> validationMapper = new Hashtable<String, Object>();
@@ -141,9 +192,10 @@ public class CreateProfilFragment extends Fragment {
                     cityNameList.add(city.getCityName());
                 }
                 citySpinner = (Spinner) view.findViewById(R.id.citySpinner);
-                ArrayAdapter<String> adapter = new ArrayAdapter<String>(getActivity().getApplicationContext(), android.R.layout.simple_spinner_item, cityNameList);
-                adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+                ArrayAdapter<String> adapter = new ArrayAdapter<String>(getActivity().getApplicationContext(), R.layout.spinner_item, cityNameList);
+                adapter.setDropDownViewResource(R.layout.spinner_dropdown_item);
                 citySpinner.setAdapter(adapter);
+
             }
 
             @Override
@@ -197,5 +249,10 @@ public class CreateProfilFragment extends Fragment {
         };
 
         RetrofitConfiguration.getRetrofitService().getAllCompanyWithCategory(callback);
+    }
+
+    public void showDatePickerDialog(View v) {
+        DialogFragment newFragment = new DatePickerFragment();
+        newFragment.show(getActivity().getFragmentManager(), "datePicker");
     }
 }

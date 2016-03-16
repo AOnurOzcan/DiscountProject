@@ -5,6 +5,8 @@ import android.app.Fragment;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -44,6 +46,10 @@ public class ConfirmationCodeFragment extends Fragment {
 
     @Override
     public void onViewCreated(final View view, Bundle savedInstanceState) {
+        textTelNo = (TextView) view.findViewById(R.id.textTelNo);
+        sendConfirmationCode = (Button) view.findViewById(R.id.sendConfirmationCode);
+        confirmationCodeInput = (EditText) view.findViewById(R.id.confirmationCodeInput);
+
         setOnclickButton(view);
     }
 
@@ -51,9 +57,6 @@ public class ConfirmationCodeFragment extends Fragment {
         final String phoneNumber = getActivity().getSharedPreferences("Session", Activity.MODE_PRIVATE).getString("phoneNumber", "");
 
         if (!phoneNumber.equals("")) {
-            textTelNo = (TextView) view.findViewById(R.id.textTelNo);
-            sendConfirmationCode = (Button) view.findViewById(R.id.sendConfirmationCode);
-            confirmationCodeInput = (EditText) view.findViewById(R.id.confirmationCodeInput);
 
             textTelNo.setText(phoneNumber + " nolu telefon numarası için");
 

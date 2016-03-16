@@ -9,6 +9,7 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
@@ -18,6 +19,7 @@ import android.widget.Toast;
 import com.example.ooar.discountproject.R;
 import com.example.ooar.discountproject.activity.UserActivity;
 import com.example.ooar.discountproject.model.Category;
+import com.example.ooar.discountproject.model.Company;
 import com.example.ooar.discountproject.model.CompanyCategory;
 import com.example.ooar.discountproject.util.RetrofitConfiguration;
 import com.example.ooar.discountproject.util.Util;
@@ -117,10 +119,25 @@ public class UserPreferencesFragment extends Fragment {
         });
         rootLayout.addView(button);
 
-        setEvents(buttonList, allSelectCheckBox, linearLayoutList, selectCompanyButtonList);
+        setEvents(checkboxList, buttonList, allSelectCheckBox, linearLayoutList, selectCompanyButtonList);
     }
 
-    public void setEvents(List<Button> buttonList, List<CheckBox> allSelectCheckBox, final List<LinearLayout> linearLayoutList, final List<Button> selectCompanyButtonList) {
+    public void setEvents(List<CheckBox> checkBoxList, List<Button> buttonList, List<CheckBox> allSelectCheckBox, final List<LinearLayout> linearLayoutList, final List<Button> selectCompanyButtonList) {
+
+        for (final CheckBox checkBox : checkBoxList) {//Kullanıcı takip ettiği bir kategoriyi kaldırırsa ona ve bu kategori selectedCompany listesinde bulunuyosa listeden kaldırılır.
+            checkBox.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+                @Override
+                public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                    if (!isChecked) {
+                        for (CompanyCategory companyCategory : selectedCompanyList) {
+                            if (checkBox.getId() == companyCategory.getCategoryId().getId()) {
+                                selectedCompanyList.remove(companyCategory);
+                            }
+                        }
+                    }
+                }
+            });
+        }
 
         for (final Button button : buttonList) {//Ana kategori butonları için event oluşturuluyor. adssda
             button.setOnClickListener(new View.OnClickListener() {
@@ -188,10 +205,10 @@ public class UserPreferencesFragment extends Fragment {
                     }
                     final AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
                     builder.setTitle("Firmalarınızı Seçiniz");
+                    builder.create().getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
 
                     LinearLayout newLayout = new LinearLayout(getActivity());
                     newLayout.setOrientation(LinearLayout.VERTICAL);
-
                     for (final int categoryId : categoryIdList) {
                         for (CompanyCategory companyCategory : companyList) {
                             if (categoryId == companyCategory.getCategoryId().getId() && companyIdList.indexOf(companyCategory.getCompanyId().getId()) == -1) {
@@ -231,6 +248,7 @@ public class UserPreferencesFragment extends Fragment {
                                 for (CompanyCategory companyCategory : companyList) {
                                     if (checkbox.getId() == companyCategory.getId() && selectedCompanyList.indexOf(companyCategory) == -1) {
                                         selectedCompanyList.add(companyCategory);
+                                        break;
                                     }
                                 }
                             }
@@ -243,6 +261,7 @@ public class UserPreferencesFragment extends Fragment {
                                 for (CompanyCategory companyCategory : companyList) {
                                     if (checkBox.getId() == companyCategory.getId() && selectedCompanyList.indexOf(companyCategory) == -1) {
                                         selectedCompanyList.add(companyCategory);
+                                        break;
                                     }
                                 }
                             }
