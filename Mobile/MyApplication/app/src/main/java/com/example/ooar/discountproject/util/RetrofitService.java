@@ -7,6 +7,7 @@ import com.example.ooar.discountproject.model.City;
 import com.example.ooar.discountproject.model.Company;
 import com.example.ooar.discountproject.model.CompanyCategory;
 import com.example.ooar.discountproject.model.ConfirmationCode;
+import com.example.ooar.discountproject.model.Preference;
 import com.example.ooar.discountproject.model.User;
 import com.squareup.okhttp.Call;
 
@@ -48,4 +49,9 @@ public interface RetrofitService {
 
     @POST("/user/preference/create")
     void createUserPreferences(@Query("tokenKey") String tokenKey, @Body List<CompanyCategory> selectedCompanies, Callback<Object> callback);
+    @POST("/user/preference/delete")
+    void deleteUserPreferences(@Query("tokenKey") String tokenKey, @Body List<Preference> selectedCompanies, Callback<Object> callback);
+
+    @GET("/user/preference/all")
+    void getUserPreferences(@Query("tokenKey") String tokenKey, Callback<List<Preference>> callback);
 }
