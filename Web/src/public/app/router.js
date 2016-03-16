@@ -24,7 +24,7 @@ define([
       this.adminView = [this.menuView, new AdminView()];
       this.addProductView = [this.menuView, new ProductView.AddProductView()];
       this.listProductView = [this.menuView, new ProductView.ListProductView()];
-      this.editProductView = [this.menuView, new ProductView.EditProductView()];
+      //this.editProductView = [this.menuView, new ProductView.EditProductView()];
       this.addBranchView = [this.menuView, new BranchView.AddBranchView()];
       this.listBranchView = [this.menuView, new BranchView.ListBranchView()];
       this.checkSession = new LoginView.CheckSession();
@@ -53,9 +53,9 @@ define([
     ListProduct: function () {
       outer.showView(this.listProductView);
     },
-    EditProduct: function (productId) {
-      outer.showView(this.editProductView, {productId: productId});
-    },
+    //EditProduct: function (productId) {
+    //  outer.showView(this.editProductView, {productId: productId});
+    //},
     AddBranch: function () {
       outer.showView(this.addBranchView, {});
     },
