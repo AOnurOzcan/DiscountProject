@@ -14,5 +14,10 @@
   "port": "80",
   "logger": {
     "requestLogger": "true"
+  },
+  "S3Credentials": {
+    "accessKeyId": "AKIAI5MWYHAWGD4FLBZQ",
+    "secretAccessKey": "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",
+    "bucketName": "ooar1"
   }
 }

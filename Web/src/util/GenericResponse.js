@@ -2,9 +2,8 @@ var stringify = require('json-stringify-safe');
 
 project.app.use(function (req, res, next) {
   res.unauthorized = function () {
-    res.type("application/json");
     res.status(401);
-    res.json({error: true});
+    res.send('<html><body><h1 class="page-header text-center">Yetkisiz Erişim!</h1></body></html>');
   };
 
   res.unknown = function () {

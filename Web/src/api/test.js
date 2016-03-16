@@ -1,41 +1,51 @@
-var Account = require("../model/Account");
-var AccountCompany = require("../model/AccountCompany");
-
-project.app.post("/login", function (req, res) {
-
-  Account.one({username: req.body.username, password: req.body.password}, function (err, admin) {
-    AccountCompany.one({accountId: admin.id}, function (err, companyId) {
-      if (err) {
-        return res.unknown();
-      }
-
-      if (admin == null) {
-        return res.unauthorized();
-      }
-
-      req.session.admin = admin;
-      req.session.admin.companyId = companyId.companyId;
-      res.json(admin);
-    });
+project.app.get("/accountTest", function (req, res) {
+  Account.find(function (err, account) {
+    console.log(account);
   });
 });
 
-project.app.get("/check", function (req, res) {
+project.app.get("/menuTest", function (req, res) {
+  //var authArray = req.session.admin.accountAuth.split(',');
+  //console.log(admin);
+  //
+  //var menu2 = [{header: "Ürünler", links: []}, {header: "Bildirimler", links: []}];
+  //
+  //
+  //for (var i = 0; i < authArray.length; i++) {
+  //  switch (authArray[i]) {
+  //    case "CREATE_PRODUCT":
+  //      menu2.forEach(function (menuItem) {
+  //        if (menuItem.header == "Ürünler") {
+  //          menuItem.links.push({name: "Ürün Ekle", href: "#product/add"});
+  //          return;
+  //        }
+  //      });
+  //  }
+  //}
 
-  var session = {};
 
-  if (req.session.admin == undefined) {
-    res.unauthorized();
-  } else {
-    session.username = req.session.admin.username;
-    session.accountType = req.session.admin.accountType;
-    session.accountAuth = req.session.admin.accountAuth;
-    res.json(session);
-  }
+  var menu = [
+    {
+      header: "Ürünler",
+      links: [{name: "Ürün Ekle", href: "#product/add"}, {name: "Ürün Listele", href: "#product/list"}]
+    },
+    {
+      header: "Bildirimler",
+      links: [{name: "Bildirim Ekle", href: "#notification/add"}, {
+        name: "Bildirim Listele",
+        href: "#notification/list"
+      }]
+    },
+    {
+      header: "Şubeler", links: [{name: "Şube Ekle", href: "#branch/add"}, {name: "Şube Listele", href: "#branch/list"}]
+    },
+    {
+      header: "Kullanıcılar", links: [{name: "Bildirim Ekle", href: "#notification/add"}]
+    },
+    {
+      header: "Kategoriler", links: [{name: "Bildirim Ekle", href: "#notification/add"}]
+    }
+  ];
 
-});
-
-project.app.get("/logout", function (req, res) {
-  req.session.destroy();
-  res.json(null);
+  res.json(menu);
 });

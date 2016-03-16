@@ -10,7 +10,6 @@ console.log(straightLine);
 
 var app = express();
 console.log('Express initialized');
-
 app.use(bodyParser.urlencoded({extended: false}));
 app.use(bodyParser.json());
 console.log("Body Parser initialized");
@@ -37,7 +36,7 @@ orm.connect(config.get("database"), function (err, db) { // create connection fr
   if (err) { // if any error occurs.
     return console.log("Error occured in database connection! {message}", err);
   }
-
+  db.settings.set('instance.cache', false);
   console.log("Connected to database");
   project.db = db;
   project.app = app;

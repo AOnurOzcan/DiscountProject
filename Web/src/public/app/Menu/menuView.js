@@ -13,6 +13,10 @@ define(['backbone',
     urlRoot: "/check"
   });
 
+  var GetMenu = Backbone.Model.extend({
+    urlRoot: "/menuTest"
+  });
+
   var MenuView = core.CommonView.extend({
     el: $(".menu"),
     autoLoad: true,
@@ -21,30 +25,27 @@ define(['backbone',
     },
     initialize: function () {
       this.isRendered = false;
-      this.checkSession = new CheckSession();
+      //this.checkSession = new CheckSession();
+      this.getMenu = new GetMenu();
     },
     logout: function () {
       var logoutModel = new LogoutModel();
-      logoutModel.fetch({
-        success: function () {
-          window.location.hash = ''; // Go login
-        }
-      });
+      logoutModel.fetch();
     },
     render: function () {
       if (this.isRendered == false) { // Eğer menü daha önce render edilmediyse
-        this.$el.html(menuTemplate({account: this.checkSession.toJSON()})); // Ekrana bas
+        this.$el.html(menuTemplate({headers: this.getMenu.toJSON()})); // Ekrana bas
         this.isRendered = true; // Render edildi olarak işaretle
       }
     }
   });
 
-  Handlebars.registerHelper('checkAccount', function (account) {
-    if (account.accountType == "ADMIN") {
-      return '<li><a href="#">Ana Kategori Ekle</a></li>' +
-        '<li><a href="#">Alt Kategori Ekle</a></li>'
-    }
-  });
+  //Handlebars.registerHelper('checkAccount', function (account) {
+  //  if (account.accountType == "ADMIN") {
+  //    return '<li><a href="#">Ana Kategori Ekle</a></li>' +
+  //      '<li><a href="#">Alt Kategori Ekle</a></li>'
+  //  }
+  //});
 
   return MenuView;
 

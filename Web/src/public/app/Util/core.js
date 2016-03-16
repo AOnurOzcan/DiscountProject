@@ -88,6 +88,7 @@ window.define(['backbone'], function (Backbone) {
 
         $.when.apply($, group).then(function () {
           callback.call(self);
+
           if (self.ready) {
             self.ready(); // Activate i18n
           }
@@ -130,7 +131,11 @@ window.define(['backbone'], function (Backbone) {
         "setValues": function (values) {
           for (var element in values) {
             if (values.hasOwnProperty(element)) {
-              $element.find("[name='" + element + "']").val(values[element]);
+              if (values[element] instanceof Object) { // Eğer property bir obje ise, objenin id alanını set et
+                $element.find("[name='" + element + "']").val(values[element].id);
+              } else { // değilse kendisini set et
+                $element.find("[name='" + element + "']").val(values[element]);
+              }
             }
           }
         },
@@ -149,42 +154,12 @@ window.define(['backbone'], function (Backbone) {
             parent = parent.parent();
           }
 
-          parent.parent().addClass("has-error");
+          parent.addClass("has-error");
 
           var helpBlock = parent.find(".help-block");
           if (helpBlock.length != 0) {
-            var bindBlock = helpBlock.data("bindblock");
-
-            if (bindBlock) {
-              var $bindBlock = $element.find(bindBlock);
-              var dataAlert = $bindBlock.data("alert");
-              $bindBlock = $bindBlock[0];
-
-              if (!$bindBlock.preventFadeOut) {
-                $bindBlock.preventFadeOut = [helpBlock[0]];
-              } else {
-                var index = $bindBlock.preventFadeOut.findIndex(function (e) {
-                  return e == helpBlock[0];
-                });
-
-                if (index == -1) {
-                  $bindBlock.preventFadeOut.push(helpBlock[0]);
-                }
-              }
-
-              if (dataAlert == "1") {
-                return alertify.error(info);
-              }
-            }
-
-            dataAlert = helpBlock.data("alert");
-            if (dataAlert == "1") {
-              return alertify.error(info);
-            }
-
-
             helpBlock.text(info);
-            helpBlock.fadeIn(500);
+            helpBlock.fadeIn(750);
           }
         },
 
@@ -202,38 +177,8 @@ window.define(['backbone'], function (Backbone) {
           }
 
           var helpBlock = parent.find(".help-block");
-          var bindBlock = helpBlock.data("bindblock");
-          if (bindBlock) {
-            var $bindBlock = $element.find(bindBlock)[0];
-            if ($bindBlock.preventFadeOut) {
-              var index = $bindBlock.preventFadeOut.findIndex(function (e) {
-                return e == helpBlock[0];
-              });
-
-              if (index != -1) {
-                $bindBlock.preventFadeOut.splice(index, 1);
-              }
-
-              if ($bindBlock.preventFadeOut.length == 0) {
-                parent.parent().removeClass("has-error");
-              }
-            }
-
-            helpBlock.fadeOut(500, function () {
-              if ($($bindBlock).data("space") != "0") {
-                helpBlock.html("").show();
-              }
-            });
-          } else {
-            if (helpBlock.length == 0 || helpBlock[0].preventFadeOut == undefined || helpBlock[0].preventFadeOut.length == 0) {
-              parent.parent().removeClass("has-error");
-              helpBlock.fadeOut(500, function () {
-                if (helpBlock.data("space") != "0") {
-                  helpBlock.html("").show();
-                }
-              });
-            }
-          }
+          parent.removeClass("has-error");
+          helpBlock.fadeOut(500);
         },
 
 
@@ -271,12 +216,7 @@ window.define(['backbone'], function (Backbone) {
           Object.getOwnPropertyNames(values).forEach(function (propertyName) { // check all values is filled with acceptable values..
             var validationResult = validation.call(scope, propertyName, values[propertyName], values, temp);
             if (validationResult != true) { // check validation
-              if (validationResult.constructor == Array) {
-                self.setError(propertyName, i18n.tf.apply(i18n, validationResult));
-              } else {
-                self.setError(propertyName, i18n.translate(validationResult));
-              }
-
+              self.setError(propertyName, validationResult);
               result = false;
             } else {
               self.setClear(propertyName);
@@ -285,6 +225,19 @@ window.define(['backbone'], function (Backbone) {
           return result == true ? values : null;
         }
       }
+    },
+
+    "deleteItem": function (collection, id) {
+      var that = this;
+      collection.get(id).destroy({
+        wait: true, //wait until server response to remove model from collection
+        success: function () { //If success
+          that.render();
+        },
+        error: function () {
+          alert("Silme işlemi yapılırken bir hata oluştu!");
+        }
+      });
     }
   });
 

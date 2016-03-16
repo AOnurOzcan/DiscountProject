@@ -13,49 +13,16 @@
         <!-- Collect the nav links, forms, and other content for toggling -->
         <div class="collapse navbar-collapse" id="navbar">
             <ul class="nav navbar-nav">
+                {{#each headers}}
                 <li class="dropdown">
-                    <a class="dropdown-toggle" data-toggle="dropdown" href="#">Ürünler
-                        <span class="caret"></span></a>
+                    <a class="dropdown-toggle" data-toggle="dropdown" href="#">{{header}}<span class="caret"></span></a>
                     <ul class="dropdown-menu">
-                        <li><a href="#product/add">Ürün Ekle</a></li>
-                        <li><a href="#product/list">Ürünleri Listele</a></li>
+                        {{#each links}}
+                        <li><a href="{{href}}">{{name}}</a></li>
+                        {{/each}}
                     </ul>
                 </li>
-                <li class="dropdown">
-                    <a class="dropdown-toggle" data-toggle="dropdown" href="#">Bildirimler
-                        <span class="caret"></span></a>
-                    <ul class="dropdown-menu">
-                        <li><a href="#">Bildirim Ekle</a></li>
-                        <li><a href="#">Bildirimleri Listele</a></li>
-                        <li><a href="#">Bildirim Gönder</a></li>
-                        <li><a href="#">Gönderilenler</a></li>
-                    </ul>
-                </li>
-                <li class="dropdown">
-                    <a class="dropdown-toggle" data-toggle="dropdown" href="#">Şubeler
-                        <span class="caret"></span></a>
-                    <ul class="dropdown-menu">
-                        <li><a href="#">Şube Ekle</a></li>
-                        <li><a href="#">Şubeleri Listele</a></li>
-                    </ul>
-                </li>
-                <li class="dropdown">
-                    <a class="dropdown-toggle" data-toggle="dropdown" href="#">Kullanıcılar
-                        <span class="caret"></span></a>
-                    <ul class="dropdown-menu">
-                        <li><a href="#">Kullanıcı Ekle</a></li>
-                        <li><a href="#">Kullanıcıları Listele</a></li>
-                    </ul>
-                </li>
-                <li class="dropdown">
-                    <a class="dropdown-toggle" data-toggle="dropdown" href="#">Kategoriler
-                        <span class="caret"></span></a>
-                    <ul class="dropdown-menu">
-                        {{{checkAccount account}}}
-                        <li><a href="#">Kategori Ekle</a></li>
-                        <li><a href="#">Kategorileri Listele</a></li>
-                    </ul>
-                </li>
+                {{/each}}
             </ul>
             <ul class="nav navbar-nav navbar-right">
                 <li class="dropdown">
