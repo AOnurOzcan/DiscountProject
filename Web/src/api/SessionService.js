@@ -47,7 +47,6 @@ project.app.get("/check", function (req, res) {
  */
 project.app.get("/logout", AuthorizedRoute(""), function (req, res) {
 
-  req.session.destroy(function () {
-    res.unauthorized();
-  });
+  req.session.destroy();
+  res.unauthorized();
 });
