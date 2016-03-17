@@ -4,11 +4,14 @@ var requireDir = require('require-dir');
 var bodyParser = require('body-parser');
 var session = require('express-session');
 var orm = require("orm");
+var compress = require('compression');
+
 
 var straightLine = new Array(50).join('-');
 console.log(straightLine);
 
 var app = express();
+app.use(compress());
 console.log('Express initialized');
 app.use(bodyParser.urlencoded({extended: false}));
 app.use(bodyParser.json());

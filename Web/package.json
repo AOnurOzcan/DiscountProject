@@ -8,6 +8,7 @@
   "private": true,
   "dependencies": {
     "body-parser": "^1.14.1",
+    "compression": "^1.6.1",
     "config": "^1.17.1",
     "connect-busboy": "0.0.2",
     "connect-multiparty": "^2.0.0",
