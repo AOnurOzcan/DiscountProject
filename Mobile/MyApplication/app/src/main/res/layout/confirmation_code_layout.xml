@@ -3,12 +3,14 @@
     xmlns:fbutton="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="#d9534f"
     android:orientation="vertical">
 
     <LinearLayout
         android:id="@+id/linearLayout5"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:background="@drawable/text_view"
         android:orientation="vertical">
 
         <TextView
@@ -18,7 +20,8 @@
             android:layout_gravity="center_horizontal"
             android:layout_marginTop="20dp"
             android:textSize="15dp"
-            android:textStyle="bold" />
+            android:textStyle="bold"
+            android:textColor="#a94442" />
 
         <TextView
             android:id="@+id/textView4"
@@ -28,7 +31,8 @@
             android:layout_marginTop="10dp"
             android:text="Onay Kodunu Giriniz"
             android:textSize="15dp"
-            android:textStyle="bold" />
+            android:textStyle="bold"
+            android:textColor="#a94442" />
     </LinearLayout>
 
     <LinearLayout
@@ -46,11 +50,12 @@
             android:layout_width="120dp"
             android:layout_height="40dp"
             android:layout_gravity="center_horizontal"
-            android:background="@drawable/edit_text"
             android:ems="10"
             android:inputType="number"
             android:textStyle="bold"
-            android:textAlignment="center" />
+            android:textAlignment="center"
+            android:textSize="18dp"
+            android:letterSpacing="0.50" />
     </LinearLayout>
 
     <LinearLayout
@@ -68,7 +73,8 @@
             android:layout_height="wrap_content"
             android:layout_centerHorizontal="true"
             android:text="   Onayla   "
-            android:textColor="@android:color/white"
+            android:textColor="#d9534f"
+            fbutton:buttonColor="#fcf8e3"
             fbutton:cornerRadius="10dp"
             fbutton:shadowEnabled="true"
             fbutton:shadowHeight="3dp"
