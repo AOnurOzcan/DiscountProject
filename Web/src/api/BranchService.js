@@ -1,6 +1,7 @@
 var Branch = require("../model/Branch");
+var AuthorizedRoute = require("../util/AuthorizedRoute");
 
-project.app.post("/branch", function (req, res) {
+project.app.post("/branch", AuthorizedRoute(""), function (req, res) {
   var branch = req.body;
   branch.companyId = req.session.admin.companyId;
   Branch.create(branch, function (err, savedBranch) {
@@ -11,7 +12,7 @@ project.app.post("/branch", function (req, res) {
   });
 });
 
-project.app.put("/branch/:id", function (req, res) {
+project.app.put("/branch/:id", AuthorizedRoute(""), function (req, res) {
   Branch.get(req.params.id, function (err, savedBranch) {
     delete savedBranch.City;
     savedBranch.save(req.body, function (err) {
@@ -24,7 +25,7 @@ project.app.put("/branch/:id", function (req, res) {
   });
 });
 
-project.app.get("/branch/:id", function (req, res) {
+project.app.get("/branch/:id", AuthorizedRoute(""), function (req, res) {
 
   Branch.one({id: req.params.id}, function (err, branch) {
     if (err) {
@@ -39,7 +40,7 @@ project.app.get("/branch/:id", function (req, res) {
 
 });
 
-project.app.delete("/branch/:id", function (req, res) {
+project.app.delete("/branch/:id", AuthorizedRoute(""), function (req, res) {
   Branch.find({id: req.params.id}).remove(function (err) {
     if (err) {
       res.unknown();
@@ -48,7 +49,7 @@ project.app.delete("/branch/:id", function (req, res) {
   })
 });
 
-project.app.get("/getBranches", function (req, res) {
+project.app.get("/getBranches", AuthorizedRoute(""), function (req, res) {
 
   Branch.find({companyId: req.session.admin.companyId}, function (err, branches) {
     if (err) {

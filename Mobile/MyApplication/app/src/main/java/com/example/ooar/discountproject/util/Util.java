@@ -1,10 +1,13 @@
 package com.example.ooar.discountproject.util;
 
 import android.app.Activity;
+import android.app.ProgressDialog;
+import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.LinearLayout;
 
+import com.example.ooar.discountproject.R;
 import com.example.ooar.discountproject.model.CompanyCategory;
 
 import java.util.List;
@@ -16,6 +19,9 @@ import java.util.regex.Pattern;
  * Created by Onur Kuru on 6.3.2016.
  */
 public class Util {
+
+    public static ProgressDialog progressDialog;
+
     public static boolean checkValidation(Map<String, Object> object) {
         String pattern;
         Pattern regex;
@@ -112,5 +118,22 @@ public class Util {
         linearLayout.setOrientation(oriented);
         linearLayout.setVisibility(visibility);
         return linearLayout;
+    }
+
+    public static void startProgressDialog() {
+        if (!progressDialog.isShowing()) {
+            progressDialog.show();
+        }
+    }
+
+    public static void stopProgressDialog() {
+        if (progressDialog.isShowing()) {
+            progressDialog.dismiss();
+        }
+    }
+
+    public static void setProgressDialog(Activity activity) {
+        progressDialog = new ProgressDialog(activity, R.style.StyledDialog);
+        progressDialog.setCancelable(false);
     }
 }

@@ -43,16 +43,19 @@
                     android:text="Ad"
                     android:textAppearance="?android:attr/textAppearanceSmall"
                     android:textStyle="bold"
-                    android:visibility="invisible" />
+                    android:visibility="invisible"
+                    android:textColor="#000000" />
 
                 <EditText
                     android:id="@+id/firstName"
                     style="@style/profileEditText"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    android:background="@drawable/apptheme_textfield_activated_holo_light"
                     android:ems="10"
                     android:hint="@string/name"
-                    android:inputType="textPersonName" />
+                    android:inputType="textPersonName"
+                    android:textColor="#000000" />
             </LinearLayout>
 
         </LinearLayout>
@@ -91,16 +94,19 @@
                     android:text="Soyad"
                     android:textAppearance="?android:attr/textAppearanceSmall"
                     android:textStyle="bold"
-                    android:visibility="invisible" />
+                    android:visibility="invisible"
+                    android:textColor="#000000" />
 
                 <EditText
                     android:id="@+id/lastName"
                     style="@style/profileEditText"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    android:background="@drawable/apptheme_textfield_activated_holo_light"
                     android:ems="10"
                     android:hint="@string/lastName"
-                    android:inputType="textPersonName" />
+                    android:inputType="textPersonName"
+                    android:textColor="#000000" />
 
             </LinearLayout>
 
@@ -132,23 +138,23 @@
                 android:orientation="vertical">
 
                 <TextView
-                    android:id="@+id/textView10"
+                    android:id="@+id/birthdayText"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="5dp"
                     android:text="Doğum Tarihi"
                     android:textAppearance="?android:attr/textAppearanceSmall"
                     android:textStyle="bold"
-                    android:visibility="invisible" />
+                    android:visibility="visible"
+                    android:textColor="#000000" />
 
-                <EditText
-                    android:id="@+id/birthDayEditText"
-                    style="@style/profileEditText"
+                <Spinner
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:ems="10"
-                    android:hint="Doğum Tarihi"
-                    android:inputType="date" />
+                    android:layout_height="match_parent"
+                    android:id="@+id/birthDayEditText"
+                    android:background="@drawable/spinner"
+                    android:spinnerMode="dropdown" />
+
             </LinearLayout>
 
         </LinearLayout>
@@ -188,7 +194,8 @@
                     android:text="Cinsiyet"
                     android:textAppearance="?android:attr/textAppearanceSmall"
                     android:textStyle="bold"
-                    android:visibility="visible" />
+                    android:visibility="visible"
+                    android:textColor="#000000" />
 
                 <RadioGroup
                     android:id="@+id/radioSexGroup"
@@ -204,7 +211,8 @@
                         android:layout_height="wrap_content"
                         android:layout_gravity="center_vertical"
                         android:checked="true"
-                        android:text="Erkek" />
+                        android:text="Erkek"
+                        android:textColor="#000000" />
 
                     <RadioButton
                         android:id="@+id/genderWoman"
@@ -212,7 +220,8 @@
                         android:layout_height="wrap_content"
                         android:layout_gravity="center_vertical"
                         android:checked="false"
-                        android:text="Kadın" />
+                        android:text="Kadın"
+                        android:textColor="#000000" />
                 </RadioGroup>
 
             </LinearLayout>
@@ -253,7 +262,8 @@
                     android:text="Şehir"
                     android:textAppearance="?android:attr/textAppearanceSmall"
                     android:textStyle="bold"
-                    android:visibility="visible" />
+                    android:visibility="visible"
+                    android:textColor="#000000" />
 
                 <Spinner
                     android:id="@+id/citySpinner"

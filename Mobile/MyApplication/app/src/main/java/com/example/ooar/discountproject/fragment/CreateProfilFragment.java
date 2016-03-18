@@ -8,6 +8,7 @@ import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.view.LayoutInflater;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
@@ -28,6 +29,10 @@ import com.example.ooar.discountproject.util.FragmentChangeListener;
 import com.example.ooar.discountproject.util.RetrofitConfiguration;
 import com.example.ooar.discountproject.util.Util;
 
+import org.w3c.dom.Text;
+
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.Hashtable;
@@ -45,7 +50,7 @@ public class CreateProfilFragment extends Fragment {
 
     EditText firstNameText;
     EditText lastNameText;
-    EditText birthDayText;
+    Spinner birthDayText;
     RadioGroup radioSexGroup;
     RadioButton radioSexButton;
     Spinner citySpinner;
@@ -53,6 +58,8 @@ public class CreateProfilFragment extends Fragment {
     boolean callbackCategorySuccess = false;
     boolean callbackUserSuccess = false;
     boolean callbackCompanySuccess = false;
+    boolean callbackCitySuccess = false;
+    public static boolean datePickerIsShow = false;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -109,11 +116,21 @@ public class CreateProfilFragment extends Fragment {
         radioSexGroup = (RadioGroup) view.findViewById(R.id.radioSexGroup);
         radioSexButton = (RadioButton) view.findViewById(radioSexGroup.getCheckedRadioButtonId());
         citySpinner = (Spinner) view.findViewById(R.id.citySpinner);
-        birthDayText = (EditText) view.findViewById(R.id.birthDayEditText);
-        birthDayText.setOnClickListener(new View.OnClickListener() {
+        birthDayText = (Spinner) view.findViewById(R.id.birthDayEditText);
+        List<String> adapterString = new ArrayList<>();
+        adapterString.add("");
+        ArrayAdapter adapter = new ArrayAdapter(getActivity().getApplicationContext(), R.layout.spinner_item, adapterString);
+        adapter.setDropDownViewResource(R.layout.spinner_dropdown_item);
+        birthDayText.setAdapter(adapter);
+        birthDayText.setOnTouchListener(new View.OnTouchListener() {
             @Override
-            public void onClick(View v) {
-                showDatePickerDialog(v);
+            public boolean onTouch(View v, MotionEvent event) {
+                if (!datePickerIsShow) {
+                    showDatePickerDialog(v);
+                    return true;
+                } else {
+                    return false;
+                }
             }
         });
     }
@@ -128,19 +145,24 @@ public class CreateProfilFragment extends Fragment {
 
                 city.setCityName(citySpinner.getSelectedItem().toString());
 
+                String firstName = String.valueOf(firstNameText.getText());
+                String lastName = String.valueOf(lastNameText.getText());
+
                 Map<String, Object> validationMapper = new Hashtable<String, Object>();
-                validationMapper.put("firstName", firstNameText.getText());
-                validationMapper.put("lastName", lastNameText.getText());
+                validationMapper.put("firstName", firstName);
+                validationMapper.put("lastName", lastName);
 
                 if (Util.checkValidation(validationMapper)) {
 
-                    user.setFirstName(String.valueOf(firstNameText.getText()));
-                    user.setLastName(String.valueOf(lastNameText.getText()));
+                    firstName = firstName.substring(0, 1).toUpperCase() + firstName.substring(1);
+                    lastName = lastName.substring(0, 1).toUpperCase() + lastName.substring(1);
+                    user.setFirstName(firstName);
+                    user.setLastName(lastName);
                     user.setPhone(getActivity().getSharedPreferences("Session", Activity.MODE_PRIVATE).getString("phoneNumber", ""));
                     user.setNotificationOpen(true);
-                    user.setBirthday(new Date());
+                    user.setBirthday(String.valueOf(birthDayText.getSelectedItem().toString()));
                     user.setCityId(city);
-//TODO date parse eklenecek spinner başlayacak
+
                     if (radioSexButton.getText().equals("Erkek")) {
                         user.setGender(true);
                     } else {
@@ -165,11 +187,9 @@ public class CreateProfilFragment extends Fragment {
                 editor.putString("tokenKey", String.valueOf(o)).commit();
                 callbackUserSuccess = true;
                 if (callbackCategorySuccess == true && callbackCompanySuccess == true) {
-                    //Spinner kapat
+                    Util.stopProgressDialog();
                     FragmentChangeListener fc = (FragmentChangeListener) getActivity();
                     fc.replaceFragment(new UserPreferencesFragment());
-                } else {
-                    //Spinner devam edecek
                 }
             }
 
@@ -178,7 +198,7 @@ public class CreateProfilFragment extends Fragment {
                 Toast.makeText(getActivity().getApplicationContext(), "Bir Hata Oluştu!", Toast.LENGTH_LONG).show();
             }
         };
-
+        Util.startProgressDialog();
         RetrofitConfiguration.getRetrofitService().createUser(user, callback);
     }
 
@@ -186,16 +206,17 @@ public class CreateProfilFragment extends Fragment {
         Callback callback = new Callback() {
             @Override
             public void success(Object o, Response response) {
+                callbackCitySuccess = true;
                 List<City> cityList = (List<City>) o;
                 List<String> cityNameList = new ArrayList<String>();
                 for (City city : cityList) {
                     cityNameList.add(city.getCityName());
                 }
                 citySpinner = (Spinner) view.findViewById(R.id.citySpinner);
-                ArrayAdapter<String> adapter = new ArrayAdapter<String>(getActivity().getApplicationContext(), R.layout.spinner_item, cityNameList);
+                ArrayAdapter adapter = new ArrayAdapter(getActivity().getApplicationContext(), R.layout.spinner_item, cityNameList);
                 adapter.setDropDownViewResource(R.layout.spinner_dropdown_item);
                 citySpinner.setAdapter(adapter);
-
+                Util.stopProgressDialog();
             }
 
             @Override
@@ -203,7 +224,7 @@ public class CreateProfilFragment extends Fragment {
                 Toast.makeText(getActivity().getApplicationContext(), error.toString(), Toast.LENGTH_LONG).show();
             }
         };
-
+        Util.startProgressDialog();
         RetrofitConfiguration.getRetrofitService().getAllCity(callback);
     }
 
@@ -214,7 +235,9 @@ public class CreateProfilFragment extends Fragment {
                 UserPreferencesFragment.categoryList = (List<Category>) o;
                 callbackCategorySuccess = true;
                 if (callbackUserSuccess == true && callbackCompanySuccess == true) {
-                    //spinner kapat
+                    if (callbackCitySuccess) {
+                        Util.stopProgressDialog();
+                    }
                     FragmentChangeListener fc = (FragmentChangeListener) getActivity();
                     fc.replaceFragment(new UserPreferencesFragment());
                 }
@@ -236,7 +259,9 @@ public class CreateProfilFragment extends Fragment {
                 UserPreferencesFragment.companyList = (List<CompanyCategory>) o;
                 callbackCompanySuccess = true;
                 if (callbackUserSuccess == true && callbackCategorySuccess == true) {
-                    //spinner kapat
+                    if (callbackCitySuccess) {
+                        Util.stopProgressDialog();
+                    }
                     FragmentChangeListener fc = (FragmentChangeListener) getActivity();
                     fc.replaceFragment(new UserPreferencesFragment());
                 }
@@ -252,6 +277,7 @@ public class CreateProfilFragment extends Fragment {
     }
 
     public void showDatePickerDialog(View v) {
+        datePickerIsShow = true;
         DialogFragment newFragment = new DatePickerFragment();
         newFragment.show(getActivity().getFragmentManager(), "datePicker");
     }

@@ -4,11 +4,14 @@ var requireDir = require('require-dir');
 var bodyParser = require('body-parser');
 var session = require('express-session');
 var orm = require("orm");
+var compress = require('compression');
+
 
 var straightLine = new Array(50).join('-');
 console.log(straightLine);
 
 var app = express();
+app.use(compress());
 console.log('Express initialized');
 app.use(bodyParser.urlencoded({extended: false}));
 app.use(bodyParser.json());
@@ -45,6 +48,7 @@ orm.connect(config.get("database"), function (err, db) { // create connection fr
     BodyControl: require("./util/BodyControl"),
     //Get: require("./util/Get"),
     //RequestLogger: require("./util/RequestLogger"),
+    ParseDate: require("./util/ParseDate"),
     AuthorizedRoute: require("./util/AuthorizedRoute"),
     AuthorizedRouteForUser: require("./util/AuthorizedRouteForUser")
   };

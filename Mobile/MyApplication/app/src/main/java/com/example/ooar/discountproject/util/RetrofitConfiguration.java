@@ -11,18 +11,25 @@ import retrofit.converter.GsonConverter;
  */
 public class RetrofitConfiguration {
 
-    private static final String API_URL = "http://192.168.1.2";//local
-//    private static final String API_URL = "http://37.139.11.216";//remote
+    //    private static final String API_URL = "http://192.168.1.3";//local
+    private static final String API_URL = "http://37.139.11.216";//remote
 
     private static RetrofitService retrofitService;
 
-    public RetrofitConfiguration(){
+    public RetrofitConfiguration() {
         Gson gson = new GsonBuilder().create();
         RestAdapter restAdapter = new RestAdapter.Builder().setEndpoint(API_URL).setConverter(new GsonConverter(gson)).build();
         retrofitService = restAdapter.create(RetrofitService.class);
     }
 
     public static RetrofitService getRetrofitService() {
+        return retrofitService;
+    }
+
+    public static RetrofitService getRetrofitService(boolean startProggress) {
+        if (startProggress) {
+            Util.startProgressDialog();
+        }
         return retrofitService;
     }
 

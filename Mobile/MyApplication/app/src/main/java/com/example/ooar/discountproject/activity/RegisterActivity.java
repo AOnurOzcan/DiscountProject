@@ -12,6 +12,7 @@ import com.example.ooar.discountproject.R;
 import com.example.ooar.discountproject.fragment.PhoneNumberFragment;
 import com.example.ooar.discountproject.fragment.UserPreferencesFragment;
 import com.example.ooar.discountproject.util.FragmentChangeListener;
+import com.example.ooar.discountproject.util.Util;
 
 
 /**
@@ -26,6 +27,7 @@ public class RegisterActivity extends FragmentActivity implements FragmentChange
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.register_layout);
+        Util.setProgressDialog(this);
         replaceFragment(new PhoneNumberFragment());
     }
 
