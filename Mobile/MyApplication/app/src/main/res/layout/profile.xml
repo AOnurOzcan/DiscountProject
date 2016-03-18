@@ -4,70 +4,70 @@
     android:layout_height="match_parent"
     android:background="@color/main_background"
     android:orientation="vertical"
+    android:paddingBottom="@dimen/vertical_padding"
     android:paddingLeft="@dimen/horizantol_padding"
     android:paddingRight="@dimen/horizantol_padding"
-    android:paddingTop="@dimen/vertical_padding"
-    android:paddingBottom="@dimen/vertical_padding">
+    android:paddingTop="@dimen/vertical_padding">
 
 
     <EditText
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:inputType="textPersonName"
-            android:ems="10"
-            android:hint="@string/name"
-            style="@style/profileEditText"
-            android:id="@+id/nameEditText" />
-
-        <EditText
-            style="@style/profileEditText"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:inputType="textPersonName"
-            android:hint="@string/lastName"
-            android:ems="10"
-            android:id="@+id/lastNameEditText" />
-
-    <EditText
+        android:id="@+id/nameEditText"
+        style="@style/profileEditText"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:inputType="phone"
         android:ems="10"
+        android:hint="@string/name"
+        android:inputType="textPersonName" />
+
+    <EditText
+        android:id="@+id/lastNameEditText"
         style="@style/profileEditText"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:ems="10"
+        android:hint="@string/lastName"
+        android:inputType="textPersonName" />
+
+    <EditText
+        android:id="@+id/phoneEditText"
+        style="@style/profileEditText"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:ems="10"
         android:hint="Telefon Numarası"
-        android:id="@+id/phoneEditText" />
+        android:inputType="phone" />
 
     <EditText
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:inputType="date"
-            android:ems="10"
-            style="@style/profileEditText"
-            android:hint="Doğum Tarihi"
-            android:id="@+id/birthDayEditText" />
-
-    <EditText
+        android:id="@+id/birthDayEditText"
+        style="@style/profileEditText"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:inputType="textPersonName"
+        android:ems="10"
+        android:hint="Doğum Tarihi"
+        android:inputType="date" />
+
+    <EditText
+        android:id="@+id/genderEditText"
         style="@style/profileEditText"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:ems="10"
         android:hint="Cinsiyet"
-        android:ems="10"
-        android:id="@+id/genderEditText" />
+        android:inputType="textPersonName" />
 
     <EditText
+        android:id="@+id/cityEditText"
+        style="@style/profileEditText"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:inputType="textPersonName"
-        style="@style/profileEditText"
-        android:hint="Şehir"
         android:ems="10"
-        android:id="@+id/cityEditText" />
+        android:hint="Şehir"
+        android:inputType="textPersonName" />
 
     <Button
+        android:id="@+id/btnEditProfile"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Profil Bilgilerimi Kaydet"
-        android:id="@+id/btnEditProfile" />
+        android:text="Profil Bilgilerimi Kaydet" />
 
 </LinearLayout>

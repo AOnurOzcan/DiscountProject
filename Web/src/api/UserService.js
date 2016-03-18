@@ -14,6 +14,7 @@ project.app.post("/user/profile/create", function (req, res) {
       res.send('error');
     } else {
       user.cityId = result[0].id;
+      user.birthday = project.util.ParseDate(user.birthday);
       user.tokenKey = randtoken.generate(20);
       User.create(user, function (err, userResult) {
 

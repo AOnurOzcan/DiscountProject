@@ -52,19 +52,19 @@ public class PhoneNumberFragment extends Fragment {
         final Callback callback = new Callback() {
             @Override
             public void success(Object o, Response response) {
+                Util.stopProgressDialog();
                 SharedPreferences.Editor editor = getActivity().getSharedPreferences("Session", Activity.MODE_PRIVATE).edit();
                 editor.putString("phoneNumber", phoneNumber[0]).commit();
 
                 Toast.makeText(getActivity(), o.toString(), Toast.LENGTH_LONG).show();
-
                 FragmentChangeListener fc = (FragmentChangeListener) getActivity();
                 fc.replaceFragment(new ConfirmationCodeFragment());
             }
 
             @Override
             public void failure(RetrofitError error) {
-                Toast.makeText(getActivity().getApplicationContext(), "Bir Hata Oluştu!", Toast.LENGTH_LONG).show();
-                Toast.makeText(getActivity().getApplicationContext(), error.toString(), Toast.LENGTH_LONG).show();
+                Util.stopProgressDialog();
+                Toast.makeText(getActivity().getApplicationContext(), "Sunucudan Yanıt Alınamadı", Toast.LENGTH_LONG).show();
             }
         };
 
@@ -76,6 +76,7 @@ public class PhoneNumberFragment extends Fragment {
                 phoneNumber[0] = editText.getText().toString().replace("(", "").replace(")", "").replace("-", "").replace(" ", "");
                 validationMapper.put("phoneNumber", phoneNumber[0]);
                 if (Util.checkValidation(validationMapper)) {
+                    Util.startProgressDialog();
                     RetrofitConfiguration.getRetrofitService().getConfirmationCode(String.valueOf(phoneNumber[0]), callback);
                 } else {
                     Toast.makeText(getActivity().getApplicationContext(), "Hatalı Giriş", Toast.LENGTH_LONG).show();

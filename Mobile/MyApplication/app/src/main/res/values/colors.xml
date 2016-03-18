@@ -6,4 +6,9 @@
     <color name="colorAccent">#FF4081</color>
     <color name="action_bar_backgorund">#da4336</color>
     <color name="main_background">#ffffff</color>
+    <color name="background_color">#fcf8e3</color>
+    <color name="danger">#d9534f</color>
+    <color name="light_background_color">#f2dede</color>
+    <color name="text_color">#a94442</color>
+    <color name="transparent">#00000000</color>
 </resources>

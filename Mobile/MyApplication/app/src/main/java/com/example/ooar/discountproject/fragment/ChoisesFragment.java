@@ -154,9 +154,8 @@ public class ChoisesFragment extends Fragment {
             final Callback createCallback = new Callback() {
                 @Override
                 public void success(Object o, Response response) {
-                    Toast.makeText(getActivity(), "İşlem başarıyla gerçekleşti.", Toast.LENGTH_LONG).show();
-                    rootLayout.removeAllViews();
-                    renderPage(v);
+                    Intent intent = new Intent(getActivity(), UserActivity.class);
+                    getActivity().startActivity(intent);
                 }
 
                 @Override
@@ -167,7 +166,8 @@ public class ChoisesFragment extends Fragment {
             final Callback deleteCallback = new Callback() {
                 @Override
                 public void success(Object o, Response response) {
-
+                    Intent intent = new Intent(getActivity(), UserActivity.class);
+                    getActivity().startActivity(intent);
                 }
 
                 @Override

@@ -1,5 +1,7 @@
 package com.example.ooar.discountproject.model;
 
+import android.text.Editable;
+
 import java.util.Date;
 
 /**
@@ -12,7 +14,7 @@ public class User {
     private String phone;
     private boolean gender;
     private boolean notificationOpen;
-    private Date birthday;
+    private String birthday;
     private City cityId;
     private String tokenKey;
 
@@ -56,11 +58,11 @@ public class User {
         this.gender = gender;
     }
 
-    public Date getBirthday() {
+    public String getBirthday() {
         return birthday;
     }
 
-    public void setBirthday(Date birthday) {
+    public void setBirthday(String birthday) {
         this.birthday = birthday;
     }
 
@@ -87,4 +89,6 @@ public class User {
     public void setTokenKey(String tokenKey) {
         this.tokenKey = tokenKey;
     }
+
+
 }
