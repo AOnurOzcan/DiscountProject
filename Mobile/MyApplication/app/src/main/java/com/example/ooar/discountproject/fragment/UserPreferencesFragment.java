@@ -118,6 +118,7 @@ public class UserPreferencesFragment extends Fragment {
 
             @Override
             public void onClick(View v) {
+
                 String tokenKey = getActivity().getSharedPreferences("Session", Activity.MODE_PRIVATE).getString("tokenKey", "");
                 Util.startProgressDialog();
                 RetrofitConfiguration.getRetrofitService().createUserPreferences(tokenKey, selectedCompanyList, callback);
@@ -139,6 +140,11 @@ public class UserPreferencesFragment extends Fragment {
                             if (checkBox.getId() == companyCategory.getCategoryId().getId()) {
                                 selectedCompanyList.remove(companyCategory);
                             }
+                        }
+                        if (selectedCompanyList.size() > 0) {
+                            savePreferences.setEnabled(true);
+                        } else {
+                            savePreferences.setEnabled(false);
                         }
                     } else {
                         boolean indexOf = false;
@@ -210,7 +216,7 @@ public class UserPreferencesFragment extends Fragment {
                 public void onClick(View v) {
                     boolean showDialog = false;
                     List<Integer> categoryIdList = new ArrayList<Integer>();
-                    List<Integer> companyIdList = new ArrayList<Integer>();
+                    final List<Integer> companyIdList = new ArrayList<Integer>();
 
                     for (LinearLayout linearLayout : linearLayoutList) {//seçili olan kategorileri bulmak için
                         if (linearLayout.getId() == button.getId()) {
@@ -229,17 +235,16 @@ public class UserPreferencesFragment extends Fragment {
                     builder.setTitle("Firmalarınızı Seçiniz");
                     builder.create().getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
 
-                    LinearLayout newLayout = new LinearLayout(getActivity());
+                    final LinearLayout newLayout = new LinearLayout(getActivity());
                     newLayout.setOrientation(LinearLayout.VERTICAL);
                     for (final int categoryId : categoryIdList) {
-                        for (CompanyCategory companyCategory : companyList) {
+                        for (final CompanyCategory companyCategory : companyList) {
                             if (categoryId == companyCategory.getCategoryId().getId()) {
                                 showDialog = true;
                                 final CheckBox checkBox = Util.createCheckbox(getActivity(), companyCategory.getId(), new LinearLayout.LayoutParams(LinearLayout.LayoutParams.FILL_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT), companyCategory.getCompanyId().getCompanyName());
-//                                if(companyIdList.indexOf(companyCategory.getCompanyId().getId()) != -1 && Util.findIndexForCheckboxList(companyCategoryCheckedList, checkBox) == -1){
-//                                    companyCategoryCheckedList.add(checkBox);
-//                                    checkBox.setVisibility(View.GONE);
-//                                }
+                                if (companyIdList.indexOf(companyCategory.getCompanyId().getId()) != -1) {
+                                    checkBox.setVisibility(View.GONE);
+                                }
                                 //TODO bir firma iki kategori takip ediyorsa ve kullanıcı ikisinide seçmişse 2 tercih eklenmesi gerekiyo. şuan bunu yapmıyo usttekı kodu kontrol et.
                                 if (Util.companyCategoryFindId(selectedCompanyList, companyCategory.getId()) != -1) {
                                     checkBox.setChecked(true);
@@ -249,14 +254,30 @@ public class UserPreferencesFragment extends Fragment {
                                     @Override
                                     public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
                                         if (checkBox.isChecked() && Util.findIndexForCheckboxList(companyCategoryCheckedList, checkBox) == -1) {
-                                            companyCategoryCheckedList.add(checkBox);
+                                            for (int i = 0; i < newLayout.getChildCount(); i++) {
+                                                try {
+                                                    CheckBox checkBoxItem = (CheckBox) newLayout.getChildAt(i);
+                                                    if (String.valueOf(checkBoxItem.getText()).equals(String.valueOf(checkBox.getText()))) {
+                                                        companyCategoryCheckedList.add(checkBoxItem);
+                                                    }
+                                                } catch (Exception ignored) {
+                                                }
+                                            }
                                         } else if (!checkBox.isChecked()) {
-                                            int removeCheckboxIndex = Util.findIndexForCheckboxList(companyCategoryCheckedList, checkBox);
-                                            int removeCompanyCategoryIndex = Util.companyCategoryFindId(selectedCompanyList, checkBox.getId());
-                                            if (removeCheckboxIndex != -1) {
-                                                companyCategoryCheckedList.remove(removeCheckboxIndex);
-                                                if (removeCompanyCategoryIndex != -1) {
-                                                    selectedCompanyList.remove(removeCompanyCategoryIndex);
+                                            for (int i = 0; i < newLayout.getChildCount(); i++) {
+                                                try {
+                                                    CheckBox checkBoxItem = (CheckBox) newLayout.getChildAt(i);
+                                                    if (String.valueOf(checkBoxItem.getText()).equals(String.valueOf(checkBox.getText()))) {
+                                                        int removeCheckboxIndex = Util.findIndexForCheckboxList(companyCategoryCheckedList, checkBoxItem);
+                                                        if (removeCheckboxIndex != -1) {
+                                                            companyCategoryCheckedList.remove(removeCheckboxIndex);
+                                                            int removeCompanyCategoryIndex = Util.companyCategoryFindId(selectedCompanyList, checkBoxItem.getId());
+                                                            if (removeCompanyCategoryIndex != -1) {
+                                                                selectedCompanyList.remove(removeCompanyCategoryIndex);
+                                                            }
+                                                        }
+                                                    }
+                                                } catch (Exception ignored) {
                                                 }
                                             }
                                         }
@@ -275,7 +296,6 @@ public class UserPreferencesFragment extends Fragment {
                                 for (CompanyCategory companyCategory : companyList) {
                                     if (checkbox.getId() == companyCategory.getId() && selectedCompanyList.indexOf(companyCategory) == -1) {
                                         selectedCompanyList.add(companyCategory);
-                                        break;
                                     }
                                 }
                             }
@@ -294,7 +314,6 @@ public class UserPreferencesFragment extends Fragment {
                                 for (CompanyCategory companyCategory : companyList) {
                                     if (checkBox.getId() == companyCategory.getId() && selectedCompanyList.indexOf(companyCategory) == -1) {
                                         selectedCompanyList.add(companyCategory);
-                                        break;
                                     }
                                 }
                             }

@@ -57,4 +57,10 @@ public class DatePickerFragment extends DialogFragment implements DatePickerDial
         editText.setAdapter(adapter);
         editText.setSelection(0);
     }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        CreateProfilFragment.datePickerIsShow = false;
+    }
 }

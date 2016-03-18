@@ -61,6 +61,7 @@
                 android:inputType="phone"
                 android:letterSpacing="0.25"
                 android:textAlignment="center"
+                android:background="@drawable/apptheme_textfield_activated_holo_light"
                 android:textStyle="bold"
                 android:textSize="20sp" />
         </LinearLayout>

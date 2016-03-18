@@ -59,7 +59,7 @@ public class CreateProfilFragment extends Fragment {
     boolean callbackUserSuccess = false;
     boolean callbackCompanySuccess = false;
     boolean callbackCitySuccess = false;
-    DialogFragment newFragment = new DatePickerFragment();
+    public static boolean datePickerIsShow = false;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -125,8 +125,12 @@ public class CreateProfilFragment extends Fragment {
         birthDayText.setOnTouchListener(new View.OnTouchListener() {
             @Override
             public boolean onTouch(View v, MotionEvent event) {
-                showDatePickerDialog(v);
-                return true;
+                if (!datePickerIsShow) {
+                    showDatePickerDialog(v);
+                    return true;
+                } else {
+                    return false;
+                }
             }
         });
     }
@@ -141,14 +145,19 @@ public class CreateProfilFragment extends Fragment {
 
                 city.setCityName(citySpinner.getSelectedItem().toString());
 
+                String firstName = String.valueOf(firstNameText.getText());
+                String lastName = String.valueOf(lastNameText.getText());
+
                 Map<String, Object> validationMapper = new Hashtable<String, Object>();
-                validationMapper.put("firstName", firstNameText.getText());
-                validationMapper.put("lastName", lastNameText.getText());
+                validationMapper.put("firstName", firstName);
+                validationMapper.put("lastName", lastName);
 
                 if (Util.checkValidation(validationMapper)) {
 
-                    user.setFirstName(String.valueOf(firstNameText.getText()));
-                    user.setLastName(String.valueOf(lastNameText.getText()));
+                    firstName = firstName.substring(0, 1).toUpperCase() + firstName.substring(1);
+                    lastName = lastName.substring(0, 1).toUpperCase() + lastName.substring(1);
+                    user.setFirstName(firstName);
+                    user.setLastName(lastName);
                     user.setPhone(getActivity().getSharedPreferences("Session", Activity.MODE_PRIVATE).getString("phoneNumber", ""));
                     user.setNotificationOpen(true);
                     user.setBirthday(String.valueOf(birthDayText.getSelectedItem().toString()));
@@ -268,8 +277,8 @@ public class CreateProfilFragment extends Fragment {
     }
 
     public void showDatePickerDialog(View v) {
-        if (!newFragment.isVisible()) {
-            newFragment.show(getActivity().getFragmentManager(), "datePicker");
-        }
+        datePickerIsShow = true;
+        DialogFragment newFragment = new DatePickerFragment();
+        newFragment.show(getActivity().getFragmentManager(), "datePicker");
     }
 }
