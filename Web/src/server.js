@@ -48,6 +48,7 @@ orm.connect(config.get("database"), function (err, db) { // create connection fr
     BodyControl: require("./util/BodyControl"),
     //Get: require("./util/Get"),
     //RequestLogger: require("./util/RequestLogger"),
+    ParseDate: require("./util/ParseDate"),
     AuthorizedRoute: require("./util/AuthorizedRoute"),
     AuthorizedRouteForUser: require("./util/AuthorizedRouteForUser")
   };

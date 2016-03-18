@@ -132,23 +132,22 @@
                 android:orientation="vertical">
 
                 <TextView
-                    android:id="@+id/textView10"
+                    android:id="@+id/birthdayText"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="5dp"
                     android:text="Doğum Tarihi"
                     android:textAppearance="?android:attr/textAppearanceSmall"
                     android:textStyle="bold"
-                    android:visibility="invisible" />
+                    android:visibility="visible" />
 
-                <EditText
-                    android:id="@+id/birthDayEditText"
-                    style="@style/profileEditText"
+                <Spinner
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:ems="10"
-                    android:hint="Doğum Tarihi"
-                    android:inputType="date" />
+                    android:layout_height="match_parent"
+                    android:id="@+id/birthDayEditText"
+                    android:background="@drawable/spinner"
+                    android:spinnerMode="dropdown" />
+
             </LinearLayout>
 
         </LinearLayout>

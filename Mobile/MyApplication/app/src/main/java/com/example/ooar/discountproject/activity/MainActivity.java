@@ -7,7 +7,9 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.widget.Toast;
 
+import com.example.ooar.discountproject.R;
 import com.example.ooar.discountproject.util.RetrofitConfiguration;
+import com.example.ooar.discountproject.util.Util;
 
 import java.util.Hashtable;
 import java.util.Map;
@@ -22,11 +24,17 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
 
         super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_main);
         final RetrofitConfiguration retrofitConfiguration = new RetrofitConfiguration();
+        Util.setProgressDialog(this);
+        setEvents();
+    }
 
+    public void setEvents() {
         Callback callback = new Callback() {
             @Override
             public void success(Object o, Response response) {
+                Util.stopProgressDialog();
                 Map<String, String> mapper = (Map<String, String>) o;
                 String tokenKey = mapper.get("tokenKey");
                 if (tokenKey.equals("") || tokenKey.equals("err")) {//Gönderilen numaraya ait kullanıcı yok
@@ -42,9 +50,11 @@ public class MainActivity extends AppCompatActivity {
 
             @Override
             public void failure(RetrofitError error) {
-                Toast.makeText(MainActivity.this, error.toString(), Toast.LENGTH_SHORT).show();
+                Util.stopProgressDialog();
+                Toast.makeText(MainActivity.this, "Sunucudan Yanıt Alınamadı", Toast.LENGTH_SHORT).show();
             }
         };
+
 
         String phoneNumber = getSharedPreferences("Session", Activity.MODE_PRIVATE).getString("phoneNumber", "");
         if (phoneNumber.equals("")) {
@@ -53,7 +63,7 @@ public class MainActivity extends AppCompatActivity {
         }
         Map<String, String> mapper = new Hashtable<>();
         mapper.put("phoneNumber", phoneNumber);
-        RetrofitConfiguration.getRetrofitService().createSession(mapper, callback);
+        RetrofitConfiguration.getRetrofitService(true).createSession(mapper, callback);
     }
 
     @Override

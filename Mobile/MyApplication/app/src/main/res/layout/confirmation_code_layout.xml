@@ -3,82 +3,103 @@
     xmlns:fbutton="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="#d9534f"
+    android:background="@color/background_color"
     android:orientation="vertical">
 
     <LinearLayout
-        android:id="@+id/linearLayout5"
-        android:layout_width="match_parent"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:background="@drawable/text_view"
+        android:layout_centerHorizontal="true"
+        android:layout_centerVertical="true"
         android:orientation="vertical">
 
-        <TextView
-            android:id="@+id/textTelNo"
+        <LinearLayout
+            android:id="@+id/linearLayout5"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_gravity="center_horizontal"
-            android:layout_marginTop="20dp"
-            android:textSize="15dp"
-            android:textStyle="bold"
-            android:textColor="#a94442" />
-
-        <TextView
-            android:id="@+id/textView4"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center_horizontal"
-            android:layout_marginTop="10dp"
-            android:text="Onay Kodunu Giriniz"
-            android:textSize="15dp"
-            android:textStyle="bold"
-            android:textColor="#a94442" />
-    </LinearLayout>
-
-    <LinearLayout
-        android:id="@+id/linearLayout6"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_alignParentLeft="true"
-        android:layout_alignParentStart="true"
-        android:layout_below="@+id/linearLayout5"
-        android:layout_marginTop="50dp"
-        android:orientation="vertical">
-
-        <EditText
-            android:id="@+id/confirmationCodeInput"
-            android:layout_width="120dp"
-            android:layout_height="40dp"
-            android:layout_gravity="center_horizontal"
-            android:ems="10"
-            android:inputType="number"
-            android:textStyle="bold"
-            android:textAlignment="center"
-            android:textSize="18dp"
-            android:letterSpacing="0.50" />
-    </LinearLayout>
-
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_alignParentLeft="true"
-        android:layout_alignParentStart="true"
-        android:layout_below="@+id/linearLayout6"
-        android:layout_marginTop="50dp"
-        android:orientation="vertical">
-
-        <info.hoang8f.widget.FButton
-            android:id="@+id/sendConfirmationCode"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_alignParentTop="true"
             android:layout_centerHorizontal="true"
-            android:text="   Onayla   "
-            android:textColor="#d9534f"
-            fbutton:buttonColor="#fcf8e3"
-            fbutton:cornerRadius="10dp"
-            fbutton:shadowEnabled="true"
-            fbutton:shadowHeight="3dp"
-            android:layout_gravity="center_horizontal"
-            android:textStyle="bold" />
+            android:background="@drawable/text_view"
+            android:orientation="vertical">
+
+            <TextView
+                android:id="@+id/textTelNo"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_horizontal"
+                android:layout_margin="10sp"
+                android:textColor="@color/text_color"
+                android:textSize="20sp"
+                android:textStyle="bold" />
+
+            <TextView
+                android:id="@+id/textView"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_horizontal"
+                android:layout_margin="10dp"
+                android:text="@string/byPhoneNumber"
+                android:textAppearance="?android:attr/textAppearanceSmall"
+                android:textColor="@color/text_color"
+                android:textSize="15sp" />
+
+            <TextView
+                android:id="@+id/textView4"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_horizontal"
+                android:layout_margin="10sp"
+                android:text="@string/confirmationCodeInput"
+                android:textColor="@color/text_color"
+                android:textSize="15sp" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/linearLayout6"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentStart="true"
+            android:layout_below="@+id/linearLayout5"
+            android:layout_marginTop="50sp"
+            android:orientation="vertical">
+
+            <EditText
+                android:id="@+id/confirmationCodeInput"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_gravity="center_horizontal"
+                android:ems="10"
+                android:inputType="number"
+                android:letterSpacing="0.50"
+                android:textAlignment="center"
+                android:textSize="18sp"
+                android:textStyle="bold" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentStart="true"
+            android:layout_below="@+id/linearLayout6"
+            android:layout_marginTop="50sp"
+            android:orientation="vertical">
+
+            <info.hoang8f.widget.FButton
+                android:id="@+id/sendConfirmationCode"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_centerHorizontal="true"
+                android:layout_gravity="center_horizontal"
+                android:layout_marginBottom="70sp"
+                android:text="@string/confirm"
+                android:textColor="@color/background_color"
+                android:textStyle="bold"
+                fbutton:buttonColor="@color/danger"
+                fbutton:cornerRadius="10sp"
+                fbutton:shadowEnabled="true"
+                fbutton:shadowHeight="3sp" />
+        </LinearLayout>
     </LinearLayout>
 </RelativeLayout>

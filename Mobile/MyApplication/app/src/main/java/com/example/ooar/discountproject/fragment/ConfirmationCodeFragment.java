@@ -58,12 +58,12 @@ public class ConfirmationCodeFragment extends Fragment {
 
         if (!phoneNumber.equals("")) {
 
-            textTelNo.setText(phoneNumber + " nolu telefon numarası için");
+            textTelNo.setText(phoneNumber);
 
             final Callback callback = new Callback() {
                 @Override
                 public void success(Object o, Response response) {
-
+                    Util.stopProgressDialog();
                     String confirmationCodeResponse = null, tokenKeyResponse = null;
                     Map<String, String> serverResponse = (Map<String, String>) o;
                     for (Map.Entry<String, String> entry : serverResponse.entrySet()) {
@@ -91,7 +91,8 @@ public class ConfirmationCodeFragment extends Fragment {
 
                 @Override
                 public void failure(RetrofitError error) {
-                    Toast.makeText(getActivity(), error.toString(), Toast.LENGTH_LONG).show();
+                    Util.stopProgressDialog();
+                    Toast.makeText(getActivity(), "Sunucudan Yanıt Alınamadı", Toast.LENGTH_LONG).show();
                 }
             };
 
@@ -106,7 +107,7 @@ public class ConfirmationCodeFragment extends Fragment {
                         ConfirmationCode confirmationCode = new ConfirmationCode();
                         confirmationCode.setConfirmationCode(Integer.valueOf(String.valueOf(confirmationCodeInput.getText())));
                         confirmationCode.setPhoneNumber(phoneNumber);
-
+                        Util.startProgressDialog();
                         RetrofitConfiguration.getRetrofitService().checkConfirmationCode(confirmationCode, callback);
                     } else {
                         Toast.makeText(getActivity().getApplicationContext(), "Hatalı Giriş", Toast.LENGTH_LONG).show();
