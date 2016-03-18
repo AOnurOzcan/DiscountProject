@@ -3,7 +3,7 @@ var Account = project.db.define('Account', {
   username: String,
   password: String,
   accountType: ["ADMIN", "COMPANY"],
-  accountAuth: ["CREEATE_ACCOUNT", "REMOVE_ACCOUNT"]
+  accountAuth: ["CREATE_ACCOUNT", "REMOVE_ACCOUNT"]
 });
 
 module.exports = Account;

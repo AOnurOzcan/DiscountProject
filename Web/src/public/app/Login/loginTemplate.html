@@ -1,29 +1,33 @@
-<div class="col-md-6 col-md-offset-3">
-    <div class="panel panel-primary">
-        <div class="panel-heading">
-            <div class="panel-title">Hoşgeldiniz</div>
-        </div>
-        <div class="panel-body">
-            <form class="form-horizontal" id="loginForm">
-                <div class="form-group">
-                    <label class="control-label col-md-3">Kullanıcı Adı :</label>
-                    <div class="col-md-9">
-                        <input type="text" class="form-control" name="username">
+<div class="ui middle aligned center aligned grid">
+    <div class="six wide column">
+        <h2 class="ui teal image header">
+            <div class="content">
+                Giriş Yapın
+            </div>
+        </h2>
+        <form class="ui large form" id="loginForm">
+            <div class="ui stacked segment">
+                <div class="field">
+                    <div class="ui left icon input">
+                        <i class="user icon"></i>
+                        <input type="text" name="username" placeholder="Kullanıcı adı">
                     </div>
                 </div>
-                <div class="form-group">
-                    <label class="control-label col-md-3">Şifre :</label>
-                    <div class="col-md-9">
-                        <input type="password" class="form-control" name="password">
+                <div class="field">
+                    <div class="ui left icon input">
+                        <i class="lock icon"></i>
+                        <input type="password" name="password" placeholder="Şifre">
                     </div>
                 </div>
-                <span class="help-block" style="color:red; display: none;" name="errorMessage">Kullanıcı adı veya şifreniz hatalı!</span>
-                <div class="form-group">
-                    <div class="col-md-12">
-                        <button id="loginButton" class="btn btn-primary btn-block">Giriş Yap</button>
-                    </div>
-                </div>
-            </form>
+                <button class="ui fluid large teal submit button" id="loginButton">Giriş</button>
+            </div>
+
+            <div class="ui error message"></div>
+
+        </form>
+
+        <div class="ui message">
+            Hesabınız yok mu? <a href="#">Kayıt Olun</a>
         </div>
     </div>
 </div>

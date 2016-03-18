@@ -1,79 +1,39 @@
-<h1 class="page-header">Şube {{#branch.id}}Düzenle{{else}}Ekle{{/branch.id}}</h1>
-<div class=" col-md-6 col-md-offset-3">
-    <div class="panel panel-default">
-        <div class="panel-heading">Şube {{#branch.id}}Düzenle{{else}}Ekle{{/branch.id}}</div>
-        <div class="panel-body">
-            <form class="form-horizontal" role="form" id="addBranchForm">
+<h1 class="ui dividing header">Şube {{#branch.id}}Düzenle{{else}}Ekle{{/branch.id}}</h1>
+<div class="ui middle aligned center aligned grid">
+    <div class="six wide column">
+        <h4 class="ui top attached inverted header">Şube {{#branch.id}}Düzenle{{else}}Ekle{{/branch.id}}</h4>
+        <div class="ui buttom attached segment">
+            <form class="ui large form" id="addBranchForm">
                 {{#branch.id}}<input type="hidden" name="id">{{/branch.id}}
-                <div class="form-group">
-                    <label class="control-label col-md-4">Şube Adı :</label>
-
-                    <div class="col-md-7">
-                        <input type="text" class="form-control" name="name">
-                        <span class="help-block" style="display: none;"></span>
-                    </div>
+                <div class="field">
+                    <input type="text" name="name" placeholder="Şube Adı">
                 </div>
-
-                <div class="form-group">
-                    <label class="control-label col-md-4">Şube Adresi :</label>
-
-                    <div class="col-md-7">
-                        <input type="text" class="form-control" name="address">
-                        <span class="help-block" style="display: none;"></span>
-                    </div>
+                <div class="field">
+                    <input type="text" name="address" placeholder="Şube Adresi">
                 </div>
-
-                <div class="form-group">
-                    <label class="control-label col-md-4">Şehir :</label>
-
-                    <div class="col-md-7">
-                        <select class="form-control col-md-4" name="cityId">
-                            <option selecte value="">Şehir Seçiniz</option>
-                            {{#cities}}
-                            <option value="{{id}}">{{cityName}}</option>
-                            {{/cities}}
-                        </select>
-                        <span class="help-block" style="display: none;"></span>
-                    </div>
+                <div class="field">
+                    <select class="ui dropdown" name="cityId">
+                        <option value="">Şehir Seçiniz</option>
+                        {{#cities}}
+                        <option value="{{id}}">{{cityName}}</option>
+                        {{/cities}}
+                    </select>
                 </div>
-
-                <div class="form-group">
-                    <label class="control-label col-md-4">Telefon :</label>
-
-                    <div class="col-md-7">
-                        <input type="text" class="form-control" name="phone">
-                        <span class="help-block" style="display: none;"></span>
-                    </div>
+                <div class="field">
+                    <input type="text" name="phone" placeholder="Telefon">
                 </div>
-
-                <div class="form-group">
-                    <label class="control-label col-md-4">Çalışma Saatleri :</label>
-
-                    <div class="col-md-7">
-                        <input type="text" class="form-control" name="workingHours">
-                        <span class="help-block" style="display: none;"></span>
-                    </div>
+                <div class="field">
+                    <input type="text" name="workingHours" placeholder="Çalışma Saatleri">
                 </div>
-
-                <div class="form-group">
-                    <label class="control-label col-md-4">Konum URL :</label>
-
-                    <div class="col-md-7">
-                        <input type="text" class="form-control" name="locationURL">
-                        <span class="help-block" style="display: none;"></span>
-                    </div>
+                <div class="field">
+                    <input type="text" name="locationURL" placeholder="Konum URL">
                 </div>
-
-                <div class="form-group">
-                    <label class="control-label col-md-4"></label>
-                    <div class="col-md-7">
-                        {{#branch.id}}
-                        <button class="btn btn-success btn-block" id="saveBranchButton" data-id="{{id}}">Kaydet</button>
-                        {{else}}
-                        <button class="btn btn-primary btn-block" id="addBranchButton">Ekle</button>
-                        {{/branch.id}}
-                    </div>
-                </div>
+                {{#branch.id}}
+                <button class="fluid green ui button" id="saveBranchButton" data-id="{{id}}">Kaydet</button>
+                {{else}}
+                <button class="fluid ui primary button" id="addBranchButton">Ekle</button>
+                {{/branch.id}}
+                <div class="ui error message"></div>
             </form>
         </div>
     </div>

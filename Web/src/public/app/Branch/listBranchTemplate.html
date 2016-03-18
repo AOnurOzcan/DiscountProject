@@ -1,5 +1,5 @@
-<h1 class="page-header">Şubelerim</h1>
-<table class="table table-bordered text-center" id="listBranchForm">
+<h1 class="ui dividing header">Şubelerim</h1>
+<table class="ui celled table center aligned" id="listBranchForm">
     <thead>
     <tr>
         <th>Şube Adı</th>
@@ -21,8 +21,8 @@
         <td>{{workingHours}}</td>
         <td>{{locationURL}}</td>
         <td>
-            <button class="btn btn-danger" id="deleteBranchButton" data-id="{{id}}">Sil</button>
-            <a class="btn btn-primary" href="#branch/edit/{{id}}" id="editBranchButton">Düzenle</a>
+            <button class="red ui button" id="deleteBranchButton" data-id="{{id}}">Sil</button>
+            <a class="teal ui button" href="#branch/edit/{{id}}" id="editBranchButton">Düzenle</a>
         </td>
     </tr>
     {{else}}

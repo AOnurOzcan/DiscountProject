@@ -6,14 +6,15 @@ require.config({
     'backbone': '../lib/backbone-min',
     'underscore': '../lib/underscore-min',
     'handlebars': '../lib/handlebars-v4.0.5',
-    'bootstrapJs': '../lib/bootstrap.min',
+    //'bootstrapJs': '../lib/bootstrap.min',
+    'semanticJs': '../lib/semantic.min',
     'jasnyBootstrap': '../lib/jasny-bootstrap.min',
     'jquerySerialize': '../lib/jquery-serialize-object',
     'core': 'Util/core',
     'outer': 'Util/outer'
   },
   shim: {
-    bootstrapJs: {
+    semanticJs: {
       deps: ['jquery']
     },
     jasnyBootstrap: {
@@ -42,7 +43,8 @@ require([
   'core',
   'outer',
   'handlebars',
-  'bootstrapJs',
+  //'bootstrapJs',
+  'semanticJs',
   'jquerySerialize',
   'jasnyBootstrap'
 ], function ($, _, Backbone, Core, Outer) {

@@ -21,9 +21,9 @@ project.app.post("/login", BodyControl("username", "password"), function (req, r
       }
       if (accountCompany != null) {
         admin.companyId = accountCompany.companyId;
+        admin.companyName = accountCompany.Company.companyName;
       }
       req.session.admin = admin;
-      delete req.session.admin.id;
       res.json(req.session.admin);
     });
   });
@@ -37,7 +37,7 @@ project.app.get("/check", function (req, res) {
   if (req.session.admin == undefined) {
     res.unauthorized();
   } else {
-    res.json(req.session.admin);
+    res.json({companyName: req.session.admin.companyName});
   }
 
 });

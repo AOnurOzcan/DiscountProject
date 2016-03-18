@@ -34,18 +34,11 @@ define(['backbone',
     },
     render: function () {
       if (this.isRendered == false) { // Eğer menü daha önce render edilmediyse
-        this.$el.html(menuTemplate({headers: this.getMenu.toJSON()})); // Ekrana bas
+        this.$el.html(menuTemplate({menu: this.getMenu.toJSON()})); // Ekrana bas
         this.isRendered = true; // Render edildi olarak işaretle
       }
     }
   });
-
-  //Handlebars.registerHelper('checkAccount', function (account) {
-  //  if (account.accountType == "ADMIN") {
-  //    return '<li><a href="#">Ana Kategori Ekle</a></li>' +
-  //      '<li><a href="#">Alt Kategori Ekle</a></li>'
-  //  }
-  //});
 
   return MenuView;
 

@@ -24,28 +24,32 @@ project.app.get("/menuTest", function (req, res) {
   //}
 
 
-  var menu = [
-    {
-      header: "Ürünler",
-      links: [{name: "Ürün Ekle", href: "#product/add"}, {name: "Ürün Listele", href: "#product/list"}]
-    },
-    {
-      header: "Bildirimler",
-      links: [{name: "Bildirim Ekle", href: "#notification/add"}, {
-        name: "Bildirim Listele",
-        href: "#notification/list"
-      }]
-    },
-    {
-      header: "Şubeler", links: [{name: "Şube Ekle", href: "#branch/add"}, {name: "Şube Listele", href: "#branch/list"}]
-    },
-    {
-      header: "Kullanıcılar", links: [{name: "Bildirim Ekle", href: "#notification/add"}]
-    },
-    {
-      header: "Kategoriler", links: [{name: "Bildirim Ekle", href: "#notification/add"}]
-    }
-  ];
+  var menu = {
+    companyName: req.session.admin.companyName == undefined ? "Yönetici Paneli" : req.session.admin.companyName,
+    headers: [
+      {
+        header: "Ürünler",
+        links: [{name: "Ürün Ekle", href: "#product/add"}, {name: "Ürün Listele", href: "#product/list"}]
+      },
+      {
+        header: "Bildirimler",
+        links: [{name: "Bildirim Ekle", href: "#notification/add"}, {
+          name: "Bildirim Listele",
+          href: "#notification/list"
+        }]
+      },
+      {
+        header: "Şubeler",
+        links: [{name: "Şube Ekle", href: "#branch/add"}, {name: "Şube Listele", href: "#branch/list"}]
+      },
+      {
+        header: "Kullanıcılar", links: [{name: "Bildirim Ekle", href: "#notification/add"}]
+      },
+      {
+        header: "Kategoriler", links: [{name: "Bildirim Ekle", href: "#notification/add"}]
+      }
+    ]
+  };
 
   res.json(menu);
 });

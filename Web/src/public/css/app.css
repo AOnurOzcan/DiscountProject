@@ -1,42 +1,55 @@
+
 body {
-    margin-top: 35px;
+    background-color: #DADADA;
 }
 
-.pointer {
-    cursor: pointer;
+body > .grid {
+    height: 100%;
 }
 
-.table-bordered > tbody > tr > td {
-    vertical-align: middle;
+.main.container {
+    margin-top: 5em;
 }
 
-th {
-    text-align: center;
-}
+/*body {*/
+/*margin-top: 35px;*/
+/*}*/
 
-/* Boostrap upload file input style */
-.btn-file {
-    position: relative;
-    overflow: hidden;
-}
+/*.pointer {*/
+/*cursor: pointer;*/
+/*}*/
 
-.btn-file input[type=file] {
-    position: absolute;
-    top: 0;
-    right: 0;
-    min-width: 100%;
-    min-height: 100%;
-    font-size: 100px;
-    text-align: right;
-    filter: alpha(opacity=0);
-    opacity: 0;
-    outline: none;
-    background: white;
-    cursor: inherit;
-    display: block;
-}
+/*.table-bordered > tbody > tr > td {*/
+/*vertical-align: middle;*/
+/*}*/
 
-img {
-    max-width: 100%;
-    max-height: 100px;
-}
+/*th {*/
+/*text-align: center;*/
+/*}*/
+
+/*!* Boostrap upload file input style *!*/
+/*.btn-file {*/
+/*position: relative;*/
+/*overflow: hidden;*/
+/*}*/
+
+/*.btn-file input[type=file] {*/
+/*position: absolute;*/
+/*top: 0;*/
+/*right: 0;*/
+/*min-width: 100%;*/
+/*min-height: 100%;*/
+/*font-size: 100px;*/
+/*text-align: right;*/
+/*filter: alpha(opacity=0);*/
+/*opacity: 0;*/
+/*outline: none;*/
+/*background: white;*/
+/*cursor: inherit;*/
+/*display: block;*/
+/*}*/
+
+/*img {*/
+/*max-width: 100%;*/
+/*max-height: 100px;*/
+/*}*/

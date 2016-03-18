@@ -45,75 +45,57 @@ define([
     },
 
     CompanyHomepage: function () {
-      outer.showView(this.adminView);
+      var that = this;
+      this.checkSession.fetch({ // Oturum açık mı kontrol et
+        success: function () {  // Oturum açıksa
+          outer.showView(that.adminView);
+        }
+      });
     },
     AddProduct: function () {
-      outer.showView(this.addProductView);
+      var that = this;
+      this.checkSession.fetch({ // Oturum açık mı kontrol et
+        success: function () {
+          outer.showView(that.addProductView);
+        }
+      });
     },
     ListProduct: function () {
-      outer.showView(this.listProductView);
+      var that = this;
+      this.checkSession.fetch({ // Oturum açık mı kontrol et
+        success: function () {
+          outer.showView(that.listProductView);
+        }
+      });
     },
     //EditProduct: function (productId) {
     //  outer.showView(this.editProductView, {productId: productId});
     //},
     AddBranch: function () {
-      outer.showView(this.addBranchView, {});
+      var that = this;
+      this.checkSession.fetch({ // Oturum açık mı kontrol et
+        success: function () {
+          outer.showView(that.addBranchView, {});
+        }
+      });
     },
     ListBranch: function () {
-      outer.showView(this.listBranchView);
+      var that = this;
+      this.checkSession.fetch({ // Oturum açık mı kontrol et
+        success: function () {
+          outer.showView(that.listBranchView);
+        }
+      });
     },
     EditBranch: function (branchId) {
-      outer.showView(this.addBranchView, {branchId: branchId});
+      var that = this;
+      this.checkSession.fetch({ // Oturum açık mı kontrol et
+        success: function () {
+          outer.showView(that.addBranchView, {branchId: branchId});
+        }
+      });
     }
   });
-
-  /**
-   * Groups all views together
-   * @param {Array|Object} args
-   * @author ME99987
-   * @version 1.2
-   *
-   * @example 1.1 still works
-   * var group = viewGroup([myAddView, myListView]);
-   * group[0].group[1] // access myListView from myAddView
-   *
-   * @example 1.2
-   * var group = viewGroup({
-     *   addView: myAddView,
-     *   listView: myListView
-     * });
-   * group[0].group.listView; // main group object is array, subgroup object is both array and object
-   * group[0].group[1]; // supporting the previous one (1.1)
-   */
-  function viewGroup(args) {
-    if (args == null) {
-      throw Error("args cannot be null");
-    }
-
-    if (args.constructor == Array) {
-      args.forEach(function (arg) {
-        arg.group = args;
-      });
-
-      return args;
-    }
-
-    if (args.constructor == Object) {
-      var properties = Object.getOwnPropertyNames(args);
-      var temp = [];
-
-      properties.forEach(function (property) {
-        temp.push(args[property]);
-        temp[property] = args[property];
-        args[temp.length] = args[property];
-        args[property].group = args;
-      });
-
-      return temp;
-    }
-
-    throw Error("unsupported type of args");
-  }
 
   return Router;
 });

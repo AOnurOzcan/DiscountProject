@@ -1,43 +1,17 @@
-<nav class="navbar navbar-inverse navbar-fixed-top">
-    <div class="container">
-        <div class="navbar-header">
-            <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar"
-                    aria-expanded="false" aria-controls="navbar">
-                <span class="sr-only">Toggle navigation</span>
-                <span class="icon-bar"></span>
-                <span class="icon-bar"></span>
-                <span class="icon-bar"></span>
-            </button>
-            <a class="navbar-brand" href="#">Yönetim Paneli</a>
+<div class="ui fixed inverted menu">
+    <a href="#" class="ui red header item">
+        {{menu.companyName}}
+    </a>
+    {{#each menu.headers}}
+    <div class="ui simple dropdown item">{{header}}<i class="dropdown icon"></i>
+        <div class="menu">
+            {{#each links}}
+            <a class="item" href="{{href}}">{{name}}</a>
+            {{/each}}
         </div>
-        <!-- Collect the nav links, forms, and other content for toggling -->
-        <div class="collapse navbar-collapse" id="navbar">
-            <ul class="nav navbar-nav">
-                {{#each headers}}
-                <li class="dropdown">
-                    <a class="dropdown-toggle" data-toggle="dropdown" href="#">{{header}}<span class="caret"></span></a>
-                    <ul class="dropdown-menu">
-                        {{#each links}}
-                        <li><a href="{{href}}">{{name}}</a></li>
-                        {{/each}}
-                    </ul>
-                </li>
-                {{/each}}
-            </ul>
-            <ul class="nav navbar-nav navbar-right">
-                <li class="dropdown">
-                    <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true"
-                       aria-expanded="false">
-                        <span class="glyphicon glyphicon-user" aria-hidden="true"></span><span class="caret"></span>
-                    </a>
-                    <ul class="dropdown-menu">
-                        <li>
-                            <a class="pointer" id="logoutButton"><span class="glyphicon glyphicon-log-out"
-                                                                       aria-hidden="true"></span>&nbsp;Logout</a>
-                        </li>
-                    </ul>
-                </li>
-            </ul>
-        </div><!-- /.navbar-collapse -->
     </div>
-</nav>
+    {{/each}}
+    <div class="right menu">
+        <a class="item" id="logoutButton">Çıkış Yap</a>
+    </div>
+</div>

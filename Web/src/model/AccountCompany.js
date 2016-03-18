@@ -6,6 +6,6 @@ var AccountCompany = project.db.define('AccountCompany', {
 });
 
 AccountCompany.hasOne('Account', Account, {field: 'accountId'});
-AccountCompany.hasOne('Company', Company, {field: 'companyId'});
+AccountCompany.hasOne('Company', Company, {field: 'companyId', autoFetch: true});
 
 module.exports = AccountCompany;

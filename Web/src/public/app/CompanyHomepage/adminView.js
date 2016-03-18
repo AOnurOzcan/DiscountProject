@@ -11,7 +11,7 @@ define(['backbone',
 
   var AdminView = core.CommonView.extend({
     autoLoad: true,
-    el: $(".page"),
+    el: "#page",
     events: {
       'click #logoutButton': 'logout'
     },

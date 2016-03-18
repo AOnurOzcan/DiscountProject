@@ -18,7 +18,7 @@ define(['backbone', 'handlebars', 'text!Branch/addBranchTemplate.html', 'text!Br
 
   var AddBranchView = core.CommonView.extend({
     autoLoad: true,
-    el: ".page",
+    el: "#page",
     events: {
       'click #addBranchButton': 'addBranch',
       'click #saveBranchButton': 'saveBranch'
@@ -110,12 +110,13 @@ define(['backbone', 'handlebars', 'text!Branch/addBranchTemplate.html', 'text!Br
           }
         });
       }
+      $('.ui.dropdown').dropdown();
     }
   });
 
   var ListBranchView = core.CommonView.extend({
     autoLoad: true,
-    el: ".page",
+    el: "#page",
     events: {
       'click #deleteBranchButton': 'deleteBranch'
     },
