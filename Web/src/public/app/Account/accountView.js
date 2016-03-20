@@ -33,14 +33,17 @@ define([
       e.preventDefault();
       var values = this.form().getValues; //Formdan verileri alıyoruz
       var account = new Account();
+      if (values.accountAuth != undefined) {
+        values.accountAuth = values.accountAuth.toString();
+      }
       account.save(values, {
         success: function () {
+          window.location.hash = "/account/list";
           if (values.id == undefined) {
             alertify.success("Hesap başarıyla oluşturuldu.");
           } else {
             alertify.success("Hesap bilgileri kaydedildi.");
           }
-          window.location.hash = "/account/list";
         }
       });
     },

@@ -47,10 +47,9 @@ project.app.put('/account/:id', function (req, res) {
 
 //Tüm hesapları getir
 project.app.get('/account', function (req, res) {
-  Account.find({companyId: req.session.admin.companyId}, function (err, accounts) {
-    if (err) {
-      return res.unknown();
-    }
+  Account.find({companyId: req.session.admin.companyId}).each().filter(function (account) {
+    return account.username != req.session.admin.username;
+  }).get(function (accounts) {
     res.json(accounts);
   });
 });

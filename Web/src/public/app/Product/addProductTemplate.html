@@ -30,16 +30,22 @@
                     <input type="text" name="productName" placeholder="Ürün Adı">
                 </div>
                 <div class="field">
-                    <input type="text" name="price" placeholder="Fiyat">
+                    <div class="ui icon input">
+                        <input type="text" name="price" placeholder="Fiyat">
+                        <i class="lira icon"></i>
+                    </div>
                 </div>
                 <div class="field">
-                    <input type="text" name="previousPrice" placeholder="Eski Fiyat">
+                    <div class="ui icon input">
+                        <input type="text" name="previousPrice" placeholder="Eski Fiyat">
+                        <i class="lira icon"></i>
+                    </div>
                 </div>
                 <div class="field">
                     <input type="text" name="stock" placeholder="Stok">
                 </div>
                 <div class="field">
-                    <input type="text" name="productDescription" placeholder="Açıklama">
+                    <textarea type="text" name="productDescription" placeholder="Açıklama"></textarea>
                 </div>
                 {{#if product.id}}
                 <button class="fluid green ui button" id="saveProductButton">Kaydet</button>
