@@ -77,8 +77,8 @@ project.app.get("/getAllCategories", function (req, res) {
     }
     categories.forEach(function (category) {
       if (category.parentCategory != null) {
-        category.parentCategory = category.parent;
-        delete category['parent'];
+        category.parentCategory = category.parentCategory;
+        delete category['parentCategory'];
       }
     });
 
