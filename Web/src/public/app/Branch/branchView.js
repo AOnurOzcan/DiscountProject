@@ -72,9 +72,7 @@ define(['backbone', 'handlebars', 'text!Branch/addBranchTemplate.html', 'text!Br
       branchModel.save(values, {
         success: function () {
           that.render();
-        },
-        error: function () {
-          alert("HATAAAA!");
+          alertify.success("Şube başarıyla eklendi.");
         }
       });
     },
@@ -95,22 +93,19 @@ define(['backbone', 'handlebars', 'text!Branch/addBranchTemplate.html', 'text!Br
     },
     render: function () {
       var that = this;
-
-      if (this.params.branchId == undefined) {
+      if (this.params == undefined) {
         this.$el.html(addBranchTemplate({cities: this.cityCollection.toJSON()}));
+        $('.ui.dropdown').dropdown();
       } else {
         var branchModel = new BranchModel({id: this.params.branchId});
         branchModel.fetch({
           success: function (branch) {
             that.$el.html(addBranchTemplate({branch: branch.toJSON(), cities: that.cityCollection.toJSON()}));
             that.form().setValues(branch.toJSON());
-          },
-          error: function () {
-            alert("hataaa branch");
+            $('.ui.dropdown').dropdown();
           }
         });
       }
-      $('.ui.dropdown').dropdown();
     }
   });
 

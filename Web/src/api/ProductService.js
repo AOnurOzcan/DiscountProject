@@ -1,10 +1,21 @@
 var Product = require("../model/Product");
+var Image = require("../model/Image");
+var config = require('config');
+var S3FS = require('s3fs');
+var fs = require('fs');
+var multiparty = require('connect-multiparty'), multipartyMiddleware = multiparty();
+var s3Credentials = config.get('S3Credentials');
+var s3fsImpl = new S3FS(s3Credentials['bucketName'], {
+  accessKeyId: s3Credentials['accessKeyId'],
+  secretAccessKey: s3Credentials['secretAccessKey']
+});
+s3fsImpl.create();
 
 /**
  * Bu fonksiyon ürünleri kaydeder. Geriye kaydettiği ürünün id'li halini döndürür.
  * POST isteğiyle gönderilen veriler req parametresinin body objesine düşer.
  */
-project.app.post("/addProduct", function (req, res) {
+project.app.post("/product", function (req, res) {
 
   var product = {};
   product.productName = req.body.productName;
@@ -29,7 +40,7 @@ project.app.post("/addProduct", function (req, res) {
 /**
  * Bu fonksiyon oturum açmış olan firmanın tüm ürünleri getirir.
  */
-project.app.get("/allProducts", function (req, res) {
+project.app.get("/product", function (req, res) {
 
   if (req.session.admin != undefined) {
     Product.find({companyId: req.session.admin.companyId}, function (err, products) {
@@ -42,58 +53,54 @@ project.app.get("/allProducts", function (req, res) {
   }
 });
 
-
-var S3FS = require('s3fs');
-var fs = require('fs');
-
-
-var multiparty = require('connect-multiparty'), multipartyMiddleware = multiparty();
-
-var s3fsImpl = new S3FS('ooar1', {
-  accessKeyId: 'AKIAI5MWYHAWGD4FLBZQ',
-  secretAccessKey: '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'
-});
-s3fsImpl.create();
-
-
 /**
- * IMAGE UPLOAD SERVICE TEST
+ * Bu fonksiyon id si parametre olarak gönderilen ürünü siler
  */
-project.app.post("/testUpload", multipartyMiddleware, function (req, res) {
-  var file = req.files.imageURL;
-  var product = {};
-  product.productName = req.body.productName;
-  product.categoryId = req.body.categoryId;
-  product.previousPrice = req.body.previousPrice;
-  product.price = req.body.price;
-  product.stock = req.body.stock;
-  product.productDescription = req.body.productDescription;
-  product.companyId = req.session.admin.companyId;
-  var stream = fs.createReadStream(file.path);
-  var fileName = new Date().getTime() + file.originalFilename;
-  return s3fsImpl.writeFile(fileName, stream, {"ContentType": "image/jpg"}).then(function () {
-    fs.unlink(file.path, function (err) {
-      if (err) {
-        console.error(err);
-        res.unknown();
-      }
-      product.imageURL = "https://s3.amazonaws.com/ooar1/" + fileName;
-      Product.create(product, function (err, product) {
-        if (err) {
-          console.error(err);
-          res.unknown()
-        }
-        res.json(product);
-      });
-    });
-  });
-});
-
-project.app.delete("/deleteProduct/:id", function (req, res) {
+project.app.delete("/product/:id", function (req, res) {
   Product.find({id: req.params.id}).remove(function (err) {
     if (err) {
       res.unknown();
     }
     res.json({status: "success"});
   })
+});
+
+/**
+ * Verilen id'ye göre ürün getirir.
+ */
+project.app.get("/product/:id", function (req, res) {
+  Product.one({id: req.params.id}, function (err, product) {
+    if (err) {
+      res.unknown();
+    }
+    res.json(product);
+  });
+});
+
+/**
+ * IMAGE UPLOAD SERVICE TEST
+ */
+project.app.post("/testUpload", multipartyMiddleware, function (req, res) {
+  var file = req.files.imageURL;
+  var stream = fs.createReadStream(file.path);
+  var fileName = new Date().getTime() + file.originalFilename;
+  return s3fsImpl.writeFile(fileName, stream, {"ContentType": "image/jpg"}).then(function () {
+    fs.unlink(file.path, function (err) {
+      if (err) {
+        console.error(err);
+        return res.unknown();
+      }
+      var image = {};
+      image.imageName = req.body.imageName;
+      image.imageURL = "https://s3.amazonaws.com/ooar1/" + fileName;
+      image.companyId = req.session.admin.companyId;
+      Image.create(image, function (err, image) {
+        if (err) {
+          console.error(err);
+          return res.unknown();
+        }
+        res.json(image);
+      });
+    });
+  });
 });

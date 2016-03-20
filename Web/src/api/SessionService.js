@@ -1,5 +1,5 @@
 var Account = require("../model/Account");
-var AccountCompany = require("../model/AccountCompany");
+var Company = require("../model/Company");
 var BodyControl = require("../util/BodyControl");
 var AuthorizedRoute = require("../util/AuthorizedRoute");
 var md5 = require("js-md5");
@@ -14,17 +14,10 @@ project.app.post("/login", BodyControl("username", "password"), function (req, r
     if (admin == null) {
       return res.unauthorized();
     }
-
-    AccountCompany.one({accountId: admin.id}, function (err, accountCompany) {
-      if (err) {
-        return res.unknown();
-      }
-      if (accountCompany != null) {
-        admin.companyId = accountCompany.companyId;
-        admin.companyName = accountCompany.Company.companyName;
-      }
+    Company.one({id: admin.companyId}, function (err, company) {
+      admin.companyName = company.companyName;
       req.session.admin = admin;
-      res.json(req.session.admin);
+      res.json({status: true});
     });
   });
 });
@@ -48,5 +41,5 @@ project.app.get("/check", function (req, res) {
 project.app.get("/logout", AuthorizedRoute(""), function (req, res) {
 
   req.session.destroy();
-  res.unauthorized();
+  res.json({status: true});
 });

@@ -6,18 +6,14 @@ require.config({
     'backbone': '../lib/backbone-min',
     'underscore': '../lib/underscore-min',
     'handlebars': '../lib/handlebars-v4.0.5',
-    //'bootstrapJs': '../lib/bootstrap.min',
     'semanticJs': '../lib/semantic.min',
-    'jasnyBootstrap': '../lib/jasny-bootstrap.min',
+    'alertify': '../lib/alertify.min',
     'jquerySerialize': '../lib/jquery-serialize-object',
     'core': 'Util/core',
     'outer': 'Util/outer'
   },
   shim: {
     semanticJs: {
-      deps: ['jquery']
-    },
-    jasnyBootstrap: {
       deps: ['jquery']
     },
     jquery: {
@@ -42,22 +38,25 @@ require([
   'backbone',
   'core',
   'outer',
+  'alertify',
   'handlebars',
-  //'bootstrapJs',
   'semanticJs',
-  'jquerySerialize',
-  'jasnyBootstrap'
-], function ($, _, Backbone, Core, Outer) {
+  'jquerySerialize'
+], function ($, _, Backbone, Core, Outer, Alertify) {
   window.outer = new Outer();
   window.core = Core;
+  window.alertify = Alertify;
   require(['router'], function (Router) {
     window.$router = new Router();
     Backbone.history.start();
   });
 
+  $.ajaxSetup({cache: false});
   $(document).ajaxError(function (event, xhr, settings, object) {
     if (xhr.status == 401) {
-      window.location.hash = ""; // Go login page
+      window.location.hash = ""; // Login sayfasına gönder
+    } else if (xhr.status == 500) {
+      alertify.alert("Bilinmeyen bir hata oluştu!");
     }
   });
 });

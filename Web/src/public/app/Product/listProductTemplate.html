@@ -1,12 +1,12 @@
-<h1 class="page-header">Ürünlerim</h1>
-<table class="table table-bordered text-center" id="listProductForm">
+<h1 class="ui dividing header">Ürünlerim</h1>
+<table class="ui celled table center aligned" id="listProductForm">
     <thead>
     <tr>
         <th>Ürün Adı</th>
         <th>Ürün Fiyatı</th>
         <th>Alt Kategori</th>
         <th>Stok</th>
-        <th class="col-md-1">Ürün Resmi</th>
+        <th>Ürün Resmi</th>
         <th>İşlemler</th>
     </tr>
     </thead>
@@ -17,12 +17,15 @@
         <td>{{price}}</td>
         <td>{{categoryId}}</td>
         <td>{{stock}}</td>
+        <td><img src="{{imageURL}}" alt="resim yok" class="ui centered small image"></td>
         <td>
-            <img src="{{imageURL}}" alt="resim yok" class="thumbnail" align="middle">
+            <button class="red ui button" id="deleteProductButton" data-id="{{id}}">Sil</button>
+            <a class="teal ui button" href="#product/edit/{{id}}" id="editProductButton" data-id="{{id}}">Düzenle</a>
         </td>
-        <td>
-            <button class="btn btn-danger" id="deleteProductButton" data-id="{{id}}">Sil</button>
-        </td>
+    </tr>
+    {{else}}
+    <tr>
+        <td colspan="100%">Hiç ürün kalmadı. Lütfen <a href="/#product/add">yeni ürün</a> ekleyin.</td>
     </tr>
     {{/products}}
     </tbody>

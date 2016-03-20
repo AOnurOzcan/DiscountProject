@@ -115,4 +115,22 @@ project.app.get("/user/preference/all", function (req, res) {
   });
 });
 
+project.app.put("/user/profile/edit", function (req, res) {
 
+  User.get(req.body.id, function (err, user) {
+    if (err) {
+      return res.unknown();
+    }
+
+    user.firstName = req.body.firstName;
+    user.lastName = req.body.lastName;
+    user.gender = req.body.gender;
+    user.birthday = req.body.birthday;
+    user.cityId = req.body.cityId;
+    user.save(function (err, savedUser) {
+      res.json(savedUser);
+    });
+
+  });
+
+});

@@ -43,10 +43,16 @@ project.app.get("/menuTest", function (req, res) {
         links: [{name: "Şube Ekle", href: "#branch/add"}, {name: "Şube Listele", href: "#branch/list"}]
       },
       {
-        header: "Kullanıcılar", links: [{name: "Bildirim Ekle", href: "#notification/add"}]
+        header: "Kullanıcılar", links: [
+        {name: "Kullanıcı Ekle", href: "#account/add"},
+        {name: "Kullanıcıları Listele", href: "#account/list"}]
       },
       {
         header: "Kategoriler", links: [{name: "Bildirim Ekle", href: "#notification/add"}]
+      },
+      {
+        header: "Yüklemeler", links: [
+        {name: "Resim Yükle", href: "#file/upload"}]
       }
     ]
   };

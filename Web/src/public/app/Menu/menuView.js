@@ -30,7 +30,11 @@ define(['backbone',
     },
     logout: function () {
       var logoutModel = new LogoutModel();
-      logoutModel.fetch();
+      logoutModel.fetch({
+        success: function () {
+          window.location.reload(false);
+        }
+      });
     },
     render: function () {
       if (this.isRendered == false) { // Eğer menü daha önce render edilmediyse

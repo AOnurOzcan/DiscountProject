@@ -1,0 +1,29 @@
+<h1 class="ui dividing header">Resim Yükle ve Listele</h1>
+<form id="uploadForm" method="post" enctype="multipart/form-data">
+    <label for="fileUpload" class="ui icon primary button">
+        <i class="picture icon"></i>
+        Resim Seçin
+    </label>
+    <input type="file" id="fileUpload" name="imageURL" multiple style="display:none">
+</form>
+<div id="image-holder" class="ui tiny images"></div>
+<button id="uploadButton" class="ui blue large button" style="display:none">Yükle</button>
+
+<h4 class="ui top attached inverted header">Yüklü Resimler</h4>
+<div class="ui attached segment">
+    <div class="ui seven cards" id="imageHolder">
+        {{#each images}}
+        <div class="ui card">
+            <a class="image">
+                <img src="{{imageURL}}">
+            </a>
+            <button class="ui bottom attached button">
+                <i class="remove icon"></i>
+                Sil
+            </button>
+        </div>
+        {{/each}}
+    </div>
+</div>
+
+

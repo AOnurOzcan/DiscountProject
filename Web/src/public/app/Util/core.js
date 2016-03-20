@@ -233,9 +233,7 @@ window.define(['backbone'], function (Backbone) {
         wait: true, //wait until server response to remove model from collection
         success: function () { //If success
           that.render();
-        },
-        error: function () {
-          alert("Silme işlemi yapılırken bir hata oluştu!");
+          alertify.success("Silme işlemi başarıyla gerçekleşti");
         }
       });
     }

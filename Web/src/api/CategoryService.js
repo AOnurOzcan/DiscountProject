@@ -52,7 +52,7 @@ project.app.get("/getSubCategories/:parentCategoryId", function (req, res) {
 });
 
 /**
- * Bu fonksiyon verilen üst kategori Id'sine göre tüm alt kategorileri getirir.
+ * Bu fonksiyon tüm ana kategorileri getirir.
  */
 project.app.get("/getMainCategories", function (req, res) {
 

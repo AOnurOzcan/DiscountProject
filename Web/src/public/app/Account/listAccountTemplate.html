@@ -1,0 +1,28 @@
+<h1 class="ui dividing header">Hesapları Listele</h1>
+<table class="ui celled table center aligned" id="listAccountForm">
+    <thead>
+    <tr>
+        <th>Kullanıcı Adı</th>
+        <th>Şifre</th>
+        <th>Yetkiler</th>
+        <th>İşlemler</th>
+    </tr>
+    </thead>
+    <tbody>
+    {{#accounts}}
+    <tr>
+        <td>{{username}}</td>
+        <td>{{password}}</td>
+        <td>{{accountAuth}}</td>
+        <td>
+            <button class="red ui button" id="deleteAccountButton" data-id="{{id}}">Sil</button>
+            <a class="teal ui button" href="#account/edit/{{id}}" id="editAccountButton">Düzenle</a>
+        </td>
+    </tr>
+    {{else}}
+    <tr>
+        <td colspan="100%">Hiç tanımlı hesap yok. Lütfen <a href="/#account/add">yeni hesap</a> oluşturun.</td>
+    </tr>
+    {{/accounts}}
+    </tbody>
+</table>
