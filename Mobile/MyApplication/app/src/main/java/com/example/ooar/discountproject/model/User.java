@@ -17,6 +17,7 @@ public class User {
     private String birthday;
     private City cityId;
     private String tokenKey;
+    private String registrationId;
 
     public Integer getId() {
         return id;
@@ -90,5 +91,11 @@ public class User {
         this.tokenKey = tokenKey;
     }
 
+    public String getRegistrationId() {
+        return registrationId;
+    }
 
+    public void setRegistrationId(String registrationId) {
+        this.registrationId = registrationId;
+    }
 }

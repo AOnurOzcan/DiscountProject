@@ -159,6 +159,7 @@ public class CreateProfilFragment extends Fragment {
                     user.setFirstName(firstName);
                     user.setLastName(lastName);
                     user.setPhone(getActivity().getSharedPreferences("Session", Activity.MODE_PRIVATE).getString("phoneNumber", ""));
+                    user.setRegistrationId(getActivity().getSharedPreferences("Session", Activity.MODE_PRIVATE).getString("regId", ""));
                     user.setNotificationOpen(true);
                     user.setBirthday(String.valueOf(birthDayText.getSelectedItem().toString()));
                     user.setCityId(city);

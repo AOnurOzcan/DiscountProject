@@ -38,13 +38,14 @@ project.app.get("/user/profile/get", function (req, res) {
       user.id = null;
       user.phone = null;
       user.tokenKey = null;
+      user.registrationId = null;
+      user.notificationOpen = null;
       res.json(user);
     });
   });
 });
 
 project.app.post("/user/preference/create", function (req, res) {
-//TODO kullanıcının takip ettiği kategori firma ikilisini yeniden kayıt edilmeye çalışırken hata oluyo bunu gider.
   project.util.AuthorizedRouteForUser(req, res, function (userId) {
     var preferences = req.body;
     preferences.forEach(function (preference) {
@@ -67,7 +68,6 @@ project.app.post("/user/preference/create", function (req, res) {
 });
 
 project.app.post("/user/preference/delete", function (req, res) {
-//TODO kullanıcının takip ettiği kategori firma ikilisini yeniden kayıt edilmeye çalışırken hata oluyo bunu gider.
   project.util.AuthorizedRouteForUser(req, res, function (userId) {
     var preferences = req.body;
     var deleteIdList = [];
@@ -116,21 +116,29 @@ project.app.get("/user/preference/all", function (req, res) {
 });
 
 project.app.put("/user/profile/edit", function (req, res) {
+  project.util.AuthorizedRouteForUser(req, res, function (userId) {
+    User.get({id: userId}, function (err, user) {
 
-  User.get(req.body.id, function (err, user) {
-    if (err) {
-      return res.unknown();
-    }
+      if (err) {
+        return res.unknown();
+      }
 
-    user.firstName = req.body.firstName;
-    user.lastName = req.body.lastName;
-    user.gender = req.body.gender;
-    user.birthday = req.body.birthday;
-    user.cityId = req.body.cityId;
-    user.save(function (err, savedUser) {
-      res.json(savedUser);
+      user[0].firstName = req.body.firstName;
+      user[0].lastName = req.body.lastName;
+      user[0].gender = req.body.gender;
+      user[0].birthday = req.body.birthday;
+      user[0].cityId = req.body.cityId;
+      user[0].save(function (err, savedUser) {
+        if (err) {
+          return res.unknown();
+        }
+        savedUser.id = null;
+        savedUser.notificationOpen = null;
+        savedUser.tokenKey = null;
+        savedUser.registrationId = null;
+
+        res.json(savedUser);
+      });
     });
-
   });
-
 });
