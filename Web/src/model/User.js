@@ -8,7 +8,8 @@ var User = project.db.define('User', {
   gender: Boolean,
   birthday: Date,
   notificationOpen: Boolean,
-  tokenKey: String
+  tokenKey: String,
+  registrationId: String
 });
 
 User.hasOne('City', City, {field: 'cityId', autoFetch: true});
