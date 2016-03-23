@@ -6,6 +6,6 @@ var NotificationProduct = project.db.define('NotificationProduct', {
 });
 
 NotificationProduct.hasOne('Notification', Notification, {field: 'notificationId'});
-NotificationProduct.hasOne('Product', Product, {field: 'productId'});
+NotificationProduct.hasOne('Product', Product, {field: 'productId', autoFetch: true});
 
 module.exports = NotificationProduct;

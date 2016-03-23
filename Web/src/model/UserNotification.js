@@ -7,7 +7,7 @@ var UserNotification = project.db.define('UserNotification', {
 });
 
 UserNotification.hasOne('User', User, {field: 'userId'});
-UserNotification.hasOne('Notification', Notification, {field: 'notificationId'});
+UserNotification.hasOne('Notification', Notification, {field: 'notificationId', autoFetch: true});
 
 module.exports = UserNotification;
 

@@ -4,6 +4,9 @@
 
 var GCM = require('node-gcm');
 var User = require('../model/User');
+var Notification = require('../model/Notification');
+var NotificationProduct = require('../model/NotificationProduct');
+var NotificationBranch = require('../model/NotificationBranch');
 
 project.app.get("/notification/send", function (req, res) {
 
@@ -32,6 +35,44 @@ project.app.get("/notification/send", function (req, res) {
         console.error(err);
       else
         res.json({"success": true});
+    });
+  });
+});
+
+project.app.get("/notification/get/:notificationId", function (req, res) {
+  var notificationId = req.params.notificationId;
+  Notification.one({id: notificationId}, function (err, notification) {
+
+    notification.productList = [];
+    notification.branchList = [];
+
+    if (err) {
+      return res.unknown();
+    }
+
+    NotificationProduct.find({notificationId: notificationId}, function (err, products) {
+      if (err) {
+        return res.unknown();
+      }
+      products.forEach(function (product) {
+        product.Product.categoryId = null;
+        product.Product.companyId = null;
+        notification.productList.push(product.Product);
+      });
+
+      NotificationBranch.find({notificationId: notificationId}, function (err, branchs) {
+        if (err) {
+          return res.unknown();
+        }
+
+        branchs.forEach(function (branch) {
+          branch.Branch.companyId = null;
+          branch.Branch.cityId = null;
+          notification.branchList.push(branch.Branch);
+        });
+
+        res.json(notification);
+      });
     });
   });
 });

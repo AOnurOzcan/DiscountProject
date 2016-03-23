@@ -6,6 +6,6 @@ var NotificationBranch = project.db.define('NotificationBranch', {
 });
 
 NotificationBranch.hasOne('Notification', Notification, {field: 'notificationId'});
-NotificationBranch.hasOne('Branch', Branch, {field: 'branchId'});
+NotificationBranch.hasOne('Branch', Branch, {field: 'branchId', autoFetch: true});
 
 module.exports = NotificationBranch;

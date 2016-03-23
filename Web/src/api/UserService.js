@@ -35,12 +35,12 @@ project.app.get("/user/profile/get", function (req, res) {
         res.unknown();
       }
 
-      user.id = null;
-      user.phone = null;
-      user.tokenKey = null;
-      user.registrationId = null;
-      user.notificationOpen = null;
-      res.json(user);
+      user[0].id = null;
+      user[0].tokenKey = null;
+      user[0].registrationId = null;
+      user[0].notificationOpen = null;
+      user[0].cityId = user[0].City;
+      res.json(user[0]);
     });
   });
 });
@@ -117,18 +117,19 @@ project.app.get("/user/preference/all", function (req, res) {
 
 project.app.put("/user/profile/edit", function (req, res) {
   project.util.AuthorizedRouteForUser(req, res, function (userId) {
-    User.get({id: userId}, function (err, user) {
+    User.get(userId, function (err, user) {
 
       if (err) {
         return res.unknown();
       }
 
-      user[0].firstName = req.body.firstName;
-      user[0].lastName = req.body.lastName;
-      user[0].gender = req.body.gender;
-      user[0].birthday = req.body.birthday;
-      user[0].cityId = req.body.cityId;
-      user[0].save(function (err, savedUser) {
+      user.firstName = req.body.firstName;
+      user.lastName = req.body.lastName;
+      user.gender = req.body.gender;
+      user.birthday = project.util.ParseDate(req.body.birthday);
+      user.cityId = req.body.cityId.id;
+      delete user['City'];
+      user.save(function (err, savedUser) {
         if (err) {
           return res.unknown();
         }
@@ -137,7 +138,7 @@ project.app.put("/user/profile/edit", function (req, res) {
         savedUser.tokenKey = null;
         savedUser.registrationId = null;
 
-        res.json(savedUser);
+        res.json({success: true});
       });
     });
   });
