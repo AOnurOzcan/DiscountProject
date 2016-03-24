@@ -2,8 +2,8 @@ package com.example.ooar.discountproject.activity;
 
 import android.app.Activity;
 import android.app.DatePickerDialog;
-import android.graphics.Color;
-import android.graphics.drawable.ColorDrawable;
+import android.app.Fragment;
+import android.app.FragmentManager;
 import android.support.v7.app.ActionBar;
 import android.app.FragmentTransaction;
 import android.os.Bundle;
@@ -22,13 +22,14 @@ import android.widget.Toast;
 import com.example.ooar.discountproject.R;
 import com.example.ooar.discountproject.adapter.UserPagerAdapter;
 import com.example.ooar.discountproject.fragment.ProfileFragment;
+import com.example.ooar.discountproject.util.FragmentChangeListener;
 
 import java.util.Calendar;
 
 /**
  * Created by Onur Kuru on 5.3.2016.
  */
-public class UserActivity extends AppCompatActivity  implements ActionBar.TabListener {
+public class UserActivity extends AppCompatActivity implements ActionBar.TabListener, FragmentChangeListener {
 
     private UserPagerAdapter pagerAdapter;
     private ViewPager viewPager;
@@ -68,5 +69,13 @@ public class UserActivity extends AppCompatActivity  implements ActionBar.TabLis
     @Override
     public void onTabReselected(ActionBar.Tab tab, android.support.v4.app.FragmentTransaction ft) {
 
+    }
+
+    @Override
+    public void replaceFragment(Fragment fragment) {
+        FragmentManager fm = getFragmentManager();
+        FragmentTransaction fragmentTransaction = fm.beginTransaction();
+        fragmentTransaction.replace(R.id.changeRegisterFragment, fragment).addToBackStack(null);
+        fragmentTransaction.commit();
     }
 }

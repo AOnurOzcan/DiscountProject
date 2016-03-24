@@ -2,14 +2,25 @@ package com.example.ooar.discountproject.util;
 
 import android.app.Activity;
 import android.app.ProgressDialog;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.os.AsyncTask;
+import android.util.DisplayMetrics;
+import android.util.Log;
 import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.CheckBox;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.TextView;
 
 import com.example.ooar.discountproject.R;
 import com.example.ooar.discountproject.model.CompanyCategory;
 
+import org.w3c.dom.Text;
+
+import java.io.InputStream;
+import java.net.URL;
 import java.util.List;
 import java.util.Map;
 import java.util.regex.Matcher;
@@ -111,6 +122,28 @@ public class Util {
         return checkBox;
     }
 
+    public static TextView createTextView(Activity activity, int id, LinearLayout.LayoutParams layoutParams, String text) {
+        TextView textView = new TextView(activity);
+        if (id != 0)
+            textView.setId(id);
+        if (layoutParams != null)
+            textView.setLayoutParams(layoutParams);
+        if (text != null)
+            textView.setText(text);
+        return textView;
+    }
+
+    public static ImageView createImageView(Activity activity, int id, LinearLayout.LayoutParams layoutParams, String url) {
+        ImageView imageView = new ImageView(activity);
+        if (id != 0)
+            imageView.setId(id);
+        if (layoutParams != null)
+            imageView.setLayoutParams(layoutParams);
+        imageView.setBackground(activity.getResources().getDrawable(R.drawable.notification_imageview));
+        new DownloadImageTask(imageView).execute(url);
+        return imageView;
+    }
+
     public static LinearLayout createLinearLayout(Activity activity, int id, int oriented, int visibility) {
         LinearLayout linearLayout = new LinearLayout(activity);
         if (id != 0)
@@ -135,5 +168,48 @@ public class Util {
     public static void setProgressDialog(Activity activity) {
         progressDialog = new ProgressDialog(activity, R.style.StyledDialog);
         progressDialog.setCancelable(false);
+    }
+
+    public static String parseDate(String date) {
+        String[] tempArray = date.split("T");
+        String day = tempArray[0].split("-")[2];
+        String mount = tempArray[0].split("-")[1];
+        String year = tempArray[0].split("-")[0];
+
+        return day + "/" + mount + "/" + year;
+    }
+
+    public static class DownloadImageTask extends AsyncTask<String, Void, Bitmap> {
+        ImageView bmImage;
+
+        public DownloadImageTask(ImageView bmImage) {
+            this.bmImage = bmImage;
+        }
+
+        protected Bitmap doInBackground(String... urls) {
+            String urldisplay = urls[0];
+            Bitmap mIcon11 = null;
+            try {
+                InputStream in = new java.net.URL(urldisplay).openStream();
+                mIcon11 = BitmapFactory.decodeStream(in);
+            } catch (Exception e) {
+                Log.e("Error", e.getMessage());
+                e.printStackTrace();
+            }
+            return mIcon11;
+        }
+
+        protected void onPostExecute(Bitmap result) {
+            bmImage.setImageBitmap(result);
+        }
+    }
+
+    public static int[] getScreenPixels(Activity activity) {
+        int[] pixels = new int[2];
+        DisplayMetrics displaymetrics = new DisplayMetrics();
+        activity.getWindowManager().getDefaultDisplay().getMetrics(displaymetrics);
+        pixels[0] = displaymetrics.widthPixels;
+        pixels[1] = displaymetrics.heightPixels;
+        return pixels;
     }
 }

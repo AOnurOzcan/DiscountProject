@@ -1,6 +1,7 @@
 package com.example.ooar.discountproject.model;
 
 import java.util.Date;
+import java.util.List;
 
 /**
  * Created by Onur Kuru on 5.3.2016.
@@ -9,12 +10,14 @@ public class Notification {
 
     private Integer id;
     private String name;
-    private Date startDate;
-    private Date endDate;
+    private String startDate;
+    private String endDate;
     private String description;
     private boolean isSent;
     private int peopleCount;
-    private Date sendDate;
+    private String sendDate;
+    private List<Product> productList;
+    private List<Branch> branchList;
 
     public Integer getId() {
         return id;
@@ -32,19 +35,19 @@ public class Notification {
         this.name = name;
     }
 
-    public Date getStartDate() {
+    public String getStartDate() {
         return startDate;
     }
 
-    public void setStartDate(Date startDate) {
+    public void setStartDate(String startDate) {
         this.startDate = startDate;
     }
 
-    public Date getEndDate() {
+    public String getEndDate() {
         return endDate;
     }
 
-    public void setEndDate(Date endDate) {
+    public void setEndDate(String endDate) {
         this.endDate = endDate;
     }
 
@@ -72,11 +75,27 @@ public class Notification {
         this.peopleCount = peopleCount;
     }
 
-    public Date getSendDate() {
+    public String getSendDate() {
         return sendDate;
     }
 
-    public void setSendDate(Date sendDate) {
+    public void setSendDate(String sendDate) {
         this.sendDate = sendDate;
+    }
+
+    public List<Product> getProductList() {
+        return productList;
+    }
+
+    public void setProductList(List<Product> productList) {
+        this.productList = productList;
+    }
+
+    public List<Branch> getBranchList() {
+        return branchList;
+    }
+
+    public void setBranchList(List<Branch> branchList) {
+        this.branchList = branchList;
     }
 }

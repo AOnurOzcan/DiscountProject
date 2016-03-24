@@ -7,6 +7,7 @@ import com.example.ooar.discountproject.model.City;
 import com.example.ooar.discountproject.model.Company;
 import com.example.ooar.discountproject.model.CompanyCategory;
 import com.example.ooar.discountproject.model.ConfirmationCode;
+import com.example.ooar.discountproject.model.Notification;
 import com.example.ooar.discountproject.model.Preference;
 import com.example.ooar.discountproject.model.User;
 import com.squareup.okhttp.Call;
@@ -58,4 +59,8 @@ public interface RetrofitService {
 
     @POST("/session/create")
     void createSession(@Body Map<String, String> phoneNumber, Callback<Map<String, String>> callback);
+
+    @GET("/notification/get/{notificationId}")
+    void getNotificationById(@Query("tokenKey") String tokenKey, @Path("notificationId") Integer notificationId, Callback<Notification> callback);
+
 }
