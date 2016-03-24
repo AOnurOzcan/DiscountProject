@@ -39,7 +39,7 @@ public class DatePickerFragment extends DialogFragment implements DatePickerDial
         } else {
             String[] dateText = editText.getSelectedItem().toString().split("/");
             day = Integer.valueOf(dateText[0]);
-            month = Integer.valueOf(dateText[1]);
+            month = Integer.valueOf(dateText[1])-1;
             year = Integer.valueOf(dateText[2]);
         }
 
@@ -48,6 +48,7 @@ public class DatePickerFragment extends DialogFragment implements DatePickerDial
 
     public void onDateSet(DatePicker view, int year, int month, int day) {
         List<String> adapterString = new ArrayList<>();
+        month=month+1;
         adapterString.add(day + "/" + month + "/" + year);
 
         ArrayAdapter adapter = new ArrayAdapter(getActivity().getApplicationContext(), R.layout.spinner_item, adapterString);
@@ -62,5 +63,6 @@ public class DatePickerFragment extends DialogFragment implements DatePickerDial
     public void onDestroy() {
         super.onDestroy();
         CreateProfilFragment.datePickerIsShow = false;
+        ProfileFragment.datePickerIsShow=false;
     }
 }

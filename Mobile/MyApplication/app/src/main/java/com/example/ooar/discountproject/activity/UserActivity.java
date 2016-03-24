@@ -2,6 +2,8 @@ package com.example.ooar.discountproject.activity;
 
 import android.app.Activity;
 import android.app.DatePickerDialog;
+import android.graphics.Color;
+import android.graphics.drawable.ColorDrawable;
 import android.support.v7.app.ActionBar;
 import android.app.FragmentTransaction;
 import android.os.Bundle;
@@ -30,7 +32,6 @@ public class UserActivity extends AppCompatActivity  implements ActionBar.TabLis
 
     private UserPagerAdapter pagerAdapter;
     private ViewPager viewPager;
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -47,12 +48,12 @@ public class UserActivity extends AppCompatActivity  implements ActionBar.TabLis
             @Override
             public void onPageSelected(int position) {
                 actionBar.setSelectedNavigationItem(position);
-                actionBar.setTitle(tabTitles[position]);
+                actionBar.setTitle("İndirimİN");
             }
         });
-        actionBar.addTab(actionBar.newTab().setTabListener(this).setIcon(R.drawable.notification));
-        actionBar.addTab(actionBar.newTab().setTabListener(this).setIcon(R.drawable.choises));
-        actionBar.addTab(actionBar.newTab().setTabListener(this).setIcon(R.drawable.profile));
+        actionBar.addTab(actionBar.newTab().setTabListener(this).setText("Bildirimler"));
+        actionBar.addTab(actionBar.newTab().setTabListener(this).setText("Tercihlerim"));
+        actionBar.addTab(actionBar.newTab().setTabListener(this).setText("Profil"));
     }
     @Override
     public void onTabSelected(ActionBar.Tab tab, android.support.v4.app.FragmentTransaction ft) {
