@@ -20,6 +20,7 @@ import retrofit.client.Response;
 import retrofit.http.Body;
 import retrofit.http.GET;
 import retrofit.http.POST;
+import retrofit.http.PUT;
 import retrofit.http.Path;
 import retrofit.http.Query;
 
@@ -41,6 +42,12 @@ public interface RetrofitService {
 
     @POST("/user/profile/create")
     void createUser(@Body User user, Callback<Object> callback);
+
+    @GET("/user/profile/get")
+    void getUser(@Query("tokenKey") String tokenKey, Callback<User> callback);
+
+    @PUT("/user/profile/edit")
+    void editUser(@Query("tokenKey") String tokenKey,@Body User user, Callback<User> callback);
 
     @GET("/getAllCategories")
     void getAllCategories(Callback<List<Category>> callback);
