@@ -10,6 +10,7 @@ import com.example.ooar.discountproject.model.ConfirmationCode;
 import com.example.ooar.discountproject.model.Notification;
 import com.example.ooar.discountproject.model.Preference;
 import com.example.ooar.discountproject.model.User;
+import com.example.ooar.discountproject.model.UserNotification;
 import com.squareup.okhttp.Call;
 
 import java.util.List;
@@ -47,7 +48,7 @@ public interface RetrofitService {
     void getUser(@Query("tokenKey") String tokenKey, Callback<User> callback);
 
     @PUT("/user/profile/edit")
-    void editUser(@Query("tokenKey") String tokenKey,@Body User user, Callback<User> callback);
+    void editUser(@Query("tokenKey") String tokenKey, @Body User user, Callback<User> callback);
 
     @GET("/getAllCategories")
     void getAllCategories(Callback<List<Category>> callback);
@@ -69,5 +70,8 @@ public interface RetrofitService {
 
     @GET("/notification/get/{notificationId}")
     void getNotificationById(@Query("tokenKey") String tokenKey, @Path("notificationId") Integer notificationId, Callback<Notification> callback);
+
+    @GET("/notification/getall")
+    void getAllNotification(@Query("tokenKey") String tokenKey, Callback<List<UserNotification>> callback);
 
 }

@@ -1,81 +1,31 @@
 package com.example.ooar.discountproject.activity;
 
-import android.app.Activity;
-import android.app.DatePickerDialog;
-import android.app.Fragment;
-import android.app.FragmentManager;
-import android.support.v7.app.ActionBar;
-import android.app.FragmentTransaction;
+
 import android.os.Bundle;
-import android.support.v7.app.ActionBar.TabListener;
+import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
-import android.support.v4.view.ViewPager;
-import android.support.v7.app.ActionBarActivity;
-import android.support.v7.app.AppCompatActivity;
-import android.view.Menu;
-import android.view.View;
-import android.view.ViewParent;
-import android.view.Window;
-import android.widget.DatePicker;
-import android.widget.Toast;
+import android.support.v4.app.FragmentTabHost;
 
 import com.example.ooar.discountproject.R;
-import com.example.ooar.discountproject.adapter.UserPagerAdapter;
-import com.example.ooar.discountproject.fragment.ProfileFragment;
+import com.example.ooar.discountproject.fragment.UserTabsFragment;
 import com.example.ooar.discountproject.util.FragmentChangeListener;
-
-import java.util.Calendar;
 
 /**
  * Created by Onur Kuru on 5.3.2016.
  */
-public class UserActivity extends AppCompatActivity implements ActionBar.TabListener, FragmentChangeListener {
+public class UserActivity extends FragmentActivity implements FragmentChangeListener {
 
-    private UserPagerAdapter pagerAdapter;
-    private ViewPager viewPager;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.user_layout);
-
-        final String[] tabTitles =getResources().getStringArray(R.array.tab_title_array);
-        pagerAdapter=new UserPagerAdapter(getSupportFragmentManager());
-        final android.support.v7.app.ActionBar actionBar = getSupportActionBar();
-        actionBar.setHomeButtonEnabled(false);
-        actionBar.setNavigationMode(ActionBar.NAVIGATION_MODE_TABS);
-        viewPager=(ViewPager) findViewById(R.id.pager);
-        viewPager.setAdapter(pagerAdapter);
-        viewPager.setOnPageChangeListener(new ViewPager.SimpleOnPageChangeListener() {
-            @Override
-            public void onPageSelected(int position) {
-                actionBar.setSelectedNavigationItem(position);
-                actionBar.setTitle("İndirimİN");
-            }
-        });
-        actionBar.addTab(actionBar.newTab().setTabListener(this).setText("Bildirimler"));
-        actionBar.addTab(actionBar.newTab().setTabListener(this).setText("Tercihlerim"));
-        actionBar.addTab(actionBar.newTab().setTabListener(this).setText("Profil"));
-    }
-    @Override
-    public void onTabSelected(ActionBar.Tab tab, android.support.v4.app.FragmentTransaction ft) {
-        viewPager.setCurrentItem(tab.getPosition());
+        replaceFragment(new UserTabsFragment());
     }
 
-    @Override
-    public void onTabUnselected(ActionBar.Tab tab, android.support.v4.app.FragmentTransaction ft) {
-
-    }
-
-    @Override
-    public void onTabReselected(ActionBar.Tab tab, android.support.v4.app.FragmentTransaction ft) {
-
-    }
-
-    @Override
     public void replaceFragment(Fragment fragment) {
-        FragmentManager fm = getFragmentManager();
-        FragmentTransaction fragmentTransaction = fm.beginTransaction();
-        fragmentTransaction.replace(R.id.changeRegisterFragment, fragment).addToBackStack(null);
+        android.support.v4.app.FragmentManager fm = getSupportFragmentManager();
+        android.support.v4.app.FragmentTransaction fragmentTransaction = fm.beginTransaction();
+        fragmentTransaction.replace(R.id.userFragments, fragment).addToBackStack(null);
         fragmentTransaction.commit();
     }
 }

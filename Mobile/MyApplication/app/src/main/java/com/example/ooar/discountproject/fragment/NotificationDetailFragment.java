@@ -1,9 +1,9 @@
 package com.example.ooar.discountproject.fragment;
 
 import android.app.Activity;
-import android.app.Fragment;
 import android.content.Context;
 import android.os.Bundle;
+import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -36,9 +36,11 @@ public class NotificationDetailFragment extends Fragment {
     TextView startDate;
     TextView endDate;
     TextView description;
+    int notificationId;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+        notificationId = getArguments().getInt("notificationId");
         return inflater.inflate(R.layout.notification_detail, container, false);
     }
 
@@ -68,7 +70,7 @@ public class NotificationDetailFragment extends Fragment {
         };
         Util.startProgressDialog();
         String tokenKey = getActivity().getSharedPreferences("Session", Activity.MODE_PRIVATE).getString("tokenKey", "");
-        RetrofitConfiguration.getRetrofitService().getNotificationById(tokenKey, 2, callback);
+        RetrofitConfiguration.getRetrofitService().getNotificationById(tokenKey, notificationId, callback);
     }
 
     public void renderPage() {

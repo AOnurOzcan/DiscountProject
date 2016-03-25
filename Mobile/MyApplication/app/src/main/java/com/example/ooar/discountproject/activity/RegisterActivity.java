@@ -1,16 +1,15 @@
 package com.example.ooar.discountproject.activity;
 
-import android.app.Fragment;
 import android.os.Bundle;
-import android.app.FragmentManager;
-import android.app.FragmentTransaction;
+import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
+import android.support.v4.app.FragmentManager;
+import android.support.v4.app.FragmentTransaction;
 import android.widget.Button;
 import android.widget.EditText;
 
 import com.example.ooar.discountproject.R;
 import com.example.ooar.discountproject.fragment.PhoneNumberFragment;
-import com.example.ooar.discountproject.fragment.UserPreferencesFragment;
 import com.example.ooar.discountproject.util.FragmentChangeListener;
 import com.example.ooar.discountproject.util.Util;
 
@@ -33,7 +32,7 @@ public class RegisterActivity extends FragmentActivity implements FragmentChange
 
     @Override
     public void replaceFragment(Fragment fragment) {
-        FragmentManager fm = getFragmentManager();
+        FragmentManager fm = getSupportFragmentManager();
         FragmentTransaction fragmentTransaction = fm.beginTransaction();
         fragmentTransaction.replace(R.id.changeRegisterFragment, fragment);
         fragmentTransaction.commit();

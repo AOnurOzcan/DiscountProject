@@ -3,7 +3,7 @@ package com.example.ooar.discountproject.fragment;
 import android.app.Activity;
 import android.content.SharedPreferences;
 import android.os.Bundle;
-import android.app.Fragment;
+import android.support.v4.app.Fragment;
 import android.telephony.PhoneNumberFormattingTextWatcher;
 import android.text.Editable;
 import android.text.TextWatcher;
