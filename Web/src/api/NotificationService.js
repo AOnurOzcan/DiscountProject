@@ -7,6 +7,7 @@ var User = require('../model/User');
 var Notification = require('../model/Notification');
 var NotificationProduct = require('../model/NotificationProduct');
 var NotificationBranch = require('../model/NotificationBranch');
+var UserNotification = require('../model/UserNotification');
 
 project.app.get("/notification/send", function (req, res) {
 
@@ -73,6 +74,28 @@ project.app.get("/notification/get/:notificationId", function (req, res) {
 
         res.json(notification);
       });
+    });
+  });
+});
+
+project.app.get("/notification/getall", function (req, res) {
+
+  project.util.AuthorizedRouteForUser(req, res, function (userId) {
+
+    UserNotification.find({userId: userId}, function (err, notifications) {
+      if (err) {
+        return res.unknown();
+      }
+
+      notifications.forEach(function (notification) {
+        notification.userId = null;
+        notification.Notification.branchList = null;
+        notification.Notification.productList = null;
+        notification.notificationId = notification.Notification;
+        delete notification['Notification'];
+      });
+
+      res.json(notifications);
     });
   });
 });
