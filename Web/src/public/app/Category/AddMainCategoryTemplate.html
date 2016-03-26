@@ -1,0 +1,21 @@
+<h1 class="ui dividing header">Ana Kategori {{#mainCategory.id}}Düzenle{{else}}Ekle{{/mainCategory.id}}</h1>
+<div class="ui middle aligned center aligned grid">
+    <div class="six wide column">
+        <h4 class="ui top attached inverted header">Ana Kategori
+            {{#mainCategory.id}}Düzenle{{else}}Ekle{{/mainCategory.id}}</h4>
+        <div class="ui buttom attached segment">
+            <form class="ui large form" id="addMainCategoryForm">
+                {{#mainCategory.id}}<input type="hidden" name="id">{{/mainCategory.id}}
+                <div class="field">
+                    <input type="text" name="categoryName" placeholder="Kategori Adı">
+                </div>
+                {{#mainCategory.id}}
+                <button class="fluid green ui button" id="updateMainCategoryButton" data-id="{{id}}">Kaydet</button>
+                {{else}}
+                <button class="fluid ui primary button" id="addMainCategoryButton">Oluştur</button>
+                {{/mainCategory.id}}
+                <div class="ui error message"></div>
+            </form>
+        </div>
+    </div>
+</div>

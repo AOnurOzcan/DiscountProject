@@ -99,3 +99,155 @@ project.app.get("/notification/getall", function (req, res) {
     });
   });
 });
+
+// Bildirim ekleme servisi
+project.app.post("/notification", function (req, res) {
+  var products = req.body.products;
+  var branches = req.body.branches;
+  var notification = {};
+  notification.name = req.body.name;
+  notification.startDate = req.body.startDate;
+  notification.endDate = req.body.endDate;
+  notification.description = req.body.description;
+  notification.companyId = 1;
+  //notification.companyId = req.session.admin.companyId;
+
+  Notification.create(notification, function (err, savedNotification) {
+    if (err) {
+      return res.unknown();
+    }
+    products.asyncForEach(function (product, done) {
+      NotificationProduct.create({
+        notificationId: savedNotification.id,
+        productId: product
+      }, function (err) {
+        if (err) {
+          return res.unknown();
+        }
+        done();
+      });
+    }, function () {
+      branches.asyncForEach(function (branch, done) {
+        NotificationBranch.create({notificationId: savedNotification.id, branchId: branch}, function (err) {
+          if (err) {
+            return res.unknown();
+          }
+          done();
+        });
+      }, function () {
+        res.json({status: "success"});
+      });
+    });
+  });
+});
+
+//Bildirim düzenleme servisi
+project.app.put("/notification/:id", function (req, res) {
+  var addProductArray = req.body.addProductArray;
+  var removeProductArray = req.body.removeProductArray;
+  var addBranchArray = req.body.addBranchArray;
+  var removeBranchArray = req.body.removeBranchArray;
+  Notification.get(req.params.id, function (err, notification) {
+    notification.name = req.body.name;
+    notification.startDate = req.body.startDate;
+    notification.endDate = req.body.endDate;
+    notification.description = req.body.description;
+    notification.save(function (err) {
+      if (err) {
+        return res.unknown();
+      }
+      addProductArray.asyncForEach(function (productId, done) {
+        NotificationProduct.create({notificationId: notification.id, productId: productId}, function (err) {
+          if (err) {
+            return res.unknown();
+          }
+          done();
+        });
+      }, function () {
+        removeProductArray.asyncForEach(function (productId, done) {
+          NotificationProduct.find({notificationId: notification.id, productId: productId}).remove(function (err) {
+            if (err) {
+              return res.unknown();
+            }
+            done();
+          });
+        }, function () {
+          addBranchArray.asyncForEach(function (branchId, done) {
+            NotificationBranch.create({notificationId: notification.id, branchId: branchId}, function (err) {
+              if (err) {
+                return res.unknown();
+              }
+              done();
+            });
+          }, function () {
+            removeBranchArray.asyncForEach(function (branchId, done) {
+              NotificationBranch.find({notificationId: notification.id, branchId: branchId}).remove(function (err) {
+                if (err) {
+                  return res.unknown();
+                }
+                done();
+              });
+            }, function () {
+              res.json({status: "success"});
+            });
+          });
+        });
+      });
+    });
+
+  });
+});
+
+//Bildirim silme servisi
+project.app.delete("/notification/:id", function (req, res) {
+  var notificationId = req.params.id;
+  NotificationProduct.find({notificationId: notificationId}).remove(function (err) {
+    if (err) {
+      return res.unknown();
+    }
+    NotificationBranch.find({notificationId: notificationId}).remove(function (err) {
+      if (err) {
+        return res.unknown();
+      }
+      Notification.find({id: notificationId}).remove(function (err) {
+        if (err) {
+          return res.unknown();
+        }
+        res.json({status: "success"});
+      });
+    });
+  });
+});
+
+//Tüm bildirimleri getir.
+project.app.get("/notification", function (req, res) {
+  Notification.find(function (err, notifications) {
+    notifications.asyncForEach(function (notification, done) {
+      NotificationProduct.find({notificationId: notification.id}, function (err, notificationProduct) {
+        if (err) {
+          return res.unknown();
+        }
+        notification.products = [];
+        notificationProduct.forEach(function (notProduct) {
+          notification.products.push(notProduct.Product);
+        });
+        done();
+      });
+    }, function () {
+      notifications.asyncForEach(function (notification, done) {
+        NotificationBranch.find({notificationId: notification.id}, function (err, notificationBranch) {
+          if (err) {
+            return res.unknown();
+          }
+          notification.branches = [];
+          notificationBranch.forEach(function (notBranch) {
+            notification.branches.push(notBranch.Branch);
+          });
+          done();
+        });
+      }, function () {
+        res.json(notifications);
+      });
+    });
+  });
+});

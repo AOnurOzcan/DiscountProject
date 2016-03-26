@@ -3,6 +3,6 @@ var Category = project.db.define('Category', {
   categoryName: String
 });
 
-Category.hasOne('parent', Category, {field: 'parentCategory', autoFetch: true});
+Category.hasOne('parent', Category, {field: 'parentCategory', reverse: 'subCategories'});
 
 module.exports = Category;

@@ -1,0 +1,13 @@
+{{#each subCategories}}
+<tr>
+    <td>{{categoryName}}</td>
+    <td>
+        <button class="red ui button" id="deleteCategoryButton" data-id="{{id}}">Sil</button>
+        <a class="teal ui button" href="#category/sub/edit/{{id}}" id="editCategoryButton">Düzenle</a>
+    </td>
+</tr>
+{{else}}
+<tr>
+    <td colspan="100%">Seçtiğiniz kategoriye ait hiç alt kategori eklenmemiş.</td>
+</tr>
+{{/each}}

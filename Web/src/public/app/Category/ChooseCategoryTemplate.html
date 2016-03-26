@@ -1,0 +1,35 @@
+<h1 class="ui dividing header">Kategori Seç</h1>
+<div class="ui middle aligned centered aligned grid">
+    <div class="six wide column">
+        <div class="ui vertical fluid accordion menu">
+            {{#each categories}}
+            <div class="item">
+                <a class="title">
+                    <i class="dropdown icon"></i>
+                    {{categoryName}}
+                </a>
+                <div class="content">
+                    <div class="ui form">
+                        <div class="grouped fields">
+                            {{#each subCategories}}
+                            <div class="field">
+                                <div class="ui checkbox">
+                                    <input type="checkbox" name="subCategoryCheckbox" class="subCategoryCheckbox"
+                                           value="{{id}}">
+                                    <label>{{categoryName}}</label>
+                                </div>
+                            </div>
+                            {{else}}
+                            <div class="field">
+                                Bu kategoride hiçbir şey yok :(
+                            </div>
+                            {{/each}}
+                        </div>
+                    </div>
+                </div>
+            </div>
+            {{/each}}
+        </div>
+        <button class="ui fluid blue button" id="savePreferences">Tercihlerimi Kaydet</button>
+    </div>
+</div>

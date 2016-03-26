@@ -15,8 +15,12 @@
         <td>{{password}}</td>
         <td>{{accountAuth}}</td>
         <td>
+            {{#can "REMOVE_ACCOUNT"}}
             <button class="red ui button" id="deleteAccountButton" data-id="{{id}}">Sil</button>
+            {{/can}}
+            {{#can "EDIT_ACCOUNT"}}
             <a class="teal ui button" href="#account/edit/{{id}}" id="editAccountButton">Düzenle</a>
+            {{/can}}
         </td>
     </tr>
     {{else}}

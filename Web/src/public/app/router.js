@@ -6,7 +6,8 @@ define([
   'Product/productView',
   'Branch/branchView',
   'Upload/uploadView',
-  'Account/accountView'
+  'Account/accountView',
+  'Category/CategoryView'
 ], function (Backbone,
              LoginView,
              AdminView,
@@ -14,9 +15,11 @@ define([
              ProductView,
              BranchView,
              UploadView,
-             Account) {
+             Account,
+             CategoryView) {
 
   var Router = Backbone.Router.extend({
+
     routes: {
       '': 'Login',
       'cHomepage': 'CompanyHomepage',
@@ -29,6 +32,12 @@ define([
       'account/add': 'AddAccount',
       'account/edit/:id': 'EditAccount',
       'account/list': 'ListAccount',
+      'category/choose': 'ChooseCategory',
+      'category/main/add': 'AddMainCategory',
+      'category/main/edit/:id': 'EditMainCategory',
+      'category/sub/add': 'AddSubCategory',
+      'category/sub/edit/:id': 'EditSubCategory',
+      'category/list': 'ListCategory',
       'file/upload': 'FileUpload'
     },
 
@@ -44,10 +53,15 @@ define([
       this.fileUploadView = [this.menuView, new UploadView.UploadView()];
       this.addAccountView = [this.menuView, new Account.AddAccountView()];
       this.listAccountView = [this.menuView, new Account.ListAccountView()];
+      this.chooseCategoryView = [this.menuView, new CategoryView.ChooseCategoryView()];
+      this.addMainCategoryView = [this.menuView, new CategoryView.AddMainCategoryView()];
+      this.addSubCategoryView = [this.menuView, new CategoryView.AddSubCategoryView()];
+      this.listCategoryView = [this.menuView, new CategoryView.ListCategoryView()];
     },
 
     Login: function () {
       var that = this;
+      $(".menu").html("");
       this.checkSession.fetch({ // Oturum açık mı kontrol et
         success: function () {  // Oturum açıksa
           window.location.hash = 'cHomepage'; // Firma anasayfasına yönlendir
@@ -59,100 +73,74 @@ define([
     },
 
     CompanyHomepage: function () {
-      var that = this;
-      this.checkSession.fetch({ // Oturum açık mı kontrol et
-        success: function () {  // Oturum açıksa
-          outer.showView(that.adminView);
-        }
-      });
+      this.CheckSessionShowView(this.adminView);
     },
 
     AddProduct: function () {
-      var that = this;
-      this.checkSession.fetch({ // Oturum açık mı kontrol et
-        success: function () {
-          outer.showView(that.addProductView);
-        }
-      });
+      this.CheckSessionShowView(this.addProductView);
     },
 
     ListProduct: function () {
-      var that = this;
-      this.checkSession.fetch({ // Oturum açık mı kontrol et
-        success: function () {
-          outer.showView(that.listProductView);
-        }
-      });
+      this.CheckSessionShowView(this.listProductView);
     },
 
     EditProduct: function (productId) {
-      var that = this;
-      this.checkSession.fetch({ // Oturum açık mı kontrol et
-        success: function () {
-          outer.showView(that.addProductView, {productId: productId});
-        }
-      });
+      this.CheckSessionShowView(this.addProductView, {productId: productId});
     },
 
     AddBranch: function () {
-      var that = this;
-      this.checkSession.fetch({ // Oturum açık mı kontrol et
-        success: function () {
-          outer.showView(that.addBranchView);
-        }
-      });
+      this.CheckSessionShowView(this.addBranchView);
     },
 
     ListBranch: function () {
-      var that = this;
-      this.checkSession.fetch({ // Oturum açık mı kontrol et
-        success: function () {
-          outer.showView(that.listBranchView);
-        }
-      });
+      this.CheckSessionShowView(this.listBranchView);
     },
 
     EditBranch: function (branchId) {
-      var that = this;
-      this.checkSession.fetch({ // Oturum açık mı kontrol et
-        success: function () {
-          outer.showView(that.addBranchView, {branchId: branchId});
-        }
-      });
+      this.CheckSessionShowView(this.addBranchView, {branchId: branchId});
     },
 
     FileUpload: function () {
-      var that = this;
-      this.checkSession.fetch({ // Oturum açık mı kontrol et
-        success: function () {
-          outer.showView(that.fileUploadView);
-        }
-      });
+      this.CheckSessionShowView(this.fileUploadView);
     },
 
     AddAccount: function () {
-      var that = this;
-      this.checkSession.fetch({ // Oturum açık mı kontrol et
-        success: function () {
-          outer.showView(that.addAccountView);
-        }
-      });
+      this.CheckSessionShowView(this.addAccountView);
     },
 
     EditAccount: function (accountId) {
-      var that = this;
-      this.checkSession.fetch({ // Oturum açık mı kontrol et
-        success: function () {
-          outer.showView(that.addAccountView, {accountId: accountId});
-        }
-      });
+      this.CheckSessionShowView(this.addAccountView, {accountId: accountId});
     },
 
     ListAccount: function () {
-      var that = this;
+      this.CheckSessionShowView(this.listAccountView);
+    },
+
+    ChooseCategory: function () {
+      this.CheckSessionShowView(this.chooseCategoryView);
+    },
+
+    AddMainCategory: function () {
+      this.CheckSessionShowView(this.addMainCategoryView);
+    },
+    EditMainCategory: function (id) {
+      this.CheckSessionShowView(this.addMainCategoryView, {mainCategoryId: id});
+    },
+    AddSubCategory: function () {
+      this.CheckSessionShowView(this.addSubCategoryView);
+    },
+    EditSubCategory: function (id) {
+      this.CheckSessionShowView(this.addSubCategoryView, {subCategoryId: id});
+    },
+    ListCategory: function () {
+      this.CheckSessionShowView(this.listCategoryView);
+    },
+    /* Bu fonksiyon önce oturumu kontrol eder, oturum varsa sayfayı ekrana basar.*/
+    CheckSessionShowView: function () {
+      var args = arguments;
       this.checkSession.fetch({ // Oturum açık mı kontrol et
         success: function () {
-          outer.showView(that.listAccountView);
+          outer.showView.apply(outer, args);
         }
       });
     }

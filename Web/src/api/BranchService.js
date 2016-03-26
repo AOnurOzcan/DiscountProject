@@ -43,10 +43,10 @@ project.app.get("/branch/:id", AuthorizedRoute(""), function (req, res) {
 project.app.delete("/branch/:id", AuthorizedRoute(""), function (req, res) {
   Branch.find({id: req.params.id}).remove(function (err) {
     if (err) {
-      res.unknown();
+      return res.unknown();
     }
     res.json({status: "success"});
-  })
+  });
 });
 
 project.app.get("/getBranches", AuthorizedRoute(""), function (req, res) {

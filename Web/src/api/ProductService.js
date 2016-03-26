@@ -48,9 +48,26 @@ project.app.get("/product", function (req, res) {
         return res.unknown();
       }
 
+      products.forEach(function (product) {
+        product.categoryId = product.Category;
+        delete product.Category;
+      });
+
       res.json(products);
     });
   }
+});
+
+project.app.put("/product/:id", function (req, res) {
+  Product.get(req.params.id, function (err, savedProduct) {
+    delete savedProduct.Category;
+    savedProduct.save(req.body, function (err) {
+      if (err) {
+        return res.unknown();
+      }
+      res.json({status: "success"});
+    });
+  });
 });
 
 /**
@@ -59,7 +76,7 @@ project.app.get("/product", function (req, res) {
 project.app.delete("/product/:id", function (req, res) {
   Product.find({id: req.params.id}).remove(function (err) {
     if (err) {
-      res.unknown();
+      return res.unknown();
     }
     res.json({status: "success"});
   })
@@ -71,8 +88,10 @@ project.app.delete("/product/:id", function (req, res) {
 project.app.get("/product/:id", function (req, res) {
   Product.one({id: req.params.id}, function (err, product) {
     if (err) {
-      res.unknown();
+      return res.unknown();
     }
+    product.categoryId = product.Category;
+    delete product.Category;
     res.json(product);
   });
 });
@@ -83,7 +102,8 @@ project.app.get("/product/:id", function (req, res) {
 project.app.post("/testUpload", multipartyMiddleware, function (req, res) {
   var file = req.files.imageURL;
   var stream = fs.createReadStream(file.path);
-  var fileName = new Date().getTime() + file.originalFilename;
+  var extension = file.originalFilename.split(".").pop();
+  var fileName = new Date().getTime() + "." + extension;
   return s3fsImpl.writeFile(fileName, stream, {"ContentType": "image/jpg"}).then(function () {
     fs.unlink(file.path, function (err) {
       if (err) {

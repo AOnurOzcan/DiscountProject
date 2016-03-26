@@ -51,6 +51,15 @@ require([
     Backbone.history.start();
   });
 
+  //var $body = $("#ld");
+  //$(document).on({
+  //  ajaxStart: function () {
+  //    $body.addClass("active");
+  //  },
+  //  ajaxStop: function () {
+  //    $body.removeClass("loading");
+  //  }
+  //});
   $.ajaxSetup({cache: false});
   $(document).ajaxError(function (event, xhr, settings, object) {
     if (xhr.status == 401) {

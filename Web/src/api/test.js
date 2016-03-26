@@ -48,7 +48,12 @@ project.app.get("/menuTest", function (req, res) {
         {name: "Kullanıcıları Listele", href: "#account/list"}]
       },
       {
-        header: "Kategoriler", links: [{name: "Bildirim Ekle", href: "#notification/add"}]
+        header: "Kategoriler", links: [
+        {name: "Kategori Seç", href: "#category/choose"},
+        {name: "Ana Kategori Ekle", href: "#category/main/add"},
+        {name: "Alt Kategori Ekle", href: "#category/sub/add"},
+        {name: "Kategorileri Listele", href: "#category/list"}
+      ]
       },
       {
         header: "Yüklemeler", links: [
@@ -56,6 +61,10 @@ project.app.get("/menuTest", function (req, res) {
       }
     ]
   };
+
+  req.session.admin.accountAuth.split(',').forEach(function (auth) {
+
+  });
 
   res.json(menu);
 });

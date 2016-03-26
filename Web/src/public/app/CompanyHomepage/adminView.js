@@ -5,23 +5,10 @@ define(['backbone',
 
   var companyTemplate = Handlebars.compile(CompanyTemplate);
 
-  var LogoutModel = Backbone.Model.extend({
-    urlRoot: '/logout'
-  });
-
   var AdminView = core.CommonView.extend({
     autoLoad: true,
     el: "#page",
     events: {
-      'click #logoutButton': 'logout'
-    },
-    logout: function () {
-      var logoutModel = new LogoutModel();
-      logoutModel.fetch({
-        success: function () {
-          window.location.hash = ''; // Go login
-        }
-      });
     },
     render: function () {
       this.$el.html(companyTemplate);

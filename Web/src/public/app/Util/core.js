@@ -1,4 +1,4 @@
-window.define(['backbone'], function (Backbone) {
+window.define(['backbone', 'handlebars'], function (Backbone, Handlebars) {
 
   "use strict";
 
@@ -237,6 +237,19 @@ window.define(['backbone'], function (Backbone) {
         }
       });
     }
+  });
+
+  Handlebars.registerHelper('can', function (permission, options) {
+    var auths = $router.checkSession.attributes.accountAuth.split(',');
+    var check = auths.some(function (auth) {
+      return auth == permission;
+    });
+    if (check == true) {
+      return options.fn(this);
+    } else {
+      return options.inverse(this);
+    }
+
   });
 
   return {

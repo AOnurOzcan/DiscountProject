@@ -25,7 +25,6 @@ define(['backbone',
     },
     initialize: function () {
       this.isRendered = false;
-      //this.checkSession = new CheckSession();
       this.getMenu = new GetMenu();
     },
     logout: function () {

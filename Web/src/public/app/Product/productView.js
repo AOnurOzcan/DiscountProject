@@ -15,14 +15,14 @@ define([
     urlRoot: "/product/"
   });
   var MainCategoryCollection = Backbone.Collection.extend({
-    url: "/getMainCategories"
+    url: "/mainCategory"
   });
   var SubCategoryCollection = Backbone.Collection.extend({
     initialize: function (models, options) {
       this.parentCategory = options.parentCategoryId;
     },
     url: function () {
-      return "/getSubCategories/" + this.parentCategory;
+      return "/subCategories/" + this.parentCategory;
     }
   });
   var ProductsCollection = Backbone.Collection.extend({
@@ -38,7 +38,8 @@ define([
     autoLoad: true,
     el: "#page",
     events: {
-      'click #addProductButton': 'addProduct',
+      'click #addProductButton': 'addOrUpdateProduct',
+      'click #updateProductButton': 'addOrUpdateProduct',
       'change #productMainCategorySelect': 'renderSubCategories',
       'click #selectImage': 'openModal'
     },
@@ -60,17 +61,30 @@ define([
       $('.ui.modal').modal('hide');
     },
     renderSubCategories: function () {
-      var subCategorySelectBox = $("#productSubCategorySelect");
+      var that = this;
+      var subCategorySelectBox = this.$("#productSubCategorySelect");
+      var mainCategorySelectBox = this.$("#productMainCategorySelect");
       subCategorySelectBox.parent().addClass("loading");
-      new SubCategoryCollection([], {parentCategoryId: $("#productMainCategorySelect").val()}).fetch({
+
+      var subCategoryCollectin = new SubCategoryCollection([], {parentCategoryId: mainCategorySelectBox.val()});
+      subCategoryCollectin.fetch({
         success: function (subCategories) {
           subCategorySelectBox.html(subCategorySelectTemplate({subCategories: subCategories.toJSON()}));
-          $("#productSubCategorySelect").dropdown('set value', "").dropdown('set text', "Seçiniz");
+          if (that.params == undefined) {
+            subCategorySelectBox.dropdown('set value', "").dropdown('set text', "Seçiniz");
+          } else {
+            if ($(".deneme").is('select')) {
+              that.form().setValues(that.product.toJSON());
+              subCategorySelectBox.dropdown();
+            } else {
+              subCategorySelectBox.dropdown('set value', "").dropdown('set text', "Seçiniz");
+            }
+          }
           subCategorySelectBox.parent().removeClass("loading");
         }
       });
     },
-    addProduct: function (e) {
+    addOrUpdateProduct: function (e) {
       e.preventDefault();
       var that = this;
       var form = this.form();
@@ -78,8 +92,12 @@ define([
       var product = new Product();
       product.save(formValues, {
         success: function () {
-          that.render;
-          alert("ürün başarıyla eklendi");
+          if (that.params == undefined) {
+            alertify.success("Ürün başarıyla eklendi");
+          } else {
+            alertify.success("Ürün başarıyla güncellendi");
+          }
+          window.location.hash = "product/list";
         }
       });
     },
@@ -95,12 +113,13 @@ define([
         var product = new Product({id: this.params.productId});
         product.fetch({
           success: function (product) {
+            that.product = product;
             that.$el.html(addProductTemplate({
               product: product.toJSON(),
-              mainCategories: that.mainCategoryCollection.toJSON()
+              mainCategories: that.mainCategoryCollection.toJSON(),
+              images: that.imageCollection.toJSON()
             }));
-            $('.ui.dropdown').dropdown();
-            that.form().setValues(product.toJSON());
+            $("#productMainCategorySelect").dropdown("set selected", product.toJSON().categoryId.parentCategory);
           }
         });
       }
@@ -118,8 +137,11 @@ define([
     initialize: function () {
       this.productCollection = new ProductsCollection();
     },
-
+    editProduct: function (e) {
+      $(e.currentTarget).addClass("loading");
+    },
     deleteProduct: function (e) {
+      $(e.currentTarget).addClass("loading");
       var productId = $(e.currentTarget).attr("data-id");
       this.deleteItem(this.productCollection, productId, $("#listProductForm"));
     },

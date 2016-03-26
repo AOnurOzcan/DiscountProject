@@ -30,7 +30,7 @@ project.app.get("/check", function (req, res) {
   if (req.session.admin == undefined) {
     res.unauthorized();
   } else {
-    res.json({companyName: req.session.admin.companyName});
+    res.json({companyName: req.session.admin.companyName, accountAuth: req.session.admin.accountAuth});
   }
 
 });

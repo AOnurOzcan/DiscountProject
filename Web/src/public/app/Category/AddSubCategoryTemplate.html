@@ -1,0 +1,29 @@
+<h1 class="ui dividing header">Alt Kategori {{#subCategory.id}}Düzenle{{else}}Ekle{{/subCategory.id}}</h1>
+<div class="ui middle aligned center aligned grid">
+    <div class="six wide column">
+        <h4 class="ui top attached inverted header">Alt Kategori
+            {{#subCategory.id}}Düzenle{{else}}Ekle{{/subCategory.id}}</h4>
+        <div class="ui buttom attached segment">
+            <form class="ui large form" id="addSubCategoryForm">
+                {{#subCategory.id}}<input type="hidden" name="id">{{/subCategory.id}}
+                <div class="field">
+                    <select class="ui fluid dropdown" name="parentCategory" id="subCategorySelect">
+                        <option value="">Ana Kategori Seçiniz</option>
+                        {{#each mainCategories}}
+                        <option value="{{id}}">{{categoryName}}</option>
+                        {{/each}}
+                    </select>
+                </div>
+                <div class="field">
+                    <input type="text" name="categoryName" placeholder="Alt Kategori Adı">
+                </div>
+                {{#subCategory.id}}
+                <button class="fluid green ui button" id="updateSubCategoryButton" data-id="{{id}}">Kaydet</button>
+                {{else}}
+                <button class="fluid ui primary button" id="addSubCategoryButton">Oluştur</button>
+                {{/subCategory.id}}
+                <div class="ui error message"></div>
+            </form>
+        </div>
+    </div>
+</div>

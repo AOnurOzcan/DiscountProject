@@ -23,7 +23,8 @@ console.log("Static field forwarded");
 app.use(session({
   secret: 'discount-project-web',
   resave: false,
-  saveUninitialized: true
+  saveUninitialized: true,
+  cookie: {maxAge: 1000 * 60 * 30} // 30 minutes
 }));
 console.log("Session initialized");
 
@@ -46,6 +47,8 @@ orm.connect(config.get("database"), function (err, db) { // create connection fr
 
   project.util = {
     BodyControl: require("./util/BodyControl"),
+    DoneManager: require("./util/DoneManager"),
+    AsyncForEach: require("./util/AsyncForEach"),
     //Get: require("./util/Get"),
     //RequestLogger: require("./util/RequestLogger"),
     ParseDate: require("./util/ParseDate"),

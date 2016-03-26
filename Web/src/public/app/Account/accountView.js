@@ -79,7 +79,10 @@ define([
       this.deleteItem(this.accountCollection, accountId);
     },
     render: function () {
-      this.$el.html(listAccountTemplate({accounts: this.accountCollection.toJSON()}));
+      this.$el.html(listAccountTemplate({
+        accounts: this.accountCollection.toJSON(),
+        auths: this.params
+      }));
     }
   });
 

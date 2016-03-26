@@ -15,15 +15,15 @@
                 </div>
                 <div class="field">
                     <select class="ui selection dropdown" id="productMainCategorySelect">
-                        <option value="">Kategori Seçiniz</option>
+                        <option value="">Üst Kategori Seçiniz</option>
                         {{#mainCategories}}
                         <option value="{{id}}">{{categoryName}}</option>
                         {{/mainCategories}}
                     </select>
                 </div>
                 <div class="field">
-                    <select class="ui selection dropdown" name="categoryId" id="productSubCategorySelect">
-                        <option value="">Üst Kategori Seçiniz</option>
+                    <select class="ui selection dropdown deneme" name="categoryId" id="productSubCategorySelect">
+                        <option value="">Alt Kategori Seçiniz</option>
                     </select>
                 </div>
                 <div class="field">
@@ -48,7 +48,12 @@
                     <textarea type="text" name="productDescription" placeholder="Açıklama"></textarea>
                 </div>
                 {{#if product.id}}
-                <button class="fluid green ui button" id="saveProductButton">Kaydet</button>
+                <div class="ui fluid buttons">
+                    <button class="green ui button" id="updateProductButton">
+                        <i class="add circle icon"></i>Kaydet
+                    </button>
+                    <a class="red ui button" href="#product/list"><i class="remove circle icon"></i>İptal</a>
+                </div>
                 {{else}}
                 <button class="fluid ui primary button" id="addProductButton">Ekle</button>
                 {{/if}}

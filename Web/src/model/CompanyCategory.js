@@ -5,7 +5,7 @@ var CompanyCategory = project.db.define('CompanyCategory', {
   id: {type: 'serial'}
 });
 
-CompanyCategory.hasOne('category', Category, {field: 'categoryId', autoFetch: true});
-CompanyCategory.hasOne('company', Company, {field: 'companyId', autoFetch: true});
+CompanyCategory.hasOne('category', Category, {field: 'categoryId'});
+CompanyCategory.hasOne('company', Company, {field: 'companyId'});
 
 module.exports = CompanyCategory;
