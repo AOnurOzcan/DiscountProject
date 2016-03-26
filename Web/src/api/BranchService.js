@@ -49,7 +49,7 @@ project.app.delete("/branch/:id", AuthorizedRoute(""), function (req, res) {
   });
 });
 
-project.app.get("/getBranches", AuthorizedRoute(""), function (req, res) {
+project.app.get("/branch", AuthorizedRoute(""), function (req, res) {
 
   Branch.find({companyId: req.session.admin.companyId}, function (err, branches) {
     if (err) {

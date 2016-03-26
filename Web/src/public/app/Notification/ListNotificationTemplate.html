@@ -1,0 +1,52 @@
+<h1 class="ui dividing header">Bildirimleri Listele</h1>
+<table class="ui celled table center aligned" id="listNotificationForm">
+    <thead>
+    <tr>
+        <th>İndirim Adı</th>
+        <th>Ürünler</th>
+        <th>Başlangıç Tarihi</th>
+        <th>Bitiş Tarihi</th>
+        <th>İndirim Açıklaması</th>
+        <th>İşlemler</th>
+    </tr>
+    </thead>
+    <tbody>
+    {{#notifications}}
+    <tr>
+        <td>{{name}}</td>
+        <td><a class="up primary button">Ürünleri Gör</a></td>
+        <td>{{formatDate startDate}}</td>
+        <td>{{formatDate endDate}}</td>
+        <td>{{description}}</td>
+        <td>
+            <button class="red ui button" id="deleteNotificationButton" data-id="{{id}}">Sil</button>
+            <a class="teal ui button" href="#notification/edit/{{id}}">Düzenle</a>
+            <button class="ui primary button" id="sendNotificationButton" data-id="{{id}}">Bildirim Gönder</button>
+        </td>
+    </tr>
+    {{else}}
+    <tr>
+        <td colspan="100%">Hiç bildirim yok. Lütfen <a href="/#notification/add">yeni bildirim</a> ekleyin.</td>
+    </tr>
+    {{/notifications}}
+    </tbody>
+</table>
+
+<div class="ui small modal">
+    <div class="header">
+        Bildirim Gönder
+    </div>
+    <div class="content">
+        <p>Gönder'a bastığınızda sizden bildirim almak isteyen tüm kullanıcılara bildirim gönderilir.
+            Bu işlem geri alınamaz. Onaylıyor musunuz?</p>
+    </div>
+    <div class="actions">
+        <div class="ui negative button">
+            Vazgeç
+        </div>
+        <div class="ui positive right labeled icon button approveSending">
+            Gönder
+            <i class="checkmark icon"></i>
+        </div>
+    </div>
+</div>

@@ -232,8 +232,8 @@ window.define(['backbone', 'handlebars'], function (Backbone, Handlebars) {
       collection.get(id).destroy({
         wait: true, //wait until server response to remove model from collection
         success: function () { //If success
-          that.render();
           alertify.success("Silme işlemi başarıyla gerçekleşti");
+          that.render();
         }
       });
     }

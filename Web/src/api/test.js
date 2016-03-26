@@ -33,10 +33,11 @@ project.app.get("/menuTest", function (req, res) {
       },
       {
         header: "Bildirimler",
-        links: [{name: "Bildirim Ekle", href: "#notification/add"}, {
-          name: "Bildirim Listele",
-          href: "#notification/list"
-        }]
+        links: [
+          {name: "Bildirim Ekle", href: "#notification/add"},
+          {name: "Bildirim Listele", href: "#notification/list"},
+          {name: "Gönderilen Bildirimler", href: "#notification/sended"}
+        ]
       },
       {
         header: "Şubeler",

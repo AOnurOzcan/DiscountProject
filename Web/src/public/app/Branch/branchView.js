@@ -8,7 +8,7 @@ define(['backbone', 'handlebars', 'text!Branch/addBranchTemplate.html', 'text!Br
   });
 
   var BranchCollection = Backbone.Collection.extend({
-    url: "/getBranches",
+    url: "/branch",
     model: BranchModel
   });
 

@@ -10,7 +10,8 @@ require.config({
     'alertify': '../lib/alertify.min',
     'jquerySerialize': '../lib/jquery-serialize-object',
     'core': 'Util/core',
-    'outer': 'Util/outer'
+    'outer': 'Util/outer',
+    'googleMaps': 'http://maps.google.com/maps/api/js?key=AIzaSyAP3ORAEACIf0t1euI3Nwd22uR-bFtr6no'
   },
   shim: {
     semanticJs: {
@@ -39,6 +40,7 @@ require([
   'core',
   'outer',
   'alertify',
+  'googleMaps',
   'handlebars',
   'semanticJs',
   'jquerySerialize'

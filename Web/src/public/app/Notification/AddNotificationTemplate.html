@@ -1,0 +1,60 @@
+<h1 class="ui dividing header">Bildirim {{#notification.id}}Düzenle{{else}}Oluştur{{/notification.id}}</h1>
+<div class="ui middle aligned center aligned grid">
+    <div class="ten wide column">
+        <h4 class="ui top attached inverted header">Bildirim
+            {{#notification.id}}Düzenle{{else}}Oluştur{{/notification.id}}</h4>
+        <div class="ui buttom attached segment">
+            <form class="ui large form" id="addNotificationForm">
+                {{#notification.id}}<input type="hidden" name="id">{{/notification.id}}
+                <div class="field">
+                    <input type="text" name="name" placeholder="Bildirim Adı">
+                </div>
+                <div class="field">
+                    <div class="ui fluid multiple search selection dropdown" id="notificationProductDropdown">
+                        <input type="hidden" name="products">
+                        <i class="dropdown icon"></i>
+                        <div class="default text">Ürünler</div>
+                        <div class="menu">
+                            {{#products}}
+                            <div class="item" data-value="{{id}}">
+                                <img class="ui avatar image" src="{{imageURL}}">
+                                {{productName}}
+                            </div>
+                            {{/products}}
+                        </div>
+                    </div>
+                </div>
+                <div class="field">
+                    <input type="text" name="startDate" placeholder="Başlangıç Tarihi">
+                </div>
+                <div class="field">
+                    <input type="text" name="endDate" placeholder="Bitiş Tarihi">
+                </div>
+                <div class="field">
+                    <textarea type="text" name="description" placeholder="Açıklama"></textarea>
+                </div>
+                <div class="field">
+                    <div class="ui fluid multiple search selection dropdown" name="branches[]"
+                         id="notificationBranchDropdown">
+                        <input type="hidden" name="branches">
+                        <i class="dropdown icon"></i>
+                        <div class="default text">Şube Seçiniz</div>
+                        <div class="menu">
+                            {{#branches}}
+                            <div class="item" data-value="{{id}}">
+                                {{name}}
+                            </div>
+                            {{/branches}}
+                        </div>
+                    </div>
+                </div>
+                {{#notification.id}}
+                <button class="fluid green ui button" id="updateNotificationButton" data-id="{{id}}">Kaydet</button>
+                {{else}}
+                <button class="fluid ui primary button" id="addNotificationButton">Ekle</button>
+                {{/notification.id}}
+                <div class="ui error message"></div>
+            </form>
+        </div>
+    </div>
+</div>

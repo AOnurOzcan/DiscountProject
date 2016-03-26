@@ -7,7 +7,8 @@ define([
   'Branch/branchView',
   'Upload/uploadView',
   'Account/accountView',
-  'Category/CategoryView'
+  'Category/CategoryView',
+  'Notification/NotificationView'
 ], function (Backbone,
              LoginView,
              AdminView,
@@ -16,7 +17,8 @@ define([
              BranchView,
              UploadView,
              Account,
-             CategoryView) {
+             CategoryView,
+             NotificationView) {
 
   var Router = Backbone.Router.extend({
 
@@ -38,6 +40,9 @@ define([
       'category/sub/add': 'AddSubCategory',
       'category/sub/edit/:id': 'EditSubCategory',
       'category/list': 'ListCategory',
+      'notification/add': 'AddNotification',
+      'notification/edit/:id': 'EditNotification',
+      'notification/list': 'ListNotification',
       'file/upload': 'FileUpload'
     },
 
@@ -57,11 +62,14 @@ define([
       this.addMainCategoryView = [this.menuView, new CategoryView.AddMainCategoryView()];
       this.addSubCategoryView = [this.menuView, new CategoryView.AddSubCategoryView()];
       this.listCategoryView = [this.menuView, new CategoryView.ListCategoryView()];
+      this.addNotificationView = [this.menuView, new NotificationView.AddNotificationView()];
+      this.listNotificationView = [this.menuView, new NotificationView.ListNotificationView()];
     },
 
     Login: function () {
       var that = this;
-      $(".menu").html("");
+      $('.menu').empty(); // Login ekranında menü görünmemesi gerektiği için menüyü siliyoruz.
+      this.menuView.isRendered = false; // Login'den farklı bir ekrana geçildiğinde menünün basılması için false yaptık.
       this.checkSession.fetch({ // Oturum açık mı kontrol et
         success: function () {  // Oturum açıksa
           window.location.hash = 'cHomepage'; // Firma anasayfasına yönlendir
@@ -123,18 +131,35 @@ define([
     AddMainCategory: function () {
       this.CheckSessionShowView(this.addMainCategoryView);
     },
+
     EditMainCategory: function (id) {
       this.CheckSessionShowView(this.addMainCategoryView, {mainCategoryId: id});
     },
+
     AddSubCategory: function () {
       this.CheckSessionShowView(this.addSubCategoryView);
     },
+
     EditSubCategory: function (id) {
       this.CheckSessionShowView(this.addSubCategoryView, {subCategoryId: id});
     },
+
     ListCategory: function () {
       this.CheckSessionShowView(this.listCategoryView);
     },
+
+    AddNotification: function () {
+      this.CheckSessionShowView(this.addNotificationView);
+    },
+
+    EditNotification: function (id) {
+      this.CheckSessionShowView(this.addNotificationView, {notificationId: id});
+    },
+
+    ListNotification: function () {
+      this.CheckSessionShowView(this.listNotificationView);
+    },
+
     /* Bu fonksiyon önce oturumu kontrol eder, oturum varsa sayfayı ekrana basar.*/
     CheckSessionShowView: function () {
       var args = arguments;

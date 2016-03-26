@@ -9,14 +9,14 @@ var NotificationProduct = require('../model/NotificationProduct');
 var NotificationBranch = require('../model/NotificationBranch');
 var UserNotification = require('../model/UserNotification');
 
-project.app.get("/notification/send", function (req, res) {
+////////////////////////////////// WEB /////////////////////////////////////
 
+project.app.get("/notification/send/:id", function (req, res) {
   User.find({}, function (err, users) {
     var userRegistrationIds = [];
     var message = new GCM.Message({
       data: {
-        key1: 'message1',
-        key2: 'message2'
+        key1: req.params.id
       }
     });
 
@@ -32,16 +32,26 @@ project.app.get("/notification/send", function (req, res) {
     });
 
     sender.send(message, {registrationTokens: userRegistrationIds}, function (err, response) {
-      if (err)
+      if (err) {
         console.error(err);
-      else
-        res.json({"success": true});
+      }
+      else {
+        Notification.get(req.params.id, function (err, notification) {
+          notification.isSent = true;
+          notification.save(function (err) {
+            if (err) {
+              return res.unknown();
+            }
+            res.json({"success": true});
+          });
+        });
+      }
     });
   });
 });
 
-project.app.get("/notification/get/:notificationId", function (req, res) {
-  var notificationId = req.params.notificationId;
+project.app.get("/notification/:id", function (req, res) {
+  var notificationId = req.params.id;
   Notification.one({id: notificationId}, function (err, notification) {
 
     notification.productList = [];
@@ -78,28 +88,6 @@ project.app.get("/notification/get/:notificationId", function (req, res) {
   });
 });
 
-project.app.get("/notification/getall", function (req, res) {
-
-  project.util.AuthorizedRouteForUser(req, res, function (userId) {
-
-    UserNotification.find({userId: userId}, function (err, notifications) {
-      if (err) {
-        return res.unknown();
-      }
-
-      notifications.forEach(function (notification) {
-        notification.userId = null;
-        notification.Notification.branchList = null;
-        notification.Notification.productList = null;
-        notification.notificationId = notification.Notification;
-        delete notification['Notification'];
-      });
-
-      res.json(notifications);
-    });
-  });
-});
-
 // Bildirim ekleme servisi
 project.app.post("/notification", function (req, res) {
   var products = req.body.products;
@@ -109,8 +97,7 @@ project.app.post("/notification", function (req, res) {
   notification.startDate = req.body.startDate;
   notification.endDate = req.body.endDate;
   notification.description = req.body.description;
-  notification.companyId = 1;
-  //notification.companyId = req.session.admin.companyId;
+  notification.companyId = req.session.admin.companyId;
 
   Notification.create(notification, function (err, savedNotification) {
     if (err) {
@@ -219,9 +206,10 @@ project.app.delete("/notification/:id", function (req, res) {
   });
 });
 
-//Tüm bildirimleri getir.
-project.app.get("/notification", function (req, res) {
-  Notification.find(function (err, notifications) {
+//Tüm gönderilmemiş olan bildirimleri getir.
+project.app.get("/getNotifications/:isSent", function (req, res) {
+  var isSent = req.params.isSent;
+  Notification.find({isSent: isSent}, function (err, notifications) {
     notifications.asyncForEach(function (notification, done) {
       NotificationProduct.find({notificationId: notification.id}, function (err, notificationProduct) {
         if (err) {
@@ -248,6 +236,30 @@ project.app.get("/notification", function (req, res) {
       }, function () {
         res.json(notifications);
       });
+    });
+  });
+});
+
+/////////////////////////////////// MOBILE /////////////////////////////////////
+
+project.app.get("/notification/getall", function (req, res) {
+
+  project.util.AuthorizedRouteForUser(req, res, function (userId) {
+
+    UserNotification.find({userId: userId}, function (err, notifications) {
+      if (err) {
+        return res.unknown();
+      }
+
+      notifications.forEach(function (notification) {
+        notification.userId = null;
+        notification.Notification.branchList = null;
+        notification.Notification.productList = null;
+        notification.notificationId = notification.Notification;
+        delete notification['Notification'];
+      });
+
+      res.json(notifications);
     });
   });
 });
