@@ -194,3 +194,23 @@ project.app.get("/preferences", function (req, res) {
     res.json(result);
   });
 });
+
+//------------------------------- MOBILE -------------------------------//
+
+project.app.get("/getAllCategories", function (req, res) {
+
+  Category.find({parentCategory: null}, function (err, categories) {
+
+    if (err) {
+      return res.unknown();
+    }
+    categories.forEach(function (category) {
+      if (category.parentCategory != null) {
+        category.parentCategory = category.parent;
+        delete category['parent'];
+      }
+    });
+
+    res.json(categories);
+  });
+});

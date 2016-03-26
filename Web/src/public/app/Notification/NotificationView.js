@@ -234,7 +234,7 @@ define([
       this.notificationCollection = new NotificationCollection({url: "/getNotifications/1"});
     },
     render: function () {
-      this.$el.html(sendedNotificationTemplate({}));
+      this.$el.html(sendedNotificationTemplate({sends: this.notificationCollection.toJSON()}));
     }
   });
 
@@ -249,7 +249,8 @@ define([
 
   return {
     AddNotificationView: AddNotificationView,
-    ListNotificationView: ListNotificationView
+    ListNotificationView: ListNotificationView,
+    SendedNotificationView: SendedNotificationView
   }
 
 });

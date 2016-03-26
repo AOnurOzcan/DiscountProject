@@ -1,0 +1,26 @@
+<h1 class="ui dividing header">Gönderilen Bildirimleri Listele</h1>
+<table class="ui celled table center aligned" id="sendedNotificationForm">
+    <thead>
+    <tr>
+        <th>İndirim Adı</th>
+        <th>Ürünler</th>
+        <th>Gönderilen Kişi Sayısı</th>
+        <th>Gönderilme Tarihi</th>
+    </tr>
+    </thead>
+    <tbody>
+    {{#sends}}
+    <tr>
+        <td>{{name}}</td>
+        <td><a class="up primary button">Ürünleri Gör</a></td>
+        <td>{{peopleCount}}</td>
+        <td>{{formatDate sendDate}}</td>
+    </tr>
+    {{else}}
+    <tr>
+        <td colspan="100%">Hiç gönderilen bildirim yok. Lütfen <a href="/#notification/add">yeni bildirim</a> gönderin.
+        </td>
+    </tr>
+    {{/sends}}
+    </tbody>
+</table>

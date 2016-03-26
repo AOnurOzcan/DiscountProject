@@ -43,6 +43,7 @@ define([
       'notification/add': 'AddNotification',
       'notification/edit/:id': 'EditNotification',
       'notification/list': 'ListNotification',
+      'notification/sended': 'ListSendedNotification',
       'file/upload': 'FileUpload'
     },
 
@@ -64,6 +65,7 @@ define([
       this.listCategoryView = [this.menuView, new CategoryView.ListCategoryView()];
       this.addNotificationView = [this.menuView, new NotificationView.AddNotificationView()];
       this.listNotificationView = [this.menuView, new NotificationView.ListNotificationView()];
+      this.listSendedNotificationView = [this.menuView, new NotificationView.SendedNotificationView()];
     },
 
     Login: function () {
@@ -158,6 +160,10 @@ define([
 
     ListNotification: function () {
       this.CheckSessionShowView(this.listNotificationView);
+    },
+
+    ListSendedNotification: function () {
+      this.CheckSessionShowView(this.listSendedNotificationView);
     },
 
     /* Bu fonksiyon önce oturumu kontrol eder, oturum varsa sayfayı ekrana basar.*/
