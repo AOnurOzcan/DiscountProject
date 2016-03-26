@@ -38,6 +38,8 @@ project.app.get("/notification/send/:id", function (req, res) {
       else {
         Notification.get(req.params.id, function (err, notification) {
           notification.isSent = true;
+          notification.sendDate = new Date();
+          notification.peopleCount = userRegistrationIds.length;
           notification.save(function (err) {
             if (err) {
               return res.unknown();
