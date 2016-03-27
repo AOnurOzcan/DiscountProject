@@ -2,6 +2,7 @@ package com.example.ooar.discountproject.fragment;
 
 import android.app.Activity;
 import android.content.Context;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
@@ -40,6 +41,8 @@ public class NotificationDetailFragment extends Fragment {
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+        SharedPreferences.Editor editor = getActivity().getSharedPreferences("Session", getActivity().MODE_PRIVATE).edit();
+        editor.putInt("NotificationId", 0).commit();
         notificationId = getArguments().getInt("notificationId");
         return inflater.inflate(R.layout.notification_detail, container, false);
     }
