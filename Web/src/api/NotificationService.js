@@ -14,6 +14,7 @@ var UserNotification = require('../model/UserNotification');
 project.app.get("/notification/send/:id", function (req, res) {
   User.find({}, function (err, users) {
     var userRegistrationIds = [];
+    var userIds = [];
     var message = new GCM.Message({
       data: {
         key1: req.params.id
@@ -29,6 +30,7 @@ project.app.get("/notification/send/:id", function (req, res) {
 
     users.forEach(function (user) {
       userRegistrationIds.push(user.registrationId);
+      userIds.push(user.id);
     });
 
     sender.send(message, {registrationTokens: userRegistrationIds}, function (err, response) {
@@ -44,7 +46,7 @@ project.app.get("/notification/send/:id", function (req, res) {
             if (err) {
               return res.unknown();
             }
-            userRegistrationIds.asyncForEach(function (userId, done) {
+            userIds.asyncForEach(function (userId, done) {
               UserNotification.create({
                 notificationId: notification.id,
                 userId: userId
