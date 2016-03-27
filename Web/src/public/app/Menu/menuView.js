@@ -9,14 +9,6 @@ define(['backbone',
     urlRoot: '/logout'
   });
 
-  var CheckSession = Backbone.Model.extend({
-    urlRoot: "/check"
-  });
-
-  var GetMenu = Backbone.Model.extend({
-    urlRoot: "/menuTest"
-  });
-
   var MenuView = core.CommonView.extend({
     el: $(".menu"),
     autoLoad: true,
@@ -25,7 +17,6 @@ define(['backbone',
     },
     initialize: function () {
       this.isRendered = false;
-      this.getMenu = new GetMenu();
     },
     logout: function () {
       var logoutModel = new LogoutModel();
@@ -37,9 +28,17 @@ define(['backbone',
     },
     render: function () {
       if (this.isRendered == false) { // Eğer menü daha önce render edilmediyse
-        this.$el.html(menuTemplate({menu: this.getMenu.toJSON()})); // Ekrana bas
+        this.$el.html(menuTemplate({session: this.session})); // Ekrana bas
         this.isRendered = true; // Render edildi olarak işaretle
       }
+    }
+  });
+
+  Handlebars.registerHelper('checkAccount', function (companyName, accountType) {
+    if (accountType == "COMPANY") {
+      return companyName;
+    } else {
+      return "Yönetim Paneli";
     }
   });
 

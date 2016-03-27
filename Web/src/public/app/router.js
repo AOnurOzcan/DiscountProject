@@ -169,8 +169,10 @@ define([
     /* Bu fonksiyon önce oturumu kontrol eder, oturum varsa sayfayı ekrana basar.*/
     CheckSessionShowView: function () {
       var args = arguments;
+      var that = this;
       this.checkSession.fetch({ // Oturum açık mı kontrol et
-        success: function () {
+        success: function (account) {
+          that.menuView.session = account.attributes;
           outer.showView.apply(outer, args);
         }
       });

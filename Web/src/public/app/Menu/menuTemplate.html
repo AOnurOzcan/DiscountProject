@@ -1,16 +1,52 @@
 <div class="ui fixed inverted menu">
     <a href="#" class="ui red header item">
-        {{menu.companyName}}
+        {{checkAccount session.companyName session.accountType}}
     </a>
-    {{#each menu.headers}}
-    <div class="ui simple dropdown item">{{header}}<i class="dropdown icon"></i>
+    <!--Ürünler-->
+    <div class="ui simple dropdown item">Ürünler<i class="dropdown icon"></i>
         <div class="menu">
-            {{#each links}}
-            <a class="item" href="{{href}}">{{name}}</a>
-            {{/each}}
+            <a class="item" href="#product/add">Ürün Ekle</a>
+            <a class="item" href="#product/list">Ürün Listele</a>
         </div>
     </div>
-    {{/each}}
+    <!--Bildirimler-->
+    <div class="ui simple dropdown item">Bildirimler<i class="dropdown icon"></i>
+        <div class="menu">
+            <a class="item" href="#notification/add">Bildirim Ekle</a>
+            <a class="item" href="#notification/list">Bildirim Listele</a>
+            <a class="item" href="#notification/sended">Gönderilen Bildirimler</a>
+        </div>
+    </div>
+    <!--Şubeler-->
+    <div class="ui simple dropdown item">Şubeler<i class="dropdown icon"></i>
+        <div class="menu">
+            <a class="item" href="#branch/add">Şube Ekle</a>
+            <a class="item" href="#branch/list">Şube Listele</a>
+        </div>
+    </div>
+    <!--Kullanıcılar-->
+    <div class="ui simple dropdown item">Kullanıcılar<i class="dropdown icon"></i>
+        <div class="menu">
+            <a class="item" href="#account/add">Kullanıcı Ekle</a>
+            <a class="item" href="#account/list">Kullanıcıları Listele</a>
+        </div>
+    </div>
+    <!--Kullanıcılar-->
+    <div class="ui simple dropdown item">Kategoriler<i class="dropdown icon"></i>
+        <div class="menu">
+            <a class="item" href="#category/choose">Kategori Seç</a>
+            <a class="item" href="#category/main/add">Ana Kategori Ekle</a>
+            <a class="item" href="#category/sub/add">Alt Kategori Ekle</a>
+            <a class="item" href="#category/list">Kategorileri Listele</a>
+        </div>
+    </div>
+    <!--Yüklemeler-->
+    <div class="ui simple dropdown item">Yüklemeler<i class="dropdown icon"></i>
+        <div class="menu">
+            <a class="item" href="#file/upload">Resim Yükle</a>
+        </div>
+    </div>
+    <!--Sağ menü-->
     <div class="right menu">
         <a class="item" id="logoutButton">Çıkış Yap</a>
     </div>

@@ -14,11 +14,18 @@ project.app.post("/login", BodyControl("username", "password"), function (req, r
     if (admin == null) {
       return res.unauthorized();
     }
-    Company.one({id: admin.companyId}, function (err, company) {
-      admin.companyName = company.companyName;
-      req.session.admin = admin;
+    req.session.admin = admin;
+    if (admin.accountType == "COMPANY") {
+      Company.one({id: admin.companyId}, function (err, company) {
+        if (err) {
+          return res.unknown();
+        }
+        req.session.admin.companyName = company.companyName;
+        res.json({status: true});
+      });
+    } else {
       res.json({status: true});
-    });
+    }
   });
 });
 
@@ -30,7 +37,11 @@ project.app.get("/check", function (req, res) {
   if (req.session.admin == undefined) {
     res.unauthorized();
   } else {
-    res.json({companyName: req.session.admin.companyName, accountAuth: req.session.admin.accountAuth});
+    res.json({
+      accountType: req.session.admin.accountType,
+      companyName: req.session.admin.companyName,
+      accountAuth: req.session.admin.accountAuth
+    });
   }
 
 });
