@@ -258,7 +258,7 @@ project.app.get("/getNotifications/:isSent", function (req, res) {
 
 /////////////////////////////////// MOBILE /////////////////////////////////////
 
-project.app.get("/notification/getall", function (req, res) {
+project.app.get("/notification", function (req, res) {
 
   project.util.AuthorizedRouteForUser(req, res, function (userId) {
 

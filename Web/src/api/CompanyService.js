@@ -7,15 +7,28 @@ project.app.get("/company/withcategory", function (req, res) {
       res.send().unknown();
     }
 
-    result.forEach(function (item) {
-      item.category.parentCategory = null;
-      item.categoryId = item.category;
-      item.companyId = item.company;
-
-      delete item['category'];
-      delete item['company'];
+    result.asyncForEach(function (item, done) {
+      item.getCompany(function (err, Company) {
+        if (err) {
+          return res.unknown();
+        }
+        item.companyId = Company;
+        delete item['company'];
+        done();
+      });
+    }, function () {
+      result.asyncForEach(function (item2, done) {
+        item2.getCategory(function (err, Category) {
+          if (err) {
+            return res.unknown();
+          }
+          item2.categoryId = Category;
+          delete item2['category'];
+          done();
+        });
+      }, function () {
+        res.json(result);
+      });
     });
-
-    res.json(result);
   });
 });

@@ -32,19 +32,29 @@ public class MainActivity extends AppCompatActivity {
     GoogleCloudMessaging gcm;
     Context context;
     String regId;
+    int notificationId;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         final RetrofitConfiguration retrofitConfiguration = new RetrofitConfiguration();
         Util.setProgressDialog(this);
         context = getApplicationContext();
+
+        Bundle extras = getIntent().getExtras();
+
+        if(extras != null){
+            notificationId = extras.getInt("notificationId");
+        }
         setEvents();
+
+
     }
 
     public void setEvents() {
+        SharedPreferences.Editor editor = getSharedPreferences("Session", Activity.MODE_PRIVATE).edit();
+        editor.putInt("NotificationCount", 0).commit();
 
         String regId = getSharedPreferences("Session", Activity.MODE_PRIVATE).getString("regId", "");
         if (checkPlayServices()) {
@@ -70,6 +80,9 @@ public class MainActivity extends AppCompatActivity {
                     SharedPreferences.Editor editor = getSharedPreferences("Session", Activity.MODE_PRIVATE).edit();
                     editor.putString("tokenKey", tokenKey).commit();
                     Intent intent = new Intent(MainActivity.this, UserActivity.class);
+                    if (notificationId!=0){
+                        intent.putExtra("notificationId", notificationId);
+                    }
                     MainActivity.this.startActivity(intent);
                 }
 
