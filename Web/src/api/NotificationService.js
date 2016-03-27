@@ -44,7 +44,19 @@ project.app.get("/notification/send/:id", function (req, res) {
             if (err) {
               return res.unknown();
             }
-            res.json({"success": true});
+            userRegistrationIds.asyncForEach(function (userId, done) {
+              UserNotification.create({
+                notificationId: notification.id,
+                userId: userId
+              }, function (err) {
+                if (err) {
+                  return res.unknown();
+                }
+                done();
+              });
+            }, function () {
+              res.json({"success": true});
+            });
           });
         });
       }
