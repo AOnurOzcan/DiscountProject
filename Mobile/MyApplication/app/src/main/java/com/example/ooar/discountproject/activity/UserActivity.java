@@ -20,9 +20,9 @@ import com.example.ooar.discountproject.util.Util;
  * Created by Onur Kuru on 5.3.2016.
  */
 public class UserActivity extends FragmentActivity implements FragmentChangeListener {
-    int notificationId;
-    boolean isNotificationId = false;
 
+    int notificationId = 0;
+    boolean isNotificationId = false;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -50,8 +50,8 @@ public class UserActivity extends FragmentActivity implements FragmentChangeList
     }
 
     public void replaceFragment(Fragment fragment) {
-        FragmentManager fm = getSupportFragmentManager();
-        FragmentTransaction fragmentTransaction = fm.beginTransaction();
+        android.support.v4.app.FragmentManager fm = getSupportFragmentManager();
+        android.support.v4.app.FragmentTransaction fragmentTransaction = fm.beginTransaction();
         fragmentTransaction.replace(R.id.userFragments, fragment).addToBackStack(null);
         fragmentTransaction.commit();
     }

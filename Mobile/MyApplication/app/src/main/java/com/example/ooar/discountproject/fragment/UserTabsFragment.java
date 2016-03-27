@@ -3,12 +3,13 @@ package com.example.ooar.discountproject.fragment;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTabHost;
+import android.support.v4.app.FragmentTransaction;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.TabHost;
 
 import com.example.ooar.discountproject.R;
-import com.google.android.gms.games.Notifications;
 
 /**
  * Created by Onur Kuru on 25.3.2016.
@@ -19,7 +20,6 @@ public class UserTabsFragment extends Fragment {
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-
         return inflater.inflate(R.layout.user_tabs_layout, container, false);
     }
 
@@ -32,11 +32,4 @@ public class UserTabsFragment extends Fragment {
         mTabHost.addTab(mTabHost.newTabSpec("tab2").setIndicator("Tercihler", null), ChoisesFragment.class, null);
         mTabHost.addTab(mTabHost.newTabSpec("tab3").setIndicator("Profil", null), ProfileFragment.class, null);
     }
-
-    @Override
-    public void onSaveInstanceState(Bundle outState) {
-        super.onSaveInstanceState(outState);
-    }
-
-
 }

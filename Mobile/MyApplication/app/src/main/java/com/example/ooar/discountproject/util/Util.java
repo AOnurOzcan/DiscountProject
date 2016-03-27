@@ -15,7 +15,9 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.example.ooar.discountproject.R;
+import com.example.ooar.discountproject.model.Company;
 import com.example.ooar.discountproject.model.CompanyCategory;
+import com.example.ooar.discountproject.model.Preference;
 
 import org.w3c.dom.Text;
 
@@ -76,7 +78,7 @@ public class Util {
     public static int findIndexForCheckboxList(List<CheckBox> checkBoxList, CheckBox checkBox) {
         int index = -1;
         for (int i = 0; i < checkBoxList.size(); i++) {
-            if (checkBoxList.get(i).getId() == checkBox.getId()) {
+            if (checkBoxList.get(i).getTag().equals(checkBox.getTag())) {
                 index = i;
                 break;
             } else {
@@ -100,57 +102,15 @@ public class Util {
         return index;
     }
 
-    public static Button createButton(Activity activity, int id, LinearLayout.LayoutParams layoutParams, String text) {
-        Button button = new Button(activity);
-        if (id != 0)
-            button.setId(id);
-        if (layoutParams != null)
-            button.setLayoutParams(layoutParams);
-        if (text != null)
-            button.setText(text);
-        return button;
-    }
-
     public static CheckBox createCheckbox(Activity activity, int id, LinearLayout.LayoutParams layoutParams, String text) {
         CheckBox checkBox = new CheckBox(activity);
         if (id != 0)
-            checkBox.setId(id);
+            checkBox.setTag(id);
         if (layoutParams != null)
             checkBox.setLayoutParams(layoutParams);
         if (text != null)
             checkBox.setText(text);
         return checkBox;
-    }
-
-    public static TextView createTextView(Activity activity, int id, LinearLayout.LayoutParams layoutParams, String text) {
-        TextView textView = new TextView(activity);
-        if (id != 0)
-            textView.setId(id);
-        if (layoutParams != null)
-            textView.setLayoutParams(layoutParams);
-        if (text != null)
-            textView.setText(text);
-        return textView;
-    }
-
-    public static ImageView createImageView(Activity activity, int id, LinearLayout.LayoutParams layoutParams, String url) {
-        ImageView imageView = new ImageView(activity);
-        if (id != 0)
-            imageView.setId(id);
-        if (layoutParams != null)
-            imageView.setLayoutParams(layoutParams);
-        imageView.setBackground(activity.getResources().getDrawable(R.drawable.notification_imageview));
-        new DownloadImageTask(imageView).execute(url);
-        return imageView;
-    }
-
-    public static LinearLayout createLinearLayout(Activity activity, int id, int oriented, int visibility) {
-        LinearLayout linearLayout = new LinearLayout(activity);
-        if (id != 0)
-            linearLayout.setId(id);
-        linearLayout.setOrientation(oriented);
-        linearLayout.setVisibility(visibility);
-        return linearLayout;
     }
 
     public static void startProgressDialog() {
@@ -211,5 +171,32 @@ public class Util {
         pixels[0] = displaymetrics.widthPixels;
         pixels[1] = displaymetrics.heightPixels;
         return pixels;
+    }
+
+    public static boolean isEqual(List<Preference> preferenceList, List<CompanyCategory> selectedList) {
+        if (preferenceList.size() != selectedList.size()) {
+            return false;
+        } else {
+            boolean[] isEqual = new boolean[preferenceList.size()];
+            int i = 0;
+            for (Preference preference : preferenceList) {
+                for (CompanyCategory companyCategory : selectedList) {
+                    if (companyCategory.getCompanyId().getId() == preference.getCompanyId().getId() && companyCategory.getCategoryId().getId() == preference.getCategoryId().getId()) {
+                        isEqual[i] = true;
+                        break;
+                    } else {
+                        isEqual[i] = false;
+                    }
+                }
+                i++;
+            }
+
+            for (boolean equal : isEqual) {
+                if (!equal) {
+                    return false;
+                }
+            }
+            return true;
+        }
     }
 }
