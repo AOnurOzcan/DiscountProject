@@ -214,3 +214,17 @@ project.app.get("/getAllCategories", function (req, res) {
     res.json(categories);
   });
 });
+
+/**
+ * Bu fonksiyon tüm kategorileri, alt kategorileriyle birlikte getirir.
+ */
+project.app.get("/mobile/mainCategoryWithSubs", function (req, res) {
+
+  Category.find({}, function (err, categories) {
+
+    if (err) {
+      return res.unknown();
+    }
+    res.json(categories);
+  });
+});

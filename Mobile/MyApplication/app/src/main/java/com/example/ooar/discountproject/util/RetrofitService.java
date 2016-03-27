@@ -50,7 +50,7 @@ public interface RetrofitService {
     @PUT("/user/profile/edit")
     void editUser(@Query("tokenKey") String tokenKey, @Body User user, Callback<User> callback);
 
-    @GET("/getAllCategories")
+    @GET("/mobile/mainCategoryWithSubs")
     void getAllCategories(Callback<List<Category>> callback);
 
     @GET("/company/withcategory")
@@ -68,10 +68,10 @@ public interface RetrofitService {
     @POST("/session/create")
     void createSession(@Body Map<String, String> phoneNumber, Callback<Map<String, String>> callback);
 
-    @GET("/notification/get/{notificationId}")
-    void getNotificationById(@Query("tokenKey") String tokenKey, @Path("notificationId") Integer notificationId, Callback<Notification> callback);
+    @GET("/notification/{id}")
+    void getNotificationById(@Query("tokenKey") String tokenKey, @Path("id") Integer notificationId, Callback<Notification> callback);
 
-    @GET("/notification/getall")
+    @GET("/notification")
     void getAllNotification(@Query("tokenKey") String tokenKey, Callback<List<UserNotification>> callback);
 
 }
