@@ -45,7 +45,6 @@ public class ChoisesFragment extends Fragment {
     public List<CompanyCategory> selectedCompanyList = new ArrayList<>();
     public boolean deleteResponse = false;
     public boolean createResponse = false;
-    public boolean cache = false;
 
 
     @Override
@@ -55,22 +54,23 @@ public class ChoisesFragment extends Fragment {
 
     @Override
     public void onViewCreated(View view, Bundle savedInstanceState) {
-        if (categoryList == null || companyList == null || preferencesList == null) {
-            getAllCategories();
-        } else {
-            this.onViewStateRestored(savedInstanceState);
-        }
+        getAllCategories();
+//        if (categoryList == null || companyList == null || preferencesList == null) {
+//            getAllCategories();
+//        } else {
+//            this.onViewStateRestored(savedInstanceState);
+//        }
     }
 
-    @Override
-    public void onResume() {
-        super.onResume();
-        if (cache) {
-            selectedCompanyList.clear();
-            renderPage();
-        }
-        cache = true;
-    }
+//    @Override
+//    public void onResume() {
+//        super.onResume();
+//        if (cache) {
+//            selectedCompanyList.clear();
+//            renderPage();
+//        }
+//        cache = true;
+//    }
 
     public void getAllCategories() {
         Callback callback = new Callback() {
@@ -128,7 +128,7 @@ public class ChoisesFragment extends Fragment {
         List<Category> parentCategoryList = new ArrayList<Category>();
         List<Category> childCategoryList = new ArrayList<Category>();
         List<CheckBox> checkboxList = new ArrayList<CheckBox>();
-        List<LinearLayout> linearLayoutList = new ArrayList<LinearLayout>();
+        final List<LinearLayout> linearLayoutList = new ArrayList<LinearLayout>();
         List<Button> buttonList = new ArrayList<Button>();
         List<Button> editCompanyList = new ArrayList<>();
 
@@ -204,14 +204,9 @@ public class ChoisesFragment extends Fragment {
                 public void success(Object o, Response response) {
                     createResponse = true;
                     if (deleteResponse) {
-                        categoryList = null;
-                        companyList = null;
-                        preferencesList = null;
-                        cache = false;
-                        selectedCompanyList.clear();
-                        FragmentChangeListener fc = (FragmentChangeListener) getActivity();
-                        fc.replaceFragment(UserActivity.userTabsFragment, null);
                         Util.stopProgressDialog();
+                        Toast.makeText(getActivity().getApplicationContext(), "Bilgiler Başarıyla Güncellendi", Toast.LENGTH_LONG);
+                        UserActivity.userTabsFragment.mTabHost.setCurrentTab(0);
                     }
                 }
 
@@ -225,14 +220,9 @@ public class ChoisesFragment extends Fragment {
                 public void success(Object o, Response response) {
                     deleteResponse = true;
                     if (createResponse) {
-                        categoryList = null;
-                        companyList = null;
-                        preferencesList = null;
-                        cache = false;
-                        selectedCompanyList.clear();
-                        FragmentChangeListener fc = (FragmentChangeListener) getActivity();
-                        fc.replaceFragment(UserActivity.userTabsFragment, null);
                         Util.stopProgressDialog();
+                        Toast.makeText(getActivity().getApplicationContext(), "Bilgiler Başarıyla Güncellendi", Toast.LENGTH_LONG);
+                        UserActivity.userTabsFragment.mTabHost.setCurrentTab(0);
                     }
                 }
 
@@ -507,4 +497,16 @@ public class ChoisesFragment extends Fragment {
             Toast.makeText(getActivity(), "Gösterilecek Firma Yok", Toast.LENGTH_SHORT).show();
         }
     }
+
+//    public void clearCacheShowMessages(List<LinearLayout> linearLayoutList) {
+//        categoryList = null;
+//        companyList = null;
+//        preferencesList = null;
+//        cache = false;
+//        selectedCompanyList.clear();
+//
+//        for (LinearLayout linearLayout : linearLayoutList) {
+//            linearLayout.setVisibility(View.GONE);
+//        }
+//    }
 }

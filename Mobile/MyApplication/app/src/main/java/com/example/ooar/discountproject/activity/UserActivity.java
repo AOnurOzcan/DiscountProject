@@ -2,12 +2,16 @@ package com.example.ooar.discountproject.activity;
 
 
 import android.app.Activity;
+import android.app.AlertDialog;
 import android.content.Context;
+import android.content.DialogInterface;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.res.Configuration;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.os.Handler;
+import android.preference.PreferenceManager;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentManager;
@@ -27,6 +31,7 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.WindowManager;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
@@ -39,7 +44,12 @@ import com.example.ooar.discountproject.fragment.NotificationsFragment;
 import com.example.ooar.discountproject.fragment.ProfileFragment;
 import com.example.ooar.discountproject.fragment.UserTabsFragment;
 import com.example.ooar.discountproject.util.FragmentChangeListener;
+import com.example.ooar.discountproject.util.RetrofitConfiguration;
 import com.example.ooar.discountproject.util.Util;
+
+import retrofit.Callback;
+import retrofit.RetrofitError;
+import retrofit.client.Response;
 
 /**
  * Created by Onur Kuru on 5.3.2016.
@@ -84,7 +94,7 @@ public class UserActivity extends AppCompatActivity implements FragmentChangeLis
         // replaceFragment(new UserTabsFragment());
         mTitle = "Menü";
 
-        mPlanetTitles = new String[]{"Profil"};
+        mPlanetTitles = new String[]{"Profil", "Oturumu Kapat"};
         mDrawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
         mDrawerList = (ListView) findViewById(R.id.left_drawer);
 
@@ -163,6 +173,9 @@ public class UserActivity extends AppCompatActivity implements FragmentChangeLis
                 fragment = new ProfileFragment();
                 replaceFragment(fragment, "profileFragment");
                 break;
+            case 1:
+                closeSession();
+                break;
             default:
                 break;
         }
@@ -223,6 +236,44 @@ public class UserActivity extends AppCompatActivity implements FragmentChangeLis
                     break;
             }
         }
+    }
 
+    public void closeSession() {
+
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setCancelable(false);
+        builder.create().getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
+        builder.setPositiveButton("Oturumu Kapat", new DialogInterface.OnClickListener() {
+            public void onClick(final DialogInterface dialog, int id) {
+                String tokenKey = getSharedPreferences("Session", Activity.MODE_PRIVATE).getString("tokenKey", "");
+
+                Callback callback = new Callback() {
+                    @Override
+                    public void success(Object o, Response response) {
+                        Util.stopProgressDialog();
+                        SharedPreferences.Editor editor = getSharedPreferences("Session", Activity.MODE_PRIVATE).edit();
+                        editor.remove("phoneNumber");
+                        editor.remove("tokenKey");
+                        editor.commit();
+                        dialog.dismiss();
+                        Intent intent = new Intent(UserActivity.this, MainActivity.class);
+                        UserActivity.this.startActivity(intent);
+                    }
+
+                    @Override
+                    public void failure(RetrofitError error) {
+                        Util.stopProgressDialog();
+                        Toast.makeText(getApplicationContext(), error.toString(), Toast.LENGTH_LONG).show();
+                    }
+                };
+                RetrofitConfiguration.getRetrofitService(true).deleteSession(tokenKey, callback);
+            }
+        }).setNegativeButton("Vazgeç", new DialogInterface.OnClickListener() {
+            public void onClick(DialogInterface dialog, int id) {
+                dialog.cancel();
+            }
+        });
+
+        builder.show();
     }
 }

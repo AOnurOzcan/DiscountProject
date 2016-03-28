@@ -56,7 +56,7 @@ public class NotificationsFragment extends Fragment {
 
             @Override
             public void failure(RetrofitError error) {
-
+                Util.stopProgressDialog();
             }
         };
 

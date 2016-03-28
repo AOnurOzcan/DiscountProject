@@ -97,25 +97,16 @@ project.app.post("/session/create", function (req, res) {
   });
 });
 
-project.app.post("/session/delete", function (req, res) {
-
-  var phoneNumber = req.body.phoneNumber;
-
-  User.find({phone: phoneNumber}, function (err, user) {
-    if (err) {
-      res.unknown();
-    }
-
-    if (user.length == 0) {
-      res.json({tokenKey: 'err'});
-    }
-
-    user[0].tokenKey = "";
-    user[0].save(function (err) {
-      if (err) {
-        res.unknown();
-      }
-      res.json({tokenKey: ""});
+project.app.get("/session/delete", function (req, res) {
+  project.util.AuthorizedRouteForUser(req, res, function (userId) {
+    User.get(userId, function (err, user) {
+      user.tokenKey = null;
+      user.save(function (err, result) {
+        if (err) {
+          return res.unknown();
+        }
+        res.json({result: "success"});
+      });
     });
   });
 });
