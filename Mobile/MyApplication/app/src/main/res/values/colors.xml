@@ -11,4 +11,5 @@
     <color name="light_background_color">#f2dede</color>
     <color name="text_color">#a94442</color>
     <color name="transparent">#00000000</color>
+    <color name="menu_background">#FF4081</color>
 </resources>

@@ -195,8 +195,9 @@ public class ProfileFragment extends Fragment {
             @Override
             public void success(Object o, Response response) {
                 userList = null;
-                Intent intent = new Intent(getActivity(), UserActivity.class);
-                getActivity().startActivity(intent);
+                FragmentChangeListener fc = (FragmentChangeListener) getActivity();
+                fc.replaceFragment(UserActivity.userTabsFragment, null);
+                Util.stopProgressDialog();
                 Toast.makeText(getActivity().getApplicationContext(), "Başarılı!", Toast.LENGTH_LONG).show();
             }
 
@@ -208,5 +209,9 @@ public class ProfileFragment extends Fragment {
         String tokenKey = getActivity().getSharedPreferences("Session", Activity.MODE_PRIVATE).getString("tokenKey", "");
 //        ProgressDialog.show(getActivity(), "", "İşleminiz Yürütülüyor. Lütfen bekleyin.");
         RetrofitConfiguration.getRetrofitService(true).editUser(tokenKey, user, callback);
+    }
+
+    public void onBackPressed() {
+        getActivity().finish();
     }
 }

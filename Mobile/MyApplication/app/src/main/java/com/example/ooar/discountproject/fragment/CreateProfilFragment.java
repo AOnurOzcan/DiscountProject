@@ -190,7 +190,7 @@ public class CreateProfilFragment extends Fragment {
                 if (callbackCategorySuccess == true && callbackCompanySuccess == true) {
                     Util.stopProgressDialog();
                     FragmentChangeListener fc = (FragmentChangeListener) getActivity();
-                    fc.replaceFragment(new UserPreferencesFragment());
+                    fc.replaceFragment(new UserPreferencesFragment(), null);
                 }
             }
 
@@ -240,7 +240,7 @@ public class CreateProfilFragment extends Fragment {
                         Util.stopProgressDialog();
                     }
                     FragmentChangeListener fc = (FragmentChangeListener) getActivity();
-                    fc.replaceFragment(new UserPreferencesFragment());
+                    fc.replaceFragment(new UserPreferencesFragment(), null);
                 }
             }
 
@@ -264,7 +264,7 @@ public class CreateProfilFragment extends Fragment {
                         Util.stopProgressDialog();
                     }
                     FragmentChangeListener fc = (FragmentChangeListener) getActivity();
-                    fc.replaceFragment(new UserPreferencesFragment());
+                    fc.replaceFragment(new UserPreferencesFragment(), null);
                 }
             }
 

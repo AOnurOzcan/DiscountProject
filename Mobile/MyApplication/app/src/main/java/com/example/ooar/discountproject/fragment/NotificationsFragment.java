@@ -91,11 +91,12 @@ public class NotificationsFragment extends Fragment {
                     notificationDetailFragment.setArguments(bundle);
 
                     FragmentChangeListener fc = (FragmentChangeListener) getActivity();
-                    fc.replaceFragment(notificationDetailFragment);
+                    fc.replaceFragment(notificationDetailFragment, "notificationDetail");
                 }
             });
             parent.addView(custom);
 
         }
     }
+
 }

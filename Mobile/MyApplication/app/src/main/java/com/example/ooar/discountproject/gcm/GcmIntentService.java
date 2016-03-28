@@ -32,7 +32,7 @@ public class GcmIntentService extends IntentService {
         Bundle extras = intent.getExtras();
         GoogleCloudMessaging gcm = GoogleCloudMessaging.getInstance(this);
         String messageType = gcm.getMessageType(intent);
-        String mesaj = intent.getExtras().getString("key1");
+        int mesaj = intent.getExtras().getInt("key1");
 
         GcmBroadcastReceiver.completeWakefulIntent(intent);
     }

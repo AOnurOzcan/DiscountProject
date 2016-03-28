@@ -27,14 +27,18 @@ public class RegisterActivity extends FragmentActivity implements FragmentChange
         super.onCreate(savedInstanceState);
         setContentView(R.layout.register_layout);
         Util.setProgressDialog(this);
-        replaceFragment(new PhoneNumberFragment());
+        replaceFragment(new PhoneNumberFragment(), null);
     }
 
     @Override
-    public void replaceFragment(Fragment fragment) {
+    public void replaceFragment(Fragment fragment, String tagName) {
         FragmentManager fm = getSupportFragmentManager();
         FragmentTransaction fragmentTransaction = fm.beginTransaction();
-        fragmentTransaction.replace(R.id.changeRegisterFragment, fragment);
+        if (tagName != null) {
+            fragmentTransaction.replace(R.id.changeRegisterFragment, fragment, tagName);
+        } else {
+            fragmentTransaction.replace(R.id.changeRegisterFragment, fragment);
+        }
         fragmentTransaction.commit();
     }
 }

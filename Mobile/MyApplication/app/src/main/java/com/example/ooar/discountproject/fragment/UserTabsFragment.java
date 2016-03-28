@@ -16,20 +16,23 @@ import com.example.ooar.discountproject.R;
  */
 public class UserTabsFragment extends Fragment {
 
-    private FragmentTabHost mTabHost;
+    public static FragmentTabHost mTabHost = null;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        return inflater.inflate(R.layout.user_tabs_layout, container, false);
+        if (mTabHost == null) {
+            return inflater.inflate(R.layout.user_tabs_layout, container, false);
+        } else return mTabHost;
     }
 
     @Override
     public void onViewCreated(final View view, Bundle savedInstanceState) {
-        mTabHost = (FragmentTabHost) getActivity().findViewById(android.R.id.tabhost);
-        mTabHost.setup(getActivity(), getActivity().getSupportFragmentManager(), android.R.id.tabcontent);
+        if (mTabHost == null) {
+            mTabHost = (FragmentTabHost) getActivity().findViewById(android.R.id.tabhost);
+            mTabHost.setup(getActivity(), getChildFragmentManager(), android.R.id.tabcontent);
 
-        mTabHost.addTab(mTabHost.newTabSpec("tab1").setIndicator("Bildirimler", null), NotificationsFragment.class, null);
-        mTabHost.addTab(mTabHost.newTabSpec("tab2").setIndicator("Tercihler", null), ChoisesFragment.class, null);
-        mTabHost.addTab(mTabHost.newTabSpec("tab3").setIndicator("Profil", null), ProfileFragment.class, null);
+            mTabHost.addTab(mTabHost.newTabSpec("tab1").setIndicator("Bildirimler", null), NotificationsFragment.class, null);
+            mTabHost.addTab(mTabHost.newTabSpec("tab2").setIndicator("Tercihler", null), ChoisesFragment.class, null);
+        }
     }
 }

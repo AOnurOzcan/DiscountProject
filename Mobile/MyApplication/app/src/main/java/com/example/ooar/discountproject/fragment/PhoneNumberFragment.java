@@ -58,7 +58,7 @@ public class PhoneNumberFragment extends Fragment {
 
                 Toast.makeText(getActivity(), o.toString(), Toast.LENGTH_LONG).show();
                 FragmentChangeListener fc = (FragmentChangeListener) getActivity();
-                fc.replaceFragment(new ConfirmationCodeFragment());
+                fc.replaceFragment(new ConfirmationCodeFragment(), null);
             }
 
             @Override

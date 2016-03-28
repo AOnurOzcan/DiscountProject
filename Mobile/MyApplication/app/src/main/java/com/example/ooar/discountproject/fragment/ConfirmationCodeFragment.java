@@ -76,7 +76,7 @@ public class ConfirmationCodeFragment extends Fragment {
                             Toast.makeText(getActivity(), "Onay kodu yanlış tekrar deneyiniz", Toast.LENGTH_LONG).show();
                         } else if (confirmationCodeResponse.equals("true") && tokenKeyResponse.equals("err")) {//onay kodu doğru kullanıcı ilk kez giriş yapıyor
                             FragmentChangeListener fc = (FragmentChangeListener) getActivity();
-                            fc.replaceFragment(new CreateProfilFragment());
+                            fc.replaceFragment(new CreateProfilFragment(), null);
                         } else if (confirmationCodeResponse.equals("true")) {//onay kodu doğru kullanıcı için oturum oluşturuldu
                             SharedPreferences.Editor editor = getActivity().getSharedPreferences("Session", Activity.MODE_PRIVATE).edit();
                             editor.putString("tokenKey", tokenKeyResponse).commit();
