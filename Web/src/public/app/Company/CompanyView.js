@@ -59,10 +59,14 @@ define([
     autoLoad: true,
     el: '#page',
     events: {
-      'click #editCompanyButton': 'editCompany'
+      'click #deleteCompanyButton': 'deleteCompany'
     },
     initialize: function () {
       this.companyCollection = new CompanyCollection();
+    },
+    deleteCompany: function (e) {
+      var companyId = $(e.currentTarget).attr("data-id");
+      this.deleteItem(this.companyCollection, companyId);
     },
     render: function () {
       this.$el.html(listCompanyTemplate({companies: this.companyCollection.toJSON()}));
