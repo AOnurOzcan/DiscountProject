@@ -7,7 +7,7 @@ public class Category {
 
     private Integer id;
     private String categoryName;
-    private Category parentCategory;
+    private Integer parentCategory;
 
     public Integer getId() {
         return id;
@@ -25,11 +25,11 @@ public class Category {
         this.categoryName = categoryName;
     }
 
-    public Category getParentCategory() {
+    public Integer getParentCategory() {
         return parentCategory;
     }
 
-    public void setParentCategory(Category parentCategory) {
+    public void setParentCategory(Integer parentCategory) {
         this.parentCategory = parentCategory;
     }
 }

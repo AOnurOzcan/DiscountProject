@@ -6,16 +6,18 @@
         <item name="colorPrimary">@color/background_color</item>
         <item name="colorPrimaryDark">@color/danger</item>
         <item name="colorAccent">@color/background_color</item>
+        <item name="android:itemBackground">@color/menu_background</item>
         <item name="android:alertDialogStyle">@style/CustomAlertDialogStyle</item>
     </style>
 
     <!-- Action bar styles  Start-->
     
-    <style name="AppTheme." parent="Theme.AppCompat.Light.DarkActionBar">
+    <style name="AppTheme." parent="Theme.AppCompat.Light">
         <item name="android:actionBarStyle">@style/MyActionBar</item>
+        <item name="android:itemBackground">@color/menu_background</item>
         <item name="actionBarStyle">@style/MyActionBar</item>
     </style>
-    
+
     <style name="MyActionBar" parent="@style/Base.Widget.AppCompat.Light.ActionBar.Solid">
         <item name="android:background">@color/action_bar_backgorund</item>
         <item name="background">@color/action_bar_backgorund</item>

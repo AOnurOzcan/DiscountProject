@@ -74,4 +74,7 @@ public interface RetrofitService {
     @GET("/notification")
     void getAllNotification(@Query("tokenKey") String tokenKey, Callback<List<UserNotification>> callback);
 
+    @GET("/session/delete")
+    void deleteSession(@Query("tokenKey") String tokenKey, Callback<Object> callback);
+
 }

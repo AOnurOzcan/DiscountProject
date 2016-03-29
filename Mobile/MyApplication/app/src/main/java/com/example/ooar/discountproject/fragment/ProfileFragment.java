@@ -47,20 +47,35 @@ public class ProfileFragment extends Fragment {
     EditText phone;
     RadioButton Man;
     RadioButton Woman;
-    RadioButton sexGroup;
     Button editButton;
     List<String> birthAdapterString = new ArrayList<>();
     List<String> cityNameList = new ArrayList<String>();
     public static boolean datePickerIsShow = false;
     public static User userList;
 
+
+    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+        return inflater.inflate(R.layout.profile, container, false);
+    }
+
+    @Override
+    public void onViewCreated(final View view, Bundle savedInstanceState) {
+        if (cityList == null || userList == null) {
+            getAllCity(view);
+        } else {
+            cityNameList.clear();
+            setSpinner(view);
+            setUserValue(userList, view);
+        }
+    }
+
     public void getUser(final View v) {
         Callback callback = new Callback() {
             @Override
             public void success(Object o, Response response) {
                 ProfileFragment.userList = (User) o;
-
                 setUserValue(userList, v);
+                Util.stopProgressDialog();
             }
 
             @Override
@@ -76,16 +91,9 @@ public class ProfileFragment extends Fragment {
         Callback callback = new Callback() {
             @Override
             public void success(Object o, Response response) {
-                getUser(view);
                 ProfileFragment.cityList = (List<City>) o;
-
-                for (City city : cityList) {
-                    cityNameList.add(city.getCityName());
-                }
-                city = (Spinner) view.findViewById(R.id.profilCitySpinner);
-                ArrayAdapter adapter = new ArrayAdapter(getActivity().getApplicationContext(), R.layout.spinner_item, cityNameList);
-                adapter.setDropDownViewResource(R.layout.spinner_dropdown_item);
-                city.setAdapter(adapter);
+                getUser(view);
+                setSpinner(view);
             }
 
             @Override
@@ -96,14 +104,14 @@ public class ProfileFragment extends Fragment {
         RetrofitConfiguration.getRetrofitService(true).getAllCity(callback);
     }
 
-
-    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        return inflater.inflate(R.layout.profile, container, false);
-    }
-
-    @Override
-    public void onViewCreated(final View view, Bundle savedInstanceState) {
-        getAllCity(view);
+    public void setSpinner(View view) {
+        for (City city : cityList) {
+            cityNameList.add(city.getCityName());
+        }
+        city = (Spinner) view.findViewById(R.id.profilCitySpinner);
+        ArrayAdapter adapter = new ArrayAdapter(getActivity().getApplicationContext(), R.layout.spinner_item, cityNameList);
+        adapter.setDropDownViewResource(R.layout.spinner_dropdown_item);
+        city.setAdapter(adapter);
     }
 
     public void showDatePickerDialog(View v) {
@@ -111,7 +119,6 @@ public class ProfileFragment extends Fragment {
         DialogFragment newFragment = new DatePickerFragment();
         newFragment.show(getActivity().getFragmentManager(), "datePicker");
     }
-
 
     public void setUserValue(User user, View view) {
         name = (EditText) view.findViewById(R.id.profilNameEditText);
@@ -151,7 +158,7 @@ public class ProfileFragment extends Fragment {
         } else {
             Woman.setChecked(true);
         }
-        int index =cityNameList.indexOf(user.getCityId().getCityName());
+        int index = cityNameList.indexOf(user.getCityId().getCityName());
         city.setSelection(index);
         editButton = (Button) view.findViewById(R.id.profilSaveProfil);
         editButton.setOnClickListener(new View.OnClickListener() {
@@ -162,8 +169,8 @@ public class ProfileFragment extends Fragment {
                                               User user = new User();
                                               City usercity = new City();
                                               usercity.setCityName(city.getSelectedItem().toString());
-                                              for(City citiess : cityList){
-                                                  if (city.getSelectedItem().toString()==citiess.getCityName()){
+                                              for (City citiess : cityList) {
+                                                  if (city.getSelectedItem().toString() == citiess.getCityName()) {
                                                       usercity.setId(citiess.getId());
                                                   }
                                               }
@@ -187,8 +194,10 @@ public class ProfileFragment extends Fragment {
         Callback callback = new Callback() {
             @Override
             public void success(Object o, Response response) {
-                Intent intent = new Intent(getActivity(), UserActivity.class);
-                getActivity().startActivity(intent);
+                userList = null;
+                FragmentChangeListener fc = (FragmentChangeListener) getActivity();
+                fc.replaceFragment(UserActivity.userTabsFragment, null);
+                Util.stopProgressDialog();
                 Toast.makeText(getActivity().getApplicationContext(), "Başarılı!", Toast.LENGTH_LONG).show();
             }
 
@@ -198,7 +207,11 @@ public class ProfileFragment extends Fragment {
             }
         };
         String tokenKey = getActivity().getSharedPreferences("Session", Activity.MODE_PRIVATE).getString("tokenKey", "");
-        ProgressDialog.show(getActivity(), "", "İşleminiz Yürütülüyor. Lütfen bekleyin.");
+//        ProgressDialog.show(getActivity(), "", "İşleminiz Yürütülüyor. Lütfen bekleyin.");
         RetrofitConfiguration.getRetrofitService(true).editUser(tokenKey, user, callback);
+    }
+
+    public void onBackPressed() {
+        getActivity().finish();
     }
 }

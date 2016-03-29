@@ -135,7 +135,7 @@ public class NotificationDetailFragment extends Fragment {
                     if (tempBranch != null) {
                         BranchDetailFragment.branch = tempBranch;
                         FragmentChangeListener fc = (FragmentChangeListener) getActivity();
-                        fc.replaceFragment(new BranchDetailFragment());
+                        fc.replaceFragment(new BranchDetailFragment(), "branchFragment");
                     }
                 }
             });
@@ -160,4 +160,5 @@ public class NotificationDetailFragment extends Fragment {
         endDate.setText(notification.getEndDate());
         description.setText(notification.getDescription());
     }
+
 }

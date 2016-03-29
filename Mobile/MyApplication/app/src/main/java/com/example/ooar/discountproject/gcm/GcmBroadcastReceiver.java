@@ -31,60 +31,64 @@ public class GcmBroadcastReceiver extends WakefulBroadcastReceiver {
     private static int number = 0;
     NotificationManager notificationManager;
     Notification myNotification;
-    int notificationId=0;
+    int notificationId = 0;
 
     @Override
     public void onReceive(Context context, Intent intent) {
-        notificationId = Integer.parseInt(intent.getExtras().getString("key1"));
-        number = context.getSharedPreferences("Session", Activity.MODE_PRIVATE).getInt("NotificationCount", 0);
-        if (number == 0) {
-            Intent myIntent = new Intent(context, MainActivity.class);
-            myIntent.putExtra("notificationId", notificationId);
+        String tempReceive = intent.getExtras().getString("key1");
+        if (tempReceive != null) {
+            notificationId = Integer.parseInt(tempReceive);
+            number = context.getSharedPreferences("Session", Activity.MODE_PRIVATE).getInt("NotificationCount", 0);
+            if (number == 0) {
+                Intent myIntent = new Intent(context, MainActivity.class);
+                myIntent.putExtra("notificationId", notificationId);
 
-            PendingIntent pendingIntent = PendingIntent.getActivity(
-                    context,
-                    0,
-                    myIntent,
-                    Intent.FLAG_ACTIVITY_NEW_TASK);
-            number++;
-            SharedPreferences.Editor editor = context.getSharedPreferences("Session", context.MODE_PRIVATE).edit();
-            editor.putInt("NotificationCount", number).commit();
-            myNotification = new NotificationCompat.Builder(context)
-                    .setContentTitle("One!")
-                    .setContentText("Do Something...")
-                    .setTicker("Notification!")
-                    .setWhen(System.currentTimeMillis())
-                    .setContentIntent(pendingIntent)
-                    .setDefaults(Notification.DEFAULT_SOUND)
-                    .setAutoCancel(true)
-                    .setSmallIcon(R.drawable.notification)
-                    .build();
-            // editor.putInt("NotificationId", Integer.parseInt(intent.getExtras().getString("key1"))).commit();
-        } else {
-            Intent myIntent = new Intent(context, MainActivity.class);
-            PendingIntent pendingIntent = PendingIntent.getActivity(
-                    context,
-                    0,
-                    myIntent,
-                    Intent.FLAG_ACTIVITY_NEW_TASK);
-            number++;
-            SharedPreferences.Editor editor = context.getSharedPreferences("Session", context.MODE_PRIVATE).edit();
-            editor.putInt("NotificationCount", number).commit();
-            myNotification = new NotificationCompat.Builder(context)
-                    .setContentTitle(number + " yeni Bildirim!")
-                    .setContentText("Do Something...")
-                    .setTicker("Notification!")
-                    .setWhen(System.currentTimeMillis())
-                    .setContentIntent(pendingIntent)
-                    .setDefaults(Notification.DEFAULT_SOUND)
-                    .setAutoCancel(true)
-                    .setSmallIcon(R.drawable.notification)
-                    .build();
-            editor.putInt("NotificationId", 0).commit();
+                PendingIntent pendingIntent = PendingIntent.getActivity(
+                        context,
+                        0,
+                        myIntent,
+                        Intent.FLAG_ACTIVITY_NEW_TASK);
+                number++;
+                SharedPreferences.Editor editor = context.getSharedPreferences("Session", context.MODE_PRIVATE).edit();
+                editor.putInt("NotificationCount", number).commit();
+                myNotification = new NotificationCompat.Builder(context)
+                        .setContentTitle("One!")
+                        .setContentText("Do Something...")
+                        .setTicker("Notification!")
+                        .setWhen(System.currentTimeMillis())
+                        .setContentIntent(pendingIntent)
+                        .setDefaults(Notification.DEFAULT_SOUND)
+                        .setAutoCancel(true)
+                        .setSmallIcon(R.drawable.notification)
+                        .build();
+                // editor.putInt("NotificationId", Integer.parseInt(intent.getExtras().getString("key1"))).commit();
+            } else {
+                Intent myIntent = new Intent(context, MainActivity.class);
+                PendingIntent pendingIntent = PendingIntent.getActivity(
+                        context,
+                        0,
+                        myIntent,
+                        Intent.FLAG_ACTIVITY_NEW_TASK);
+                number++;
+                SharedPreferences.Editor editor = context.getSharedPreferences("Session", context.MODE_PRIVATE).edit();
+                editor.putInt("NotificationCount", number).commit();
+                myNotification = new NotificationCompat.Builder(context)
+                        .setContentTitle(number + " yeni Bildirim!")
+                        .setContentText("Do Something...")
+                        .setTicker("Notification!")
+                        .setWhen(System.currentTimeMillis())
+                        .setContentIntent(pendingIntent)
+                        .setDefaults(Notification.DEFAULT_SOUND)
+                        .setAutoCancel(true)
+                        .setSmallIcon(R.drawable.notification)
+                        .build();
+                editor.putInt("NotificationId", 0).commit();
+            }
+
+            notificationManager =
+                    (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
+            notificationManager.notify(MY_NOTIFICATION_ID, myNotification);
         }
 
-        notificationManager =
-                (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
-        notificationManager.notify(MY_NOTIFICATION_ID, myNotification);
     }
 }

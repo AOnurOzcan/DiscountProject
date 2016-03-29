@@ -26,6 +26,8 @@
     <string name="byPhoneNumber">Nolu telefon numarası için</string>
     <string name="confirm">Onayla</string>
     <string name="hintPhoneNumber">(5xx) xxx-xxxx</string>
-    <string name="from_date">From Date</string>
-    <string name="to_date">To Date</string>
+
+
+    <string name="drawer_open">Açık</string>
+    <string name="drawer_close">Kapalı</string>
 </resources>

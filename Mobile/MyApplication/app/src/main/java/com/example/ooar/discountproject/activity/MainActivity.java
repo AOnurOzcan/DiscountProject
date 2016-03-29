@@ -17,12 +17,6 @@ import com.google.android.gms.common.GooglePlayServicesUtil;
 import com.google.android.gms.gcm.GoogleCloudMessaging;
 
 import java.io.IOException;
-import java.util.Hashtable;
-import java.util.Map;
-
-import retrofit.Callback;
-import retrofit.RetrofitError;
-import retrofit.client.Response;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -44,11 +38,10 @@ public class MainActivity extends AppCompatActivity {
 
         Bundle extras = getIntent().getExtras();
 
-        if(extras != null){
+        if (extras != null) {
             notificationId = extras.getInt("notificationId");
         }
         setEvents();
-
 
     }
 
@@ -67,42 +60,20 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public void successRegistration() {
-        Callback callback = new Callback() {
-            @Override
-            public void success(Object o, Response response) {
-                Util.stopProgressDialog();
-                Map<String, String> mapper = (Map<String, String>) o;
-                String tokenKey = mapper.get("tokenKey");
-                if (tokenKey.equals("") || tokenKey.equals("err")) {//Gönderilen numaraya ait kullanıcı yok
-                    Intent intent = new Intent(MainActivity.this, RegisterActivity.class);
-                    MainActivity.this.startActivity(intent);
-                } else {//Oturum var token güncellendi
-                    SharedPreferences.Editor editor = getSharedPreferences("Session", Activity.MODE_PRIVATE).edit();
-                    editor.putString("tokenKey", tokenKey).commit();
-                    Intent intent = new Intent(MainActivity.this, UserActivity.class);
-                    if (notificationId!=0){
-                        intent.putExtra("notificationId", notificationId);
-                    }
-                    MainActivity.this.startActivity(intent);
-                }
-
-            }
-
-            @Override
-            public void failure(RetrofitError error) {
-                Util.stopProgressDialog();
-                Toast.makeText(MainActivity.this, "Sunucudan Yanıt Alınamadı", Toast.LENGTH_SHORT).show();
-            }
-        };
 
         String phoneNumber = getSharedPreferences("Session", Activity.MODE_PRIVATE).getString("phoneNumber", "");
-        if (phoneNumber.equals("")) {
+        String tokenKey = getSharedPreferences("Session", Activity.MODE_PRIVATE).getString("tokenKey", "");
+        if (phoneNumber.equals("") || tokenKey.equals("") || tokenKey.equals("err")) {
             Intent intent = new Intent(this, RegisterActivity.class);
             this.startActivity(intent);
+        } else {//Oturum var token güncellendi
+            Intent intent = new Intent(MainActivity.this, UserActivity.class);
+            if (notificationId != 0) {
+                intent.putExtra("notificationId", notificationId);
+            }
+            MainActivity.this.startActivity(intent);
         }
-        Map<String, String> mapper = new Hashtable<>();
-        mapper.put("phoneNumber", phoneNumber);
-        RetrofitConfiguration.getRetrofitService(true).createSession(mapper, callback);
+
     }
 
     @Override

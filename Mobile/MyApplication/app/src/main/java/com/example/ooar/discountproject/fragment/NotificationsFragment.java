@@ -17,6 +17,7 @@ import com.example.ooar.discountproject.util.FragmentChangeListener;
 import com.example.ooar.discountproject.util.RetrofitConfiguration;
 import com.example.ooar.discountproject.util.Util;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import retrofit.Callback;
@@ -28,11 +29,20 @@ import retrofit.client.Response;
  */
 public class NotificationsFragment extends Fragment {
 
-    List<UserNotification> userNotificationList;
+    List<UserNotification> userNotificationList = null;
 
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        getUserNotifications();
+
         return inflater.inflate(R.layout.notifications, container, false);
+    }
+
+    @Override
+    public void onViewCreated(final View view, Bundle savedInstanceState) {
+        if (userNotificationList == null) {
+            getUserNotifications();
+        } else {
+            renderPage();
+        }
     }
 
     public void getUserNotifications() {
@@ -46,7 +56,7 @@ public class NotificationsFragment extends Fragment {
 
             @Override
             public void failure(RetrofitError error) {
-
+                Util.stopProgressDialog();
             }
         };
 
@@ -81,11 +91,12 @@ public class NotificationsFragment extends Fragment {
                     notificationDetailFragment.setArguments(bundle);
 
                     FragmentChangeListener fc = (FragmentChangeListener) getActivity();
-                    fc.replaceFragment(notificationDetailFragment);
+                    fc.replaceFragment(notificationDetailFragment, "notificationDetail");
                 }
             });
             parent.addView(custom);
 
         }
     }
+
 }

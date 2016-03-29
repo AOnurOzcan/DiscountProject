@@ -2,6 +2,7 @@ package com.example.ooar.discountproject.fragment;
 
 import android.app.Activity;
 import android.app.AlertDialog;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
@@ -14,12 +15,13 @@ import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
 import android.widget.LinearLayout;
+import android.widget.ScrollView;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.ooar.discountproject.R;
 import com.example.ooar.discountproject.activity.UserActivity;
 import com.example.ooar.discountproject.model.Category;
-import com.example.ooar.discountproject.model.Company;
 import com.example.ooar.discountproject.model.CompanyCategory;
 import com.example.ooar.discountproject.util.RetrofitConfiguration;
 import com.example.ooar.discountproject.util.Util;
@@ -42,7 +44,7 @@ public class UserPreferencesFragment extends Fragment {
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        return inflater.inflate(R.layout.create_preferences, container, false);
+        return inflater.inflate(R.layout.preference_layout, container, false);
     }
 
     @Override
@@ -51,17 +53,20 @@ public class UserPreferencesFragment extends Fragment {
     }
 
     public void renderLayout(View view) {
-        LinearLayout rootLayout = (LinearLayout) view.findViewById(R.id.root_layout);
-        LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.FILL_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT);
 
         List<Category> parentCategoryList = new ArrayList<Category>();
         List<Category> childCategoryList = new ArrayList<Category>();
         List<CheckBox> checkboxList = new ArrayList<CheckBox>();
-        List<CheckBox> allSelectCheckBox = new ArrayList<>();
         List<LinearLayout> linearLayoutList = new ArrayList<LinearLayout>();
         List<Button> buttonList = new ArrayList<Button>();
-        List<Button> selectCompanyButtonList = new ArrayList<Button>();
-        Button savePreferences;
+        List<Button> editCompanyList = new ArrayList<>();
+
+
+        LayoutInflater inflater = (LayoutInflater) getActivity().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+        ScrollView scrollView = (ScrollView) getActivity().findViewById(R.id.preferenceScrollView); //preferences root layout scrollview alınıyor
+        LinearLayout rootLayout = (LinearLayout) scrollView.findViewById(R.id.preferenceRootLayout); //preferences root layout ana layout alınıyor
+        Button savePreferences = (Button) scrollView.findViewById(R.id.savePreferences); //tercihleri kaydetme butonu alınıyor
+        rootLayout.removeAllViews();
 
         for (Category category : categoryList) {//ana kategoriler bir listede toplanıyor
             if (category.getParentCategory() == null) {
@@ -70,36 +75,52 @@ public class UserPreferencesFragment extends Fragment {
                 childCategoryList.add(category); //alt kategoriler bir listede toplanıyor
             }
         }
+
         for (Category category : parentCategoryList) {
+            View custom = inflater.inflate(R.layout.preference_root_layout, null);
+            LinearLayout checkboxLayout = (LinearLayout) custom.findViewById(R.id.checkboxLayout);//root layout dan checkboxların toplanacagı layout alınıyor
+            checkboxLayout.setTag(category.getId());
 
-            Button button = Util.createButton(getActivity(), category.getId(), params, category.getCategoryName());//Ana kategori butonu oluşturuluyor
+            LinearLayout mainLayout = (LinearLayout) custom.findViewById(R.id.mainLayout);//root layout dan main layout alınıyor
+            mainLayout.setTag(category.getId());
+            linearLayoutList.add(mainLayout);
+
+
+            Button button = (Button) custom.findViewById(R.id.parentCategory);//Parent kategori butonları alınıp yenı degerler set ediliyor
+            button.setTag(category.getId());
+            button.setText(category.getCategoryName());
             buttonList.add(button);
-            rootLayout.addView(button);
 
-            LinearLayout newLayout = Util.createLinearLayout(getActivity(), category.getId(), LinearLayout.VERTICAL, View.GONE);
-            linearLayoutList.add(newLayout);
-
-            CheckBox checkBox = Util.createCheckbox(getActivity(), category.getId(), params, "HepsiniSeç");//Hepsini seç checkbox'ı oluşturuluyor
-            allSelectCheckBox.add(checkBox);
-            newLayout.addView(checkBox);
-
+            boolean subCategorySizeBigZero = false;
             for (Category subCategory : childCategoryList) { //alt kategoriler için checkbox oluşturuluyor
-                if (subCategory.getParentCategory().getId() == category.getId()) {
-                    checkBox = Util.createCheckbox(getActivity(), subCategory.getId(), params, subCategory.getCategoryName());
-                    checkboxList.add(checkBox);
-                    newLayout.addView(checkBox);
+                if (subCategory.getParentCategory() == category.getId()) {
+                    subCategorySizeBigZero = true;
+                    View custom2 = inflater.inflate(R.layout.preference_checkbox_layout, null);
+
+                    LinearLayout subCategoryLayout = (LinearLayout) custom2.findViewById(R.id.subCategoryLayout);
+                    ((ViewGroup) subCategoryLayout.getParent()).removeView(subCategoryLayout);
+
+                    CheckBox subCheckbox = (CheckBox) subCategoryLayout.findViewById(R.id.subCategory); //checkbox layoutundan checkbox alınıyor ve değerleri set ediliyor
+                    subCheckbox.setText(subCategory.getCategoryName());
+                    subCheckbox.setTag(subCategory.getId());
+
+                    Button editCompanyButton = (Button) subCategoryLayout.findViewById(R.id.editCompanyButton);
+                    editCompanyButton.setTag(subCategory.getId());
+                    editCompanyList.add(editCompanyButton);
+
+                    checkboxList.add(subCheckbox);
+                    checkboxLayout.addView(subCategoryLayout); //checkboxların toplandığı layouta gömülüyor
                 }
             }
-            button = Util.createButton(getActivity(), category.getId(), params, "Firma Seç");//Firma seç butonu
-            selectCompanyButtonList.add(button);
-            newLayout.addView(button);
 
-            rootLayout.addView(newLayout);
+            if (!subCategorySizeBigZero) {
+                custom.findViewById(R.id.helpBlockLayout).setVisibility(View.VISIBLE);
+            }
+
+            rootLayout.addView(custom);//oluşturulan tüm layoutlar ana layouta gomuluyor
         }
-        Button button = Util.createButton(getActivity(), 0, params, "Tercihlerimi Kaydet");//Firma seç butonu
-        button.setEnabled(false);
-        savePreferences = button;
-        button.setOnClickListener(new View.OnClickListener() {
+
+        savePreferences.setOnClickListener(new View.OnClickListener() {
 
             final Callback callback = new Callback() {
                 @Override
@@ -124,12 +145,15 @@ public class UserPreferencesFragment extends Fragment {
                 RetrofitConfiguration.getRetrofitService().createUserPreferences(tokenKey, selectedCompanyList, callback);
             }
         });
-        rootLayout.addView(button);
+        rootLayout.addView(savePreferences);
 
-        setEvents(savePreferences, checkboxList, buttonList, allSelectCheckBox, linearLayoutList, selectCompanyButtonList);
+        setEvents(savePreferences, checkboxList, buttonList, linearLayoutList, editCompanyList);
     }
 
-    public void setEvents(final Button savePreferences, List<CheckBox> checkBoxList, List<Button> buttonList, List<CheckBox> allSelectCheckBox, final List<LinearLayout> linearLayoutList, final List<Button> selectCompanyButtonList) {
+    public void setEvents(final Button savePreferences, List<CheckBox> checkBoxList, List<Button> buttonList, final List<LinearLayout> linearLayoutList, final List<Button> editCompanyButtonList) {
+
+        final List<CheckBox> companyCategoryCheckedList = new ArrayList<>();
+        final List<CheckBox> tempCompanyCategoryCheckedList = new ArrayList<>();
 
         for (final CheckBox checkBox : checkBoxList) {//Kullanıcı takip ettiği bir kategoriyi kaldırırsa ona ve bu kategori selectedCompany listesinde bulunuyosa listeden kaldırılır.
             checkBox.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
@@ -137,7 +161,7 @@ public class UserPreferencesFragment extends Fragment {
                 public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
                     if (!isChecked) {
                         for (CompanyCategory companyCategory : selectedCompanyList) {
-                            if (checkBox.getId() == companyCategory.getCategoryId().getId()) {
+                            if (checkBox.getTag().equals(companyCategory.getCategoryId().getId())) {
                                 selectedCompanyList.remove(companyCategory);
                             }
                         }
@@ -146,22 +170,20 @@ public class UserPreferencesFragment extends Fragment {
                         } else {
                             savePreferences.setEnabled(false);
                         }
+                        Button tempButton = (Button) ((ViewGroup) checkBox.getParent()).findViewById(R.id.editCompanyButton);
+                        tempButton.setVisibility(View.GONE);
                     } else {
-                        boolean indexOf = false;
-                        for (CompanyCategory companyCategory : companyList) {
-                            if (checkBox.getId() == companyCategory.getCategoryId().getId()) {
-                                indexOf = true;
-                                break;
-                            } else {
-                                indexOf = false;
-                            }
-                        }
-
-                        if (!indexOf) {
-                            Toast.makeText(getActivity(), "Bu Kategoride Seçilebilecek Bir Firma Yok", Toast.LENGTH_LONG).show();
-                            checkBox.setChecked(false);
-                        }
+                        createBuilder(checkBox, null, companyCategoryCheckedList, tempCompanyCategoryCheckedList, savePreferences);
                     }
+                }
+            });
+        }
+
+        for (final Button button : editCompanyButtonList) {
+            button.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    createBuilder(null, button, companyCategoryCheckedList, tempCompanyCategoryCheckedList, savePreferences);
                 }
             });
         }
@@ -171,7 +193,7 @@ public class UserPreferencesFragment extends Fragment {
                 @Override
                 public void onClick(View v) {
                     for (LinearLayout linearLayout : linearLayoutList) {
-                        if (linearLayout.getId() == button.getId()) {
+                        if (linearLayout.getTag().equals(button.getTag())) {
                             linearLayout.setVisibility(View.VISIBLE);
                         } else {
                             linearLayout.setVisibility(View.GONE);
@@ -180,159 +202,143 @@ public class UserPreferencesFragment extends Fragment {
                 }
             });
         }
+    }
 
-        for (final CheckBox checkBox : allSelectCheckBox) {//hepsini seçmek için event oluşturuluyor
-            checkBox.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
-                @Override
-                public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                    boolean checked = false;
-                    for (LinearLayout linearLayout : linearLayoutList) {
-                        if (linearLayout.getId() == checkBox.getId()) {
-                            if (checkBox.isChecked()) {
-                                checked = true;
-                            } else {
-                                checked = false;
-                            }
-                            for (int i = 0; i < linearLayout.getChildCount(); i++) {
-                                try {
-                                    CheckBox checkBoxItem = (CheckBox) linearLayout.getChildAt(i);
-                                    checkBoxItem.setChecked(checked);
-                                } catch (Exception ignored) {
+    public void createBuilder(final CheckBox checkBox, final Button button, final List<CheckBox> companyCategoryCheckedList, final List<CheckBox> tempCompanyCategoryCheckedList, final Button savePreferences) {
+        boolean showDialog = false;
+        List<Integer> companyIdList = new ArrayList<Integer>();
+        final List<CheckBox> companyCheckbox = new ArrayList<CheckBox>();
+        int categoryId;
+        if (button == null) {
+            categoryId = (int) checkBox.getTag();
+        } else {
+            categoryId = (int) button.getTag();
+        }
+
+        AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
+        builder.setTitle("Firmalarınızı Seçiniz");
+        builder.setCancelable(false);
+        builder.create().getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
+
+        final LinearLayout newLayout = new LinearLayout(getActivity());
+        newLayout.setOrientation(LinearLayout.VERTICAL);
+
+        for (CompanyCategory companyCategory : companyList) {
+            if (categoryId == companyCategory.getCategoryId().getId()) {
+                showDialog = true;
+                final CheckBox companyCheckBox = Util.createCheckbox(getActivity(), companyCategory.getId(), new LinearLayout.LayoutParams(LinearLayout.LayoutParams.FILL_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT), companyCategory.getCompanyId().getCompanyName());
+                if (Util.companyCategoryFindId(selectedCompanyList, companyCategory.getId()) != -1) {
+                    companyCheckBox.setChecked(true);
+                }
+                companyCheckbox.add(companyCheckBox);
+                companyIdList.add(companyCategory.getCompanyId().getId());
+
+                companyCheckBox.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+                    @Override
+                    public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                        if (companyCheckBox.isChecked() && Util.findIndexForCheckboxList(companyCategoryCheckedList, companyCheckBox) == -1) {
+                            companyCategoryCheckedList.add(companyCheckBox);
+                        } else if (!companyCheckBox.isChecked()) {
+                            int removeCheckboxIndex = Util.findIndexForCheckboxList(companyCategoryCheckedList, companyCheckBox);
+                            if (removeCheckboxIndex != -1) {
+                                companyCategoryCheckedList.remove(removeCheckboxIndex);
+                                int removeCompanyCategoryIndex = Util.companyCategoryFindId(selectedCompanyList, (Integer) companyCheckBox.getTag());
+                                if (removeCompanyCategoryIndex != -1) {
+                                    selectedCompanyList.remove(removeCompanyCategoryIndex);
                                 }
                             }
+                        }
+                    }
+                });
+                newLayout.addView(companyCheckBox);
+            }
+        }
+
+        builder.setPositiveButton("Firmaları Kaydet", new DialogInterface.OnClickListener() {
+            public void onClick(DialogInterface dialog, int id) {
+                tempCompanyCategoryCheckedList.removeAll(tempCompanyCategoryCheckedList);
+                for (CheckBox checkbox : companyCategoryCheckedList) {
+                    tempCompanyCategoryCheckedList.add(checkbox);
+                    for (CompanyCategory companyCategory : companyList) {
+                        if (checkbox.getTag().equals(companyCategory.getId()) && selectedCompanyList.indexOf(companyCategory) == -1) {
+                            selectedCompanyList.add(companyCategory);
+                        }
+                    }
+                }
+
+                boolean selectedCompany = false;
+                for (CheckBox tempCompanyCheckbox : companyCheckbox) {
+                    if (tempCompanyCheckbox.isChecked()) {
+                        if (button == null) {
+                            Button tempButton = (Button) ((ViewGroup) checkBox.getParent()).findViewById(R.id.editCompanyButton);
+                            tempButton.setVisibility(View.VISIBLE);
+                        } else {
+                            button.setVisibility(View.VISIBLE);
+                        }
+                        selectedCompany = true;
+                        break;
+                    }
+                }
+
+                if (!selectedCompany) {
+                    if (button == null) {
+                        checkBox.setChecked(false);
+                    } else {
+                        CheckBox tempCheckBox = (CheckBox) ((ViewGroup) button.getParent()).findViewById(R.id.subCategory);
+                        tempCheckBox.setChecked(false);
+                    }
+                }
+
+                if (selectedCompanyList.size() > 0) {
+                    savePreferences.setEnabled(true);
+                } else {
+                    savePreferences.setEnabled(false);
+                }
+            }
+        }).setNegativeButton("Vazgeç", new DialogInterface.OnClickListener() {
+            public void onClick(DialogInterface dialog, int id) {
+                companyCategoryCheckedList.removeAll(companyCategoryCheckedList);
+                for (CheckBox checkBox : tempCompanyCategoryCheckedList) {
+                    companyCategoryCheckedList.add(checkBox);
+                    for (CompanyCategory companyCategory : companyList) {
+                        if (checkBox.getTag().equals(companyCategory.getId()) && selectedCompanyList.indexOf(companyCategory) == -1) {
+                            selectedCompanyList.add(companyCategory);
+                        }
+                    }
+                }
+
+                if (button == null) {
+                    boolean selectedCompany = false;
+                    for (CheckBox tempCompanyCheckbox : companyCheckbox) {
+                        if (tempCompanyCheckbox.isChecked() && Util.findIndexForCheckboxList(tempCompanyCategoryCheckedList, tempCompanyCheckbox) != -1) {
+                            Button button = (Button) ((ViewGroup) checkBox.getParent()).findViewById(R.id.editCompanyButton);
+                            button.setVisibility(View.VISIBLE);
+                            selectedCompany = true;
                             break;
                         }
                     }
+
+                    if (!selectedCompany) {
+                        checkBox.setChecked(false);
+                    }
                 }
-            });
+
+                if (selectedCompanyList.size() > 0) {
+                    savePreferences.setEnabled(true);
+                } else {
+                    savePreferences.setEnabled(false);
+                }
+                dialog.cancel();
+            }
+        });
+        if (showDialog) {
+            builder.setView(newLayout).show();
+        } else {
+            if (button == null) {
+                checkBox.setChecked(false);
+            }
+            Toast.makeText(getActivity(), "Gösterilecek Firma Yok", Toast.LENGTH_LONG).show();
         }
 
-        for (final Button button : selectCompanyButtonList) {//firma seçmek için event oluşturuluyor
-            final List<CheckBox> companyCategoryCheckedList = new ArrayList<>();
-            final List<CheckBox> tempCompanyCategoryCheckedList = new ArrayList<>();
-
-            button.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    boolean showDialog = false;
-                    List<Integer> categoryIdList = new ArrayList<Integer>();
-                    final List<Integer> companyIdList = new ArrayList<Integer>();
-
-                    for (LinearLayout linearLayout : linearLayoutList) {//seçili olan kategorileri bulmak için
-                        if (linearLayout.getId() == button.getId()) {
-                            for (int i = 0; i < linearLayout.getChildCount(); i++) {
-                                try {
-                                    CheckBox checkBoxItem = (CheckBox) linearLayout.getChildAt(i);
-                                    if (checkBoxItem.isChecked()) {
-                                        categoryIdList.add(checkBoxItem.getId());
-                                    }
-                                } catch (Exception ignored) {
-                                }
-                            }
-                        }
-                    }
-                    final AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
-                    builder.setTitle("Firmalarınızı Seçiniz");
-                    builder.create().getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
-
-                    final LinearLayout newLayout = new LinearLayout(getActivity());
-                    newLayout.setOrientation(LinearLayout.VERTICAL);
-                    for (final int categoryId : categoryIdList) {
-                        for (final CompanyCategory companyCategory : companyList) {
-                            if (categoryId == companyCategory.getCategoryId().getId()) {
-                                showDialog = true;
-                                final CheckBox checkBox = Util.createCheckbox(getActivity(), companyCategory.getId(), new LinearLayout.LayoutParams(LinearLayout.LayoutParams.FILL_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT), companyCategory.getCompanyId().getCompanyName());
-                                if (companyIdList.indexOf(companyCategory.getCompanyId().getId()) != -1) {
-                                    checkBox.setVisibility(View.GONE);
-                                }
-                                //TODO bir firma iki kategori takip ediyorsa ve kullanıcı ikisinide seçmişse 2 tercih eklenmesi gerekiyo. şuan bunu yapmıyo usttekı kodu kontrol et.
-                                if (Util.companyCategoryFindId(selectedCompanyList, companyCategory.getId()) != -1) {
-                                    checkBox.setChecked(true);
-                                }
-                                companyIdList.add(companyCategory.getCompanyId().getId());
-                                checkBox.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
-                                    @Override
-                                    public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                                        if (checkBox.isChecked() && Util.findIndexForCheckboxList(companyCategoryCheckedList, checkBox) == -1) {
-                                            for (int i = 0; i < newLayout.getChildCount(); i++) {
-                                                try {
-                                                    CheckBox checkBoxItem = (CheckBox) newLayout.getChildAt(i);
-                                                    if (String.valueOf(checkBoxItem.getText()).equals(String.valueOf(checkBox.getText()))) {
-                                                        companyCategoryCheckedList.add(checkBoxItem);
-                                                    }
-                                                } catch (Exception ignored) {
-                                                }
-                                            }
-                                        } else if (!checkBox.isChecked()) {
-                                            for (int i = 0; i < newLayout.getChildCount(); i++) {
-                                                try {
-                                                    CheckBox checkBoxItem = (CheckBox) newLayout.getChildAt(i);
-                                                    if (String.valueOf(checkBoxItem.getText()).equals(String.valueOf(checkBox.getText()))) {
-                                                        int removeCheckboxIndex = Util.findIndexForCheckboxList(companyCategoryCheckedList, checkBoxItem);
-                                                        if (removeCheckboxIndex != -1) {
-                                                            companyCategoryCheckedList.remove(removeCheckboxIndex);
-                                                            int removeCompanyCategoryIndex = Util.companyCategoryFindId(selectedCompanyList, checkBoxItem.getId());
-                                                            if (removeCompanyCategoryIndex != -1) {
-                                                                selectedCompanyList.remove(removeCompanyCategoryIndex);
-                                                            }
-                                                        }
-                                                    }
-                                                } catch (Exception ignored) {
-                                                }
-                                            }
-                                        }
-                                    }
-                                });
-                                newLayout.addView(checkBox);
-                            }
-                        }
-                    }
-
-                    builder.setPositiveButton("Firmaları Kaydet", new DialogInterface.OnClickListener() {
-                        public void onClick(DialogInterface dialog, int id) {
-                            tempCompanyCategoryCheckedList.removeAll(tempCompanyCategoryCheckedList);
-                            for (CheckBox checkbox : companyCategoryCheckedList) {
-                                tempCompanyCategoryCheckedList.add(checkbox);
-                                for (CompanyCategory companyCategory : companyList) {
-                                    if (checkbox.getId() == companyCategory.getId() && selectedCompanyList.indexOf(companyCategory) == -1) {
-                                        selectedCompanyList.add(companyCategory);
-                                    }
-                                }
-                            }
-
-                            if (selectedCompanyList.size() > 0) {
-                                savePreferences.setEnabled(true);
-                            } else {
-                                savePreferences.setEnabled(false);
-                            }
-                        }
-                    }).setNegativeButton("Vazgeç", new DialogInterface.OnClickListener() {
-                        public void onClick(DialogInterface dialog, int id) {
-                            companyCategoryCheckedList.removeAll(companyCategoryCheckedList);
-                            for (CheckBox checkBox : tempCompanyCategoryCheckedList) {
-                                companyCategoryCheckedList.add(checkBox);
-                                for (CompanyCategory companyCategory : companyList) {
-                                    if (checkBox.getId() == companyCategory.getId() && selectedCompanyList.indexOf(companyCategory) == -1) {
-                                        selectedCompanyList.add(companyCategory);
-                                    }
-                                }
-                            }
-                            if (selectedCompanyList.size() > 0) {
-                                savePreferences.setEnabled(true);
-                            } else {
-                                savePreferences.setEnabled(false);
-                            }
-                            dialog.cancel();
-                        }
-                    });
-                    if (showDialog) {
-                        builder.setView(newLayout).show();
-                    } else {
-                        Toast.makeText(getActivity(), "Gösterilecek Firma Yok", Toast.LENGTH_LONG).show();
-                    }
-
-                }
-            });
-        }
     }
 }
