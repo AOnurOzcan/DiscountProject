@@ -1,0 +1,21 @@
+<h1 class="ui dividing header">Firma {{#company.id}}Düzenle{{else}}Ekle{{/company.id}}</h1>
+<div class="ui middle aligned center aligned grid">
+    <div class="six wide column">
+        <h4 class="ui top attached inverted header">Firma
+            {{#company.id}}Düzenle{{else}}Ekle{{/company.id}}</h4>
+        <div class="ui buttom attached segment">
+            <form class="ui large form" id="addCompanyForm">
+                {{#company.id}}<input type="hidden" name="id">{{/company.id}}
+                <div class="field">
+                    <input type="text" name="companyName" placeholder="Firma Adı">
+                </div>
+                {{#company.id}}
+                <button class="fluid green ui button" id="updateCompanyButton" data-id="{{id}}">Kaydet</button>
+                {{else}}
+                <button class="fluid ui primary button" id="addCompanyyButton">Oluştur</button>
+                {{/company.id}}
+                <div class="ui error message"></div>
+            </form>
+        </div>
+    </div>
+</div>

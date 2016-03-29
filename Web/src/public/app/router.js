@@ -11,7 +11,8 @@ define([
   'Category/CategoryView',
   'Notification/NotificationView',
   'Profile/profileView',
-  'ChooseCompany/chooseView'
+  'ChooseCompany/chooseView',
+  'Company/CompanyView'
 ], function (Backbone,
              LoginView,
              AdminView,
@@ -24,7 +25,8 @@ define([
              CategoryView,
              NotificationView,
              ProfileView,
-             ChooseCompany) {
+             ChooseCompany,
+             CompanyView) {
 
   var Router = Backbone.Router.extend({
 
@@ -54,7 +56,10 @@ define([
       'notification/list': 'ListNotification',
       'notification/sended': 'ListSendedNotification',
       'file/upload': 'FileUpload',
-      'profile/edit': 'EditProfile'
+      'profile/edit': 'EditProfile',
+      'company/add': 'AddCompany',
+      'company/edit/:id': 'EditCompany',
+      'company/list': 'ListCompany'
     },
 
     initialize: function () {
@@ -80,6 +85,10 @@ define([
       this.listAccountView = [this.menuView, new AccountView.ListAccountView()];
       this.editProfileView = [this.menuView, new ProfileView()];
       this.chooseCompanyView = new ChooseCompany();
+      this.addCompanyView = [this.menuView, new CompanyView.AddCompanyView()];
+      this.editCompanyView = [this.menuView, new CompanyView.AddCompanyView()];
+      this.listCompanyView = [this.menuView, new CompanyView.ListCompanyView()];
+
     },
 
     Login: function () {
@@ -193,7 +202,19 @@ define([
     },
 
     EditProfile: function () {
-      this.CheckSessionShowView(this.editProfileView)
+      this.CheckSessionShowView(this.editProfileView);
+    },
+
+    AddCompany: function () {
+      this.CheckSessionShowView(this.addCompanyView);
+    },
+
+    EditCompany: function (id) {
+      this.CheckSessionShowView(this.editCompanyView, {companyId: id});
+    },
+
+    ListCompany: function () {
+      this.CheckSessionShowView(this.listCompanyView);
     },
 
     /* Bu fonksiyon önce oturumu kontrol eder, oturum varsa sayfayı ekrana basar.*/

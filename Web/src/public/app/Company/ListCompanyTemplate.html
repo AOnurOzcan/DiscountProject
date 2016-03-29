@@ -1,0 +1,24 @@
+<h1 class="ui dividing header">Firmalar</h1>
+<table class="ui single line celled table center aligned" id="listCompanyForm">
+    <thead>
+    <tr>
+        <th>Firma Adı</th>
+        <th>İşlemler</th>
+    </tr>
+    </thead>
+    <tbody>
+    {{#companies}}
+    <tr>
+        <td>{{companyName}}</td>
+        <td>
+            <button class="red ui button" id="deleteCompanyButton" data-id="{{id}}">Sil</button>
+            <a class="teal ui button" href="#company/edit/{{id}}" id="editCompanyButton">Düzenle</a>
+        </td>
+    </tr>
+    {{else}}
+    <tr>
+        <td colspan="100%">Hiç firma yok. Lütfen <a href="/#company/add">yeni firma</a> ekleyin.</td>
+    </tr>
+    {{/companies}}
+    </tbody>
+</table>

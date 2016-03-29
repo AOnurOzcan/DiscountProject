@@ -1,4 +1,8 @@
-define(['backbone', 'handlebars', 'text!Branch/addBranchTemplate.html', 'text!Branch/listBranchTemplate.html'], function (Backbone, Handlebars, AddBranchTemplate, ListBranchTemplate) {
+define([
+  'backbone',
+  'handlebars',
+  'text!Branch/addBranchTemplate.html',
+  'text!Branch/listBranchTemplate.html'], function (Backbone, Handlebars, AddBranchTemplate, ListBranchTemplate) {
 
   var addBranchTemplate = Handlebars.compile(AddBranchTemplate);
   var listBranchTemplate = Handlebars.compile(ListBranchTemplate);
@@ -20,44 +24,75 @@ define(['backbone', 'handlebars', 'text!Branch/addBranchTemplate.html', 'text!Br
     autoLoad: true,
     el: "#page",
     events: {
-      'click #addBranchButton': 'addBranch',
       'click #saveBranchButton': 'saveBranch'
     },
-    validation: function (property, value, object) {
-      switch (property) {
-        case "name":
-          if (value == "") {
-            return "Bu alan boş geçilemez!";
+    validation: function () {
+      var that = this;
+      $('#addBranchForm').form({
+        onSuccess: function (e) {
+          that.addBranch(e);
+        },
+        fields: {
+          name: {
+            identifier: 'name',
+            rules: [
+              {
+                type: 'empty',
+                prompt: 'Şube adı alanı boş geçilemez!'
+              },
+              {
+                type: 'minLength[6]',
+                prompt: 'Şube adı alanı minimum 6 karakter olmalı!'
+              }
+            ]
+          },
+          address: {
+            identifier: 'address',
+            rules: [
+              {
+                type: 'empty',
+                prompt: 'Bu alan boş geçilemez!'
+              }
+            ]
+          },
+          cityId: {
+            identifier: 'cityId',
+            rules: [
+              {
+                type: 'empty',
+                prompt: 'Bu alan boş geçilemez!'
+              }
+            ]
+          },
+          phone: {
+            identifier: 'phone',
+            rules: [
+              {
+                type: 'empty',
+                prompt: 'Bu alan boş geçilemez!'
+              }
+            ]
+          },
+          workingHours: {
+            identifier: 'workingHours',
+            rules: [
+              {
+                type: 'empty',
+                prompt: 'Bu alan boş geçilemez!'
+              }
+            ]
+          },
+          locationURL: {
+            identifier: 'locationURL',
+            rules: [
+              {
+                type: 'empty',
+                prompt: 'Bu alan boş geçilemez!'
+              }
+            ]
           }
-          return true;
-        case "address":
-          if (value == "") {
-            return "Bu alan boş geçilemez!";
-          }
-          return true;
-        case "cityId":
-          if (value == "") {
-            return "Bu alan boş geçilemez!";
-          }
-          return true;
-        case "phone":
-          if (value == "") {
-            return "Bu alan boş geçilemez!";
-          }
-          return true;
-        case "workingHours":
-          if (value == "") {
-            return "Bu alan boş geçilemez!";
-          }
-          return true;
-        case "locationURL":
-          if (value == "") {
-            return "Bu alan boş geçilemez!";
-          }
-          return true;
-        default:
-          return true;
-      }
+        }
+      });
     },
     initialize: function () {
       this.cityCollection = new CityCollection();
@@ -66,8 +101,7 @@ define(['backbone', 'handlebars', 'text!Branch/addBranchTemplate.html', 'text!Br
       e.preventDefault();
       var that = this;
       var form = this.form();
-      var values = form.executeValidation(this.validation);
-      if (values == null) return;
+      var values = form.getValues;
       var branchModel = new BranchModel();
       branchModel.save(values, {
         success: function () {
@@ -79,7 +113,7 @@ define(['backbone', 'handlebars', 'text!Branch/addBranchTemplate.html', 'text!Br
     saveBranch: function (e) {
       e.preventDefault();
       var form = this.form();
-      var values = form.executeValidation(this.validation);
+      var values = form.getValues;
       if (values == null) return;
       var model = new BranchModel();
       model.save(values, {
@@ -95,6 +129,7 @@ define(['backbone', 'handlebars', 'text!Branch/addBranchTemplate.html', 'text!Br
       var that = this;
       if (this.params == undefined) {
         this.$el.html(addBranchTemplate({cities: this.cityCollection.toJSON()}));
+        this.validation();
         $('.ui.dropdown').dropdown();
         function initialize() {
           var mapProp = {
@@ -112,6 +147,7 @@ define(['backbone', 'handlebars', 'text!Branch/addBranchTemplate.html', 'text!Br
         branchModel.fetch({
           success: function (branch) {
             that.$el.html(addBranchTemplate({branch: branch.toJSON(), cities: that.cityCollection.toJSON()}));
+            that.validation();
             that.form().setValues(branch.toJSON());
             $('.ui.dropdown').dropdown();
           }
