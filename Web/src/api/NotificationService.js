@@ -8,37 +8,51 @@ var Notification = require('../model/Notification');
 var NotificationProduct = require('../model/NotificationProduct');
 var NotificationBranch = require('../model/NotificationBranch');
 var UserNotification = require('../model/UserNotification');
+var Product = require('../model/Product');
+var Preference = require('../model/Preference');
 
 ////////////////////////////////// WEB /////////////////////////////////////
 
 project.app.get("/notification/send/:id", function (req, res) {
-  User.find({}, function (err, users) {
-    var userRegistrationIds = [];
-    var userIds = [];
-    var message = new GCM.Message({
-      data: {
-        key1: req.params.id
-      }
-    });
 
-    var sender = new GCM.Sender(project.config.get("GCMApiKey").key);
+  var productIdList = [];
+  var categoryIdList = [];
+  var userList = [];
+  var companyId = req.session.companyId;
 
+  Notification.get(req.params.id, function (err, notification) {
     if (err) {
-      res.unknown();
+      return res.unknown();
     }
 
+    User.find({}, function (err, users) {
+      var userRegistrationIds = [];
+      var userIds = [];
+      var message = new GCM.Message({
+        data: {
+          notificationId: notification.id,
+          notificationTitle: notification.name,
+          notificationContent: notification.description
+        }
+      });
 
-    users.forEach(function (user) {
-      userRegistrationIds.push(user.registrationId);
-      userIds.push(user.id);
-    });
+      var sender = new GCM.Sender(project.config.get("GCMApiKey").key);
 
-    sender.send(message, {registrationTokens: userRegistrationIds}, function (err, response) {
       if (err) {
-        console.error(err);
+        res.unknown();
       }
-      else {
-        Notification.get(req.params.id, function (err, notification) {
+
+
+      users.forEach(function (user) {
+        userRegistrationIds.push(user.registrationId);
+        userIds.push(user.id);
+      });
+
+      sender.send(message, {registrationTokens: userRegistrationIds}, function (err, response) {
+        if (err) {
+          console.error(err);
+        }
+        else {
           notification.isSent = true;
           notification.sendDate = new Date();
           notification.peopleCount = userRegistrationIds.length;
@@ -60,8 +74,8 @@ project.app.get("/notification/send/:id", function (req, res) {
               res.json({"success": true});
             });
           });
-        });
-      }
+        }
+      });
     });
   });
 });
