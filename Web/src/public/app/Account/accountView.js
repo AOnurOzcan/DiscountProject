@@ -47,6 +47,7 @@ define([
     },
     saveAccount: function (e) {
       e.preventDefault();
+      var that = this;
       var values = this.form().getValues;
       if (values.accountAuth != undefined) {
         values.accountAuth = values.accountAuth.toString();
@@ -54,7 +55,11 @@ define([
       var account = new Account();
       account.save(values, {
         success: function () {
-          alertify.success("Hesap ekleme başarılı");
+          if (that.params == undefined) {
+            alertify.success("Hesap ekleme başarılı");
+          } else {
+            alertify.success("Hesap düzenleme başarılı");
+          }
           window.location.hash = "account/list";
         }
       });

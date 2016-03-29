@@ -28,9 +28,6 @@
     <div class="ui simple dropdown item menuItem">Kategoriler<i class="dropdown icon"></i>
         <div class="menu">
             <a class="item" href="#category/choose">Kategori Seç</a>
-            <a class="item" href="#category/main/add">Ana Kategori Ekle</a>
-            <a class="item" href="#category/sub/add">Alt Kategori Ekle</a>
-            <a class="item" href="#category/list">Kategorileri Listele</a>
         </div>
     </div>
     <!--Yüklemeler-->
@@ -56,6 +53,18 @@
     <!--Sağ menü-->
     <div class="right menu">
         {{#isAdmin}}
+        <!--Yönetici İşlemleri-->
+        <div class="ui simple dropdown item">Yönetici İşlemleri<i class="dropdown icon"></i>
+            <div class="menu">
+                {{#isAdmin}}
+                <a class="item" href="#category/main/add">Ana Kategori Ekle</a>
+                <a class="item" href="#category/sub/add">Alt Kategori Ekle</a>
+                <a class="item" href="#category/list">Kategorileri Listele</a>
+                <a class="item" href="#company/add">Firma Ekle</a>
+                <a class="item" href="#company/list">Firmaları Listele</a>
+                {{/isAdmin}}
+            </div>
+        </div>
         <a class="item" id="chooseCompanyButton">
             {{checkCompany session.companyName}}
         </a>

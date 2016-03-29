@@ -1,7 +1,19 @@
-<div class="ui middle aligned center aligned grid">
-    <div class="eight wide column">
+<div class="ui center aligned grid">
+    <div class="twelve wide column">
         <h1 class="ui dividing header">Hoşgeldiniz, istatistiklerinize bir göz atın</h1>
-
+        <div class="ui statistics">
+            {{#statistics}}
+            <div class="huge statistic">
+                <div class="value">
+                    {{count}}
+                </div>
+                <div class="label">
+                    {{statisticName}}
+                </div>
+            </div>
+            {{/statistics}}
+        </div>
+        <!--<div class="label">-->
         <!--<div class="ui statistics">-->
         <!--<div class="statistic">-->
         <!--<div class="value">-->

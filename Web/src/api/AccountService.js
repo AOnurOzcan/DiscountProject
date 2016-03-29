@@ -65,6 +65,7 @@ project.app.get('/account', function (req, res) {
     if (err) {
       res.unknown();
     }
+    account.id = acc.id;
     account.username = acc.username;
     account.email = acc.email;
     account.accountAuth = acc.accountAuth;
