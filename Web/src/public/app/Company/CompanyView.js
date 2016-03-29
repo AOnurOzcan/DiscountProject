@@ -11,31 +11,31 @@ define([
     urlRoot: '/company'
   });
   var CompanyCollection = Backbone.Collection.extend({
-    url: '/company'
+    url: '/company',
+    model: CompanyModel
   });
 
   var AddCompanyView = core.CommonView.extend({
     autoLoad: true,
     el: '#page',
     events: {
-      'click #addCompanyyButton': 'saveCompany',
+      'click #addCompanyButton': 'saveCompany',
       'click #updateCompanyButton': 'saveCompany'
     },
     saveCompany: function (e) {
       e.preventDefault();
       var that = this;
-      var form=this.form();
-      var values= form.getValues;
-      var companyModel= new CompanyModel();
+      var form = this.form();
+      var values = form.getValues;
+      var companyModel = new CompanyModel();
       companyModel.save(values, {
         success: function () {
-          that.render();
+          window.location.hash = "company/list";
           if (that.params == undefined) {
             alertify.success("Firma başarıyla eklendi");
           } else {
             alertify.success("Firma başarıyla güncellendi");
           }
-          window.location.hash = "company/list";
         }
       });
     },

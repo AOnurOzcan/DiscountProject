@@ -86,7 +86,6 @@ define([
       this.editProfileView = [this.menuView, new ProfileView()];
       this.chooseCompanyView = new ChooseCompany();
       this.addCompanyView = [this.menuView, new CompanyView.AddCompanyView()];
-      this.editCompanyView = [this.menuView, new CompanyView.AddCompanyView()];
       this.listCompanyView = [this.menuView, new CompanyView.ListCompanyView()];
 
     },
@@ -210,7 +209,7 @@ define([
     },
 
     EditCompany: function (id) {
-      this.CheckSessionShowView(this.editCompanyView, {companyId: id});
+      this.CheckSessionShowView(this.addCompanyView, {companyId: id});
     },
 
     ListCompany: function () {

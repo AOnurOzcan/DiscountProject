@@ -5,9 +5,11 @@ var Company = require('../model/Company');
 //Firma ekler
 project.app.post('/company', function (req, res) {
   var company = req.body;
-  Company.create(company, function (err) {
-    if (err) {return res.unknown()};
-    res.json({status: "success"});
+  Company.create(company, function (err, company) {
+    if (err) {
+      return res.unknown();
+    }
+    res.json(company);
   });
 });
 
