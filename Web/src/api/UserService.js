@@ -30,17 +30,16 @@ project.app.post("/user/profile/create", function (req, res) {
 project.app.get("/user/profile/get", function (req, res) {
 
   project.util.AuthorizedRouteForUser(req, res, function (userId) {
-    User.find({id: userId}, function (err, user) {
+    User.get(userId, function (err, user) {
       if (err) {
         res.unknown();
       }
 
-      user[0].id = null;
-      user[0].tokenKey = null;
-      user[0].registrationId = null;
-      user[0].notificationOpen = null;
-      user[0].cityId = user[0].City;
-      res.json(user[0]);
+      user.id = null;
+      user.tokenKey = null;
+      user.registrationId = null;
+      user.cityId = user.City;
+      res.json(user);
     });
   });
 });
@@ -128,16 +127,13 @@ project.app.put("/user/profile/edit", function (req, res) {
       user.gender = req.body.gender;
       user.birthday = project.util.ParseDate(req.body.birthday);
       user.cityId = req.body.cityId.id;
+      user.notificationOpen = req.body.notificationOpen;
+
       delete user['City'];
       user.save(function (err, savedUser) {
         if (err) {
           return res.unknown();
         }
-        savedUser.id = null;
-        savedUser.notificationOpen = null;
-        savedUser.tokenKey = null;
-        savedUser.registrationId = null;
-
         res.json({success: true});
       });
     });
