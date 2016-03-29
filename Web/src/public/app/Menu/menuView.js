@@ -29,6 +29,10 @@ define(['backbone',
     render: function () {
       if (this.isRendered == false) { // Eğer menü daha önce render edilmediyse
         this.$el.html(menuTemplate({session: this.session})); // Ekrana bas
+        if (this.session.companyName == undefined) {
+          $(".menuItem").addClass("disabled");
+          //$(".onlyAdmin").addClass("disabled");
+        }
         this.isRendered = true; // Render edildi olarak işaretle
       }
     }
@@ -39,6 +43,14 @@ define(['backbone',
       return companyName;
     } else {
       return "Yönetim Paneli";
+    }
+  });
+
+  Handlebars.registerHelper('checkCompany', function (companyName, options) {
+    if (companyName != undefined) {
+      return "Seçili Firma : " + companyName;
+    } else {
+      return "Firma Seçiniz"
     }
   });
 

@@ -1,0 +1,23 @@
+<div class="ui modal" id="chooseCompanyModal">
+    <div class="header">İşlem yapmak istediğiniz firmayı seçin</div>
+    <div class="content">
+        <select class="ui fluid search dropdown" id="search-select">
+            <option value="">Arama Yap..</option>
+            {{#companies}}
+            <option value="{{id}}">{{companyName}}</option>
+            {{/companies}}
+        </select>
+    </div>
+    <div class="actions">
+        <button class="ui teal button" id="returnAdminView">
+            Yönetici Görünümüne Geç
+        </button>
+        <div class="ui red deny button">
+            Vazgeç
+        </div>
+        <div class="ui positive right labeled icon button">
+            Tamam
+            <i class="checkmark icon"></i>
+        </div>
+    </div>
+</div>

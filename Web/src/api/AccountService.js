@@ -1,11 +1,29 @@
 var Account = require("../model/Account");
+var Company = require("../model/Company");
 
 //Hesap oluşturma
 project.app.post('/account', function (req, res) {
   var account = req.body;
-  account.accountType = 'COMPANY';
-  account.companyId = req.session.admin.companyId;
-  Account.create(account, function (err, savedAccount) {
+  var session = req.session.admin;
+  //Standart Admin Girişi
+  if (session.accountType == "ADMIN" && session.companyAccess == false) {
+    account.accountType = "ADMIN";
+    account.createdBy = session.id;
+  }
+  //Firma Girişi
+  else if (session.accountType == "COMPANY") {
+    account.accountType = "COMPANY";
+    account.companyId = session.companyId;
+    account.createdBy = session.id;
+  }
+  //Admin üzerinden firma girişi
+  else if (session.accountType == "ADMIN" && session.companyAccess == true) {
+    account.accountType = "COMPANY";
+    account.createdBy = session.id;
+    account.companyId = session.companyId;
+  }
+
+  Account.create(account, function (err) {
     if (err) {
       return res.unknown();
     }
@@ -25,10 +43,31 @@ project.app.delete('/account/:id', function (req, res) {
 
 //Id'ye göre hesap getirme
 project.app.get('/account/:id', function (req, res) {
-  Account.one({id: req.params.id}, function (err, account) {
+  var account = {};
+  Account.one({id: req.params.id}, function (err, acc) {
     if (err) {
       res.unknown();
     }
+    account.username = acc.username;
+    account.password = acc.password;
+    account.email = acc.email;
+    account.accountAuth = acc.accountAuth;
+    res.json(account);
+  });
+});
+
+//Oturum açan kişinin hesabını getirme
+project.app.get('/account', function (req, res) {
+  var account = {};
+  var session = req.session.admin;
+
+  Account.one({id: session.id}, function (err, acc) {
+    if (err) {
+      res.unknown();
+    }
+    account.username = acc.username;
+    account.email = acc.email;
+    account.accountAuth = acc.accountAuth;
     res.json(account);
   });
 });
@@ -45,11 +84,19 @@ project.app.put('/account/:id', function (req, res) {
   });
 });
 
-//Tüm hesapları getir
-project.app.get('/account', function (req, res) {
-  Account.find({companyId: req.session.admin.companyId}).each().filter(function (account) {
-    return account.username != req.session.admin.username;
+//Oturum açmış olan kullanıcıya ait tüm hesapları getirir.
+project.app.get('/accounts', function (req, res) {
+  var session = req.session.admin;
+  var params = {};
+
+  if (session.accountType == "COMPANY" || (session.accountType == "ADMIN" && session.companyAccess == true)) {
+    params.companyId = session.companyId;
+  }
+
+  Account.find(params).each().filter(function (account) {
+    return account.id != req.session.admin.id;
   }).get(function (accounts) {
     res.json(accounts);
   });
+
 });

@@ -1,5 +1,18 @@
 var CompanyCategory = require("../model/CompanyCategory");
 var Category = require('../model/Category');
+var Company = require('../model/Company');
+
+project.app.get('/company', function (req, res) {
+  Company.find({}, function (err, companies) {
+    if (err) {
+      return res.unknown();
+    }
+    res.json(companies);
+  });
+});
+
+//------------------------------ MOBILE --------------------------//
+
 project.app.get("/company/withcategory", function (req, res) {
 
   CompanyCategory.find(function (err, result) {

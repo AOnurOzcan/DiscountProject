@@ -96,6 +96,17 @@ define(['backbone', 'handlebars', 'text!Branch/addBranchTemplate.html', 'text!Br
       if (this.params == undefined) {
         this.$el.html(addBranchTemplate({cities: this.cityCollection.toJSON()}));
         $('.ui.dropdown').dropdown();
+        function initialize() {
+          var mapProp = {
+            center: new google.maps.LatLng(51.508742, -0.120850),
+            zoom: 5,
+            mapTypeId: google.maps.MapTypeId.ROADMAP,
+
+          };
+          var map = new google.maps.Map(document.getElementById("googleMap"), mapProp);
+        }
+
+        google.maps.event.addDomListener(window, 'load', initialize);
       } else {
         var branchModel = new BranchModel({id: this.params.branchId});
         branchModel.fetch({

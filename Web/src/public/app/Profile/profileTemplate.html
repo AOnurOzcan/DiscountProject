@@ -1,0 +1,35 @@
+<h1 class="ui dividing header">Profil Bilgilerini Düzenle</h1>
+<div class="ui middle aligned center aligned grid">
+    <div class="six wide column">
+        <h4 class="ui top attached inverted header">Profil Bilgilerini Düzenle</h4>
+        <div class="ui buttom attached segment">
+            <form class="ui large form" id="editProfileForm">
+                {{#account}}
+                <input type="hidden" name="id">
+                <div class="field">
+                    <input type="text" name="username" placeholder="Kullanıcı Adı" value="{{username}}">
+                </div>
+                <div class="field">
+                    <input type="text" name="oldPassword" placeholder="E-Posta" value="{{email}}">
+                </div>
+                {{#isAdmin}}{{else}}
+                <div class="field">
+                    <input type="text" name="companyName" placeholder="Firma Adı" value="{{companyName}}">
+                </div>
+                {{/isAdmin}}
+                <div class="field">
+                    <input type="text" name="oldPassword" placeholder="Eski Şifre">
+                </div>
+                <div class="field">
+                    <input type="text" name="password" placeholder="Yeni Şifre">
+                </div>
+                <div class="field">
+                    <input type="text" name="password2" placeholder="Yeni Şifre Tekrar">
+                </div>
+                {{/account}}
+                <button class="fluid green ui button" id="saveAccountButton" data-id="{{id}}">Kaydet</button>
+                <div class="ui error message"></div>
+            </form>
+        </div>
+    </div>
+</div>

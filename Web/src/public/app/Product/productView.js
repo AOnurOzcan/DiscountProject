@@ -30,7 +30,7 @@ define([
     model: Product
   });
   var ImageCollection = Backbone.Collection.extend({
-    url: "/files/all"
+    url: "/files"
   });
 
   // Ürün ekleme ve düzenleme
@@ -50,7 +50,7 @@ define([
     openModal: function (e) {
       e.preventDefault();
       var that = this;
-      $('.ui.modal').modal('show');
+      $('#choosePictureModal').modal('show');
       $(".chooseImage").on('click', function (e) {
         that.copyURL(e);
       });
@@ -58,7 +58,7 @@ define([
     copyURL: function (e) {
       var imageURL = $(e.currentTarget).find("img").attr('src');
       $("#imageURL").val(imageURL);
-      $('.ui.modal').modal('hide');
+      $('#choosePictureModal').modal('hide');
     },
     renderSubCategories: function () {
       var that = this;

@@ -7,7 +7,7 @@ define([
   var uploadTemplate = Handlebars.compile(UploadTemplate);
 
   var ImageCollection = Backbone.Collection.extend({
-    url: "/files/all"
+    url: "/files"
   });
   var ImageModel = Backbone.Model.extend({});
 
@@ -15,10 +15,15 @@ define([
     autoLoad: true,
     el: "#page",
     events: {
-      'click #uploadButton': 'uploadFile'
+      'click #uploadButton': 'uploadFile',
+      'click .removeImageButton': 'removeImage'
     },
     initialize: function () {
       this.imageCollection = new ImageCollection();
+    },
+    removeImage: function (e) {
+      var imageId = $(e.currentTarget).attr("data-id");
+      this.deleteItem(this.imageCollection, imageId);
     },
     uploadFile: function (e) {
       e.preventDefault();

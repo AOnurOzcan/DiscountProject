@@ -12,6 +12,7 @@ define(['backbone',
     },
     render: function () {
       this.$el.html(companyTemplate);
+      $(".ui.dropdown").dropdown();
     }
   });
 

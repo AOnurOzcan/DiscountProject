@@ -222,10 +222,10 @@ project.app.delete("/notification/:id", function (req, res) {
   });
 });
 
-//Tüm gönderilmemiş olan bildirimleri getir.
+//Verilen parametreye göre gönderilmemiş ya da gönderilmemiş olan tüm bildirimleri getir.
 project.app.get("/getNotifications/:isSent", function (req, res) {
   var isSent = req.params.isSent;
-  Notification.find({isSent: isSent}, function (err, notifications) {
+  Notification.find({isSent: isSent, companyId: req.session.admin.companyId}, function (err, notifications) {
     notifications.asyncForEach(function (notification, done) {
       NotificationProduct.find({notificationId: notification.id}, function (err, notificationProduct) {
         if (err) {

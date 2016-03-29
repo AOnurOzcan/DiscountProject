@@ -249,7 +249,15 @@ window.define(['backbone', 'handlebars'], function (Backbone, Handlebars) {
     } else {
       return options.inverse(this);
     }
+  });
 
+  Handlebars.registerHelper('isAdmin', function (options) {
+    var accountType = $router.checkSession.attributes.accountType;
+    if (accountType == "ADMIN") {
+      return options.fn(this);
+    } else {
+      return options.inverse(this);
+    }
   });
 
   return {

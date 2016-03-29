@@ -24,6 +24,7 @@ project.app.post("/login", BodyControl("username", "password"), function (req, r
         res.json({status: true});
       });
     } else {
+      req.session.admin.companyAccess = false;
       res.json({status: true});
     }
   });
@@ -52,5 +53,26 @@ project.app.get("/check", function (req, res) {
 project.app.get("/logout", AuthorizedRoute(""), function (req, res) {
 
   req.session.destroy();
+  res.json({status: true});
+});
+
+project.app.get("/accessCompanySession/:id", function (req, res) {
+
+  req.session.admin.companyId = req.params.id;
+  req.session.admin.companyAccess = true;
+  Company.one({id: req.session.admin.companyId}, function (err, company) {
+    if (err) {
+      return res.unknown();
+    }
+    req.session.admin.companyName = company.companyName;
+    res.json({status: true});
+  });
+});
+
+project.app.get("/endCompanySession", function (req, res) {
+
+  delete req.session.admin.companyName;
+  delete req.session.admin.companyId;
+  req.session.admin.companyAccess = false;
   res.json({status: true});
 });

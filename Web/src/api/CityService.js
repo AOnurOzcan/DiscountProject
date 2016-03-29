@@ -6,7 +6,7 @@ project.app.get("/city/all", function (req, res) {
   City.find(function (err, result) {
 
     if (err) {
-      res.send('false');
+      return res.send('false');
     }
 
     res.json(result);

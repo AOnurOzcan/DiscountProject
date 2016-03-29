@@ -14,14 +14,6 @@ define([
   var sendedNotificationTemplate = Handlebars.compile(SendedNotificationTemplate);
 
   //------------------------ Models & Collections --------------------------//
-  var NotificationCollection = Backbone.Collection.extend({
-    url: '/notification',
-    initialize: function (properties) {
-      if (properties != undefined && properties.url != "") {
-        this.url = properties.url;
-      }
-    }
-  });
   var NotificationModel = Backbone.Model.extend({
     urlRoot: '/notification',
     initialize: function (properties) {
@@ -30,6 +22,16 @@ define([
       }
     }
   });
+  var NotificationCollection = Backbone.Collection.extend({
+    url: '/notification',
+    model: NotificationModel,
+    initialize: function (properties) {
+      if (properties != undefined && properties.url != "") {
+        this.url = properties.url;
+      }
+    }
+  });
+
   var ProductCollection = Backbone.Collection.extend({
     url: '/product'
   });
@@ -193,7 +195,7 @@ define([
     },
     openModal: function (e) {
       var that = this;
-      $(".ui.modal").modal({
+      $("#sendNotificationModal").modal({
         onApprove: function () {
           $(".approveSending").addClass('loading');
           that.sendNotification(e);
@@ -216,7 +218,7 @@ define([
         success: function () {
           that.notificationCollection.remove(that.notificationCollection.get(notificationId));
           alertify.success("Bildirim Başarıyla Gönderildi.");
-          $(".ui.modal").modal('hide');
+          $("#sendNotificationModal").modal('hide');
         }
       });
     },

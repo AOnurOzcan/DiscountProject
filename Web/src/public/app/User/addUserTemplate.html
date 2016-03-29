@@ -1,0 +1,31 @@
+<h1 class="ui dividing header">Kullanıcı {{#user.id}}Düzenle{{else}}Ekle{{/user.id}}</h1>
+<div class="ui middle aligned center aligned grid">
+    <div class="six wide column">
+        <h4 class="ui top attached inverted header">Kullanıcı {{#user.id}}Düzenle{{else}}Ekle{{/user.id}}</h4>
+        <div class="ui buttom attached segment">
+            <form class="ui large form" id="addUserForm">
+                {{#user.id}}<input type="hidden" name="id">{{/user.id}}
+                <div class="field">
+                    <input type="text" name="username" placeholder="Kullanıcı Adı">
+                </div>
+                <div class="field">
+                    <input type="text" name="password" placeholder="Şifre">
+                </div>
+
+                <div class="field">
+                    <select name="accountAuth[]" multiple="" class="ui fluid dropdown accountAuthDropdown">
+                        <option value="">Yetki Seçiniz</option>
+                        <option value="CREATE_ACCOUNT">Hesap Oluşturabilir</option>
+                        <option value="REMOVE_ACCOUNT">Hesap Silebilir</option>
+                    </select>
+                </div>
+                {{#user.id}}
+                <button class="fluid green ui button" id="saveUserButton" data-id="{{id}}">Kaydet</button>
+                {{else}}
+                <button class="fluid ui primary button" id="addUserButton">Oluştur</button>
+                {{/user.id}}
+                <div class="ui error message"></div>
+            </form>
+        </div>
+    </div>
+</div>

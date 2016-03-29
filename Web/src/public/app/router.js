@@ -6,9 +6,12 @@ define([
   'Product/productView',
   'Branch/branchView',
   'Upload/uploadView',
+  'User/userView',
   'Account/accountView',
   'Category/CategoryView',
-  'Notification/NotificationView'
+  'Notification/NotificationView',
+  'Profile/profileView',
+  'ChooseCompany/chooseView'
 ], function (Backbone,
              LoginView,
              AdminView,
@@ -16,9 +19,12 @@ define([
              ProductView,
              BranchView,
              UploadView,
-             Account,
+             UserView,
+             AccountView,
              CategoryView,
-             NotificationView) {
+             NotificationView,
+             ProfileView,
+             ChooseCompany) {
 
   var Router = Backbone.Router.extend({
 
@@ -31,6 +37,9 @@ define([
       'branch/add': 'AddBranch',
       'branch/list': 'ListBranch',
       'branch/edit/:branchId': 'EditBranch',
+      'user/add': 'AddUser',
+      'user/edit/:id': 'EditUser',
+      'user/list': 'ListUser',
       'account/add': 'AddAccount',
       'account/edit/:id': 'EditAccount',
       'account/list': 'ListAccount',
@@ -44,7 +53,8 @@ define([
       'notification/edit/:id': 'EditNotification',
       'notification/list': 'ListNotification',
       'notification/sended': 'ListSendedNotification',
-      'file/upload': 'FileUpload'
+      'file/upload': 'FileUpload',
+      'profile/edit': 'EditProfile'
     },
 
     initialize: function () {
@@ -57,8 +67,8 @@ define([
       this.addBranchView = [this.menuView, new BranchView.AddBranchView()];
       this.listBranchView = [this.menuView, new BranchView.ListBranchView()];
       this.fileUploadView = [this.menuView, new UploadView.UploadView()];
-      this.addAccountView = [this.menuView, new Account.AddAccountView()];
-      this.listAccountView = [this.menuView, new Account.ListAccountView()];
+      this.addUserView = [this.menuView, new UserView.AddUserView()];
+      this.listUserView = [this.menuView, new UserView.ListUserView()];
       this.chooseCategoryView = [this.menuView, new CategoryView.ChooseCategoryView()];
       this.addMainCategoryView = [this.menuView, new CategoryView.AddMainCategoryView()];
       this.addSubCategoryView = [this.menuView, new CategoryView.AddSubCategoryView()];
@@ -66,6 +76,10 @@ define([
       this.addNotificationView = [this.menuView, new NotificationView.AddNotificationView()];
       this.listNotificationView = [this.menuView, new NotificationView.ListNotificationView()];
       this.listSendedNotificationView = [this.menuView, new NotificationView.SendedNotificationView()];
+      this.addAccountView = [this.menuView, new AccountView.AddAccountView()];
+      this.listAccountView = [this.menuView, new AccountView.ListAccountView()];
+      this.editProfileView = [this.menuView, new ProfileView()];
+      this.chooseCompanyView = new ChooseCompany();
     },
 
     Login: function () {
@@ -112,6 +126,18 @@ define([
 
     FileUpload: function () {
       this.CheckSessionShowView(this.fileUploadView);
+    },
+
+    AddUser: function () {
+      this.CheckSessionShowView(this.addUserView);
+    },
+
+    EditUser: function (accountId) {
+      this.CheckSessionShowView(this.addUserView, {accountId: accountId});
+    },
+
+    ListUser: function () {
+      this.CheckSessionShowView(this.listUserView);
     },
 
     AddAccount: function () {
@@ -166,6 +192,10 @@ define([
       this.CheckSessionShowView(this.listSendedNotificationView);
     },
 
+    EditProfile: function () {
+      this.CheckSessionShowView(this.editProfileView)
+    },
+
     /* Bu fonksiyon önce oturumu kontrol eder, oturum varsa sayfayı ekrana basar.*/
     CheckSessionShowView: function () {
       var args = arguments;
@@ -173,6 +203,10 @@ define([
       this.checkSession.fetch({ // Oturum açık mı kontrol et
         success: function (account) {
           that.menuView.session = account.attributes;
+          if (account.attributes.accountType == "ADMIN") {
+            that.chooseCompanyView.session = account.attributes;
+            args[0].push(that.chooseCompanyView);
+          }
           outer.showView.apply(outer, args);
         }
       });

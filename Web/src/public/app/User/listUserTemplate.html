@@ -1,10 +1,9 @@
-<h1 class="ui dividing header">Hesapları Listele</h1>
+<h1 class="ui dividing header">Kullanıcıları Listele</h1>
 <table class="ui celled table center aligned" id="listAccountForm">
     <thead>
     <tr>
         <th>Kullanıcı Adı</th>
-        <th>E-posta</th>
-        <th>Hesap Türü</th>
+        <th>Şifre</th>
         <th>Yetkiler</th>
         <th>İşlemler</th>
     </tr>
@@ -13,13 +12,15 @@
     {{#accounts}}
     <tr>
         <td>{{username}}</td>
-        <td>{{accountType}}({{companyName}})</td>
-        <td>{{email}}</td>
+        <td>{{password}}</td>
         <td>{{accountAuth}}</td>
         <td>
-            <button class="red ui button deleteAccountButton" data-id="{{id}}">Sil</button>
-            <button class="ui primary button recoverPassword" data-id="{{id}}">Şifre Sıfırla</button>
-            <a class="teal ui button editAccountButton" href="#account/edit/{{id}}">Düzenle</a>
+            {{#can "REMOVE_ACCOUNT"}}
+            <button class="red ui button" id="deleteUserButton" data-id="{{id}}">Sil</button>
+            {{/can}}
+            {{#can "EDIT_ACCOUNT"}}
+            <a class="teal ui button" href="#user/edit/{{id}}" id="editUserButton">Düzenle</a>
+            {{/can}}
         </td>
     </tr>
     {{else}}

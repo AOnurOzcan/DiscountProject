@@ -12,10 +12,15 @@
                     <input type="text" name="password" placeholder="Şifre">
                 </div>
                 <div class="field">
-                    <select name="accountAuth[]" multiple="" class="ui fluid dropdown">
+                    <input type="text" name="email" placeholder="E-Posta">
+                </div>
+
+                <div class="field">
+                    <select name="accountAuth[]" multiple="" class="ui fluid dropdown" id="accountAuthDropdown">
                         <option value="">Yetki Seçiniz</option>
                         <option value="CREATE_ACCOUNT">Hesap Oluşturabilir</option>
                         <option value="REMOVE_ACCOUNT">Hesap Silebilir</option>
+                        <option value="CREATE_COMPANY_ACCOUNT">Firma Hesabı Oluşturabilir</option>
                     </select>
                 </div>
                 {{#account.id}}

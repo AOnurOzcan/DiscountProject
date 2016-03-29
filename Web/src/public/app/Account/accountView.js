@@ -2,63 +2,82 @@ define([
   'backbone',
   'handlebars',
   'text!Account/addAccountTemplate.html',
-  'text!Account/listAccountTemplate.html'], function (Backbone, Handlebars, AddAccountTemplate, ListAccountTemplate) {
+  'text!Account/listAccountTemplate.html'], function (Backbone,
+                                                      Handlebars,
+                                                      AddAccountTemplate,
+                                                      ListAccountTemplate) {
 
   //----------------- Templateler --------------------//
-  var addAccountTemplate = Handlebars.compile(AddAccountTemplate);
   var listAccountTemplate = Handlebars.compile(ListAccountTemplate);
+  var addAccountTemplate = Handlebars.compile(AddAccountTemplate);
 
   // ---------------- Models & Collections ----------------- //
   var Account = Backbone.Model.extend({
     urlRoot: "/account"
   });
   var AccountCollection = Backbone.Collection.extend({
-    url: "/account",
+    url: "/accounts",
     model: Account
+  });
+  var Companyollection = Backbone.Collection.extend({
+    url: "/company"
   });
 
   //------------------- Views ------------------------//
 
   var AddAccountView = core.CommonView.extend({
-    autoLoad: true,
     el: "#page",
+    autoLoad: true,
     events: {
-      'click #addAccountButton': 'AddOrSaveAccount',
-      'click #saveAccountButton': 'AddOrSaveAccount'
+      'change .accountTypeDropdown': 'ChangeAccountType',
+      'click #addAccountButton': 'saveAccount',
+      'click #saveAccountButton': 'saveAccount'
     },
     initialize: function () {
-
+      this.companyCollection = new Companyollection();
     },
-    AddOrSaveAccount: function (e) {
+    ChangeAccountType: function (e) {
+      var accountType = $(".accountTypeDropdown").dropdown('get value');
+      if (accountType == "COMPANY") {
+        $(".companyDropdown").removeClass('disabled');
+      } else {
+        $(".companyDropdown").addClass('disabled');
+        $(".companyDropdown").dropdown('restore defaults');
+      }
+    },
+    saveAccount: function (e) {
       e.preventDefault();
-      var values = this.form().getValues; //Formdan verileri alıyoruz
-      var account = new Account();
+      var values = this.form().getValues;
       if (values.accountAuth != undefined) {
         values.accountAuth = values.accountAuth.toString();
       }
+      var account = new Account();
       account.save(values, {
         success: function () {
-          window.location.hash = "/account/list";
-          if (values.id == undefined) {
-            alertify.success("Hesap başarıyla oluşturuldu.");
-          } else {
-            alertify.success("Hesap bilgileri kaydedildi.");
-          }
+          alertify.success("Hesap ekleme başarılı");
+          window.location.hash = "account/list";
         }
       });
     },
     render: function () {
       var that = this;
       if (this.params == undefined) {
-        this.$el.html(addAccountTemplate);
-        $('.ui.dropdown').dropdown();
+        this.$el.html(addAccountTemplate({companies: this.companyCollection.toJSON()}));
+        $('#accountAuthDropdown').dropdown();
+        $('.accountTypeDropdown').dropdown();
+        $(".companyDropdown").dropdown().addClass('disabled');
       } else {
-        var account = new Account({id: this.params.accountId});
-        account.fetch({
-          success: function (savedAccount) {
-            that.$el.html(addAccountTemplate({account: savedAccount.toJSON()}));
-            that.form().setValues(account.toJSON());
-            $('.ui.dropdown').dropdown("set selected", savedAccount.toJSON().accountAuth.split(','));
+        var user = new Account({id: this.params.accountId});
+        user.fetch({
+          success: function (savedUser) {
+            that.$el.html(addAccountTemplate({
+              account: savedUser.toJSON(),
+              companies: that.companyCollection.toJSON()
+            }));
+            that.form().setValues(user.toJSON());
+            $('.accountAuthDropdown').dropdown();
+            $('.accountTypeDropdown').dropdown();
+            $('#accountAuthDropdown').dropdown("set selected", savedUser.toJSON().accountAuth.split(','));
           }
         });
       }
@@ -66,23 +85,20 @@ define([
   });
 
   var ListAccountView = core.CommonView.extend({
+    el: "#page",
     autoLoad: true,
     events: {
-      'click #deleteAccountButton': 'DeleteAccount'
+      'click .deleteAccountButton': 'deleteAccount'
     },
-    el: "#page",
     initialize: function () {
       this.accountCollection = new AccountCollection();
     },
-    DeleteAccount: function (e) {
-      var accountId = $(e.currentTarget).attr('data-id');
-      this.deleteItem(this.accountCollection, accountId);
+    deleteAccount: function (e) {
+      var userId = $(e.currentTarget).attr('data-id');
+      this.deleteItem(this.accountCollection, userId);
     },
     render: function () {
-      this.$el.html(listAccountTemplate({
-        accounts: this.accountCollection.toJSON(),
-        auths: this.params
-      }));
+      this.$el.html(listAccountTemplate({accounts: this.accountCollection.toJSON()}));
     }
   });
 

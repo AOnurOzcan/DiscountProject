@@ -1,16 +1,16 @@
 <div class="ui fixed inverted menu">
-    <a href="#" class="ui red header item">
+    <a href="#cHomepage" class="ui red header item">
         {{checkAccount session.companyName session.accountType}}
     </a>
     <!--Ürünler-->
-    <div class="ui simple dropdown item">Ürünler<i class="dropdown icon"></i>
+    <div class="ui simple dropdown item menuItem">Ürünler<i class="dropdown icon"></i>
         <div class="menu">
             <a class="item" href="#product/add">Ürün Ekle</a>
             <a class="item" href="#product/list">Ürün Listele</a>
         </div>
     </div>
     <!--Bildirimler-->
-    <div class="ui simple dropdown item">Bildirimler<i class="dropdown icon"></i>
+    <div class="ui simple dropdown item menuItem menuItem">Bildirimler<i class="dropdown icon"></i>
         <div class="menu">
             <a class="item" href="#notification/add">Bildirim Ekle</a>
             <a class="item" href="#notification/list">Bildirim Listele</a>
@@ -18,21 +18,14 @@
         </div>
     </div>
     <!--Şubeler-->
-    <div class="ui simple dropdown item">Şubeler<i class="dropdown icon"></i>
+    <div class="ui simple dropdown item menuItem menuItem">Şubeler<i class="dropdown icon"></i>
         <div class="menu">
             <a class="item" href="#branch/add">Şube Ekle</a>
             <a class="item" href="#branch/list">Şube Listele</a>
         </div>
     </div>
-    <!--Kullanıcılar-->
-    <div class="ui simple dropdown item">Kullanıcılar<i class="dropdown icon"></i>
-        <div class="menu">
-            <a class="item" href="#account/add">Kullanıcı Ekle</a>
-            <a class="item" href="#account/list">Kullanıcıları Listele</a>
-        </div>
-    </div>
-    <!--Kullanıcılar-->
-    <div class="ui simple dropdown item">Kategoriler<i class="dropdown icon"></i>
+    <!--Kategoriler-->
+    <div class="ui simple dropdown item menuItem">Kategoriler<i class="dropdown icon"></i>
         <div class="menu">
             <a class="item" href="#category/choose">Kategori Seç</a>
             <a class="item" href="#category/main/add">Ana Kategori Ekle</a>
@@ -41,13 +34,32 @@
         </div>
     </div>
     <!--Yüklemeler-->
-    <div class="ui simple dropdown item">Yüklemeler<i class="dropdown icon"></i>
+    <div class="ui simple dropdown item menuItem">Yüklemeler<i class="dropdown icon"></i>
         <div class="menu">
             <a class="item" href="#file/upload">Resim Yükle</a>
         </div>
     </div>
+    <!--Hesaplar-->
+    <div class="ui simple dropdown item onlyAdmin">Hesaplar<i class="dropdown icon"></i>
+        <div class="menu">
+            <a class="item" href="#account/add">Hesap Ekle</a>
+            <a class="item" href="#account/list">Hesap Listele</a>
+        </div>
+    </div>
+    <!--Profil-->
+    <div class="ui simple dropdown item">Profil<i class="dropdown icon"></i>
+        <div class="menu">
+            <a class="item" href="#profile/edit">Profil Düzenle</a>
+        </div>
+    </div>
+
     <!--Sağ menü-->
     <div class="right menu">
+        {{#isAdmin}}
+        <a class="item" id="chooseCompanyButton">
+            {{checkCompany session.companyName}}
+        </a>
+        {{/isAdmin}}
         <a class="item" id="logoutButton">Çıkış Yap</a>
     </div>
 </div>
