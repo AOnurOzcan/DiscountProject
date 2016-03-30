@@ -24,7 +24,7 @@ define(['backbone', 'handlebars', 'jquery', 'text!Login/loginTemplate.html'], fu
       var formValues = this.form("#loginForm").getValues; // Login Form'a girilen kullanıcı adı ve şifreyi al
       new LoginModel().save(formValues, { // Böyle bir kullanıcı olup olmadığını kontrol et
         success: function () { // Eğer var ise
-          window.location.hash = 'cHomepage'; // Yönetim paneline yönlendir.
+          window.location.hash = 'statistics'; // Yönetim paneline yönlendir.
         },
         error: function (error) {
           loginForm.removeClass("loading");

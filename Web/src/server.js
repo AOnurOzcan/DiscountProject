@@ -36,6 +36,7 @@ project.express = express;
 global.requireDir = requireDir;
 
 console.log("Connecting to database...");
+orm.settings.set("connection.reconnect", true);
 orm.connect(config.get("database"), function (err, db) { // create connection from pool
   if (err) { // if any error occurs.
     return console.log("Error occured in database connection! {message}", err);

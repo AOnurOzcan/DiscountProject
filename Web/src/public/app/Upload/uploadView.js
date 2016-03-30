@@ -9,7 +9,6 @@ define([
   var ImageCollection = Backbone.Collection.extend({
     url: "/files"
   });
-  var ImageModel = Backbone.Model.extend({});
 
   var UploadView = core.CommonView.extend({
     autoLoad: true,
@@ -27,12 +26,15 @@ define([
     },
     uploadFile: function (e) {
       e.preventDefault();
+      var uploadButton = $("#uploadButton");
+      var uploadForm = $("#uploadForm");
       var that = this;
-      var form = $("#uploadForm")[0];
+      uploadButton.addClass("disabled").text("Yükleniyor");
+      var form = uploadForm[0];
       var oData = new FormData(form);
       var oReq = new XMLHttpRequest();
-      oReq.open("POST", "/testUpload", true);
-      $("#uploadForm").addClass("loading");
+      oReq.open("POST", "/uploadImage", true);
+      uploadForm.addClass("loading");
       oReq.send(oData);
       oReq.onload = function (oEvent) {
         if (oReq.status == 200) {
@@ -49,7 +51,6 @@ define([
     render: function () {
       this.$el.html(uploadTemplate({images: this.imageCollection.toJSON()}));
       $("#fileUpload").on('change', function () {
-        $("#uploadButton").show();
 
         //Get count of selected files
         var countFiles = $(this)[0].files.length;
@@ -60,6 +61,7 @@ define([
         image_holder.empty();
 
         if (extn == "png" || extn == "jpg" || extn == "jpeg") {
+          $("#uploadButton").show();
           if (typeof (FileReader) != "undefined") {
 
             //loop for each file selected for uploaded.
@@ -76,12 +78,11 @@ define([
               image_holder.show();
               reader.readAsDataURL($(this)[0].files[i]);
             }
-
           } else {
-            alert("This browser does not support FileReader.");
+            alertify.error("Tarayıcınız resim önizleme özelliğini desteklemiyor!");
           }
         } else {
-          alert("Pls select only images");
+          alertify.error("Sadece png, jpg ve jpeg uzantılı dosyalar kabul edilir.");
         }
       });
     }

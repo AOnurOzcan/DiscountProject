@@ -1,15 +1,4 @@
 var Product = require("../model/Product");
-var Image = require("../model/Image");
-var config = require('config');
-var S3FS = require('s3fs');
-var fs = require('fs');
-var multiparty = require('connect-multiparty'), multipartyMiddleware = multiparty();
-var s3Credentials = config.get('S3Credentials');
-var s3fsImpl = new S3FS(s3Credentials['bucketName'], {
-  accessKeyId: s3Credentials['accessKeyId'],
-  secretAccessKey: s3Credentials['secretAccessKey']
-});
-s3fsImpl.create();
 
 /**
  * Bu fonksiyon ürünleri kaydeder. Geriye kaydettiği ürünün id'li halini döndürür.
@@ -93,34 +82,5 @@ project.app.get("/product/:id", function (req, res) {
     product.categoryId = product.Category;
     delete product.Category;
     res.json(product);
-  });
-});
-
-/**
- * IMAGE UPLOAD SERVICE TEST
- */
-project.app.post("/testUpload", multipartyMiddleware, function (req, res) {
-  var file = req.files.imageURL;
-  var stream = fs.createReadStream(file.path);
-  var extension = file.originalFilename.split(".").pop();
-  var fileName = new Date().getTime() + "." + extension;
-  return s3fsImpl.writeFile(fileName, stream, {"ContentType": "image/jpg"}).then(function () {
-    fs.unlink(file.path, function (err) {
-      if (err) {
-        console.error(err);
-        return res.unknown();
-      }
-      var image = {};
-      image.imageName = req.body.imageName;
-      image.imageURL = "https://s3.amazonaws.com/ooar1/" + fileName;
-      image.companyId = req.session.admin.companyId;
-      Image.create(image, function (err, image) {
-        if (err) {
-          console.error(err);
-          return res.unknown();
-        }
-        res.json(image);
-      });
-    });
   });
 });

@@ -62,12 +62,13 @@ define(['backbone', 'handlebars', 'text!ChooseCompany/chooseCompanyTemplate.html
               success: function () {
                 chooseCompanyButton.text("Seçili Firma : " + that.companyName);
                 menuItems.removeClass("disabled");
-                window.location.hash = "cHomepage";
+                if (window.location.hash == "#statistics") {
+                  window.location.reload(false);
+                } else {
+                  window.location.hash = 'statistics'; // Yönetim paneline yönlendir.
+                }
               }
             });
-          },
-          onHidden: function () {
-            //window.location.hash = "cHomepage";
           }
         });
         chooseCompanyButton.on('click', function () {

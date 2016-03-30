@@ -302,7 +302,6 @@ define([
   });
 
   Handlebars.registerHelper('formatDate', function (date) {
-    debugger
     var months = ["Ocak", "Şubat", "Mart", "Nisan", "Mayıs", "Haziran", "Temmuz", "Ağustos", "Eylül", "Ekim", "Kasım", "Aralık"];
     var date = new Date(date);
     var day = date.getDate();

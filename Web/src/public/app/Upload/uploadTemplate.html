@@ -1,22 +1,37 @@
 <h1 class="ui dividing header">Resim Yükle ve Listele</h1>
-<form id="uploadForm" method="post" enctype="multipart/form-data">
-    <label for="fileUpload" class="ui icon primary button">
-        <i class="picture icon"></i>
-        Resim Seçin
-    </label>
-    <input type="file" id="fileUpload" name="imageURL" multiple style="display:none">
-</form>
-<div id="image-holder" class="ui tiny images"></div>
-<button id="uploadButton" class="ui blue large button" style="display:none">Yükle</button>
+<div class="ui center aligned grid">
+    <div class="four wide column">
+        <form id="uploadForm" method="post" enctype="multipart/form-data">
+            <label for="fileUpload" class="ui icon primary button">
+                <i class="picture icon"></i>
+                Resim Seçin
+            </label>
+            <input type="file" id="fileUpload" name="imageURL" multiple style="display:none">
+        </form>
+    </div>
+    <div class="row">
+        <div class="four wide column">
+            <div id="image-holder" class="ui tiny images"></div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="four wide column">
+            <button id="uploadButton" class="ui blue large fluid button" style="display:none">Yükle</button>
+        </div>
+    </div>
+</div>
 
 <h4 class="ui top attached inverted header">Yüklü Resimler</h4>
 <div class="ui attached segment">
-    <div class="ui seven cards" id="imageHolder">
+    <div class="ui seven cards">
         {{#each images}}
         <div class="ui card">
-            <a class="image">
-                <img src="{{imageURL}}">
-            </a>
+            <div class="content">
+                <img src="{{imageURL}}" style="max-height: 100%; max-width: 100%;">
+            </div>
+            <div class="extra content">
+                <label>Resim Adı</label>
+            </div>
             <button class="ui bottom attached button removeImageButton" data-id="{{id}}">
                 <i class="remove icon"></i>
                 Sil

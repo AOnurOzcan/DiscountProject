@@ -1,7 +1,7 @@
 define([
   'backbone',
   'Login/loginView',
-  'CompanyHomepage/adminView',
+  'Statistic/StatisticView',
   'Menu/menuView',
   'Product/productView',
   'Branch/branchView',
@@ -32,7 +32,7 @@ define([
 
     routes: {
       '': 'Login',
-      'cHomepage': 'CompanyHomepage',
+      'statistics': 'StatisticsPage',
       'product/add': 'AddProduct',
       'product/list': 'ListProduct',
       'product/edit/:productId': 'EditProduct',
@@ -96,7 +96,7 @@ define([
       this.menuView.isRendered = false; // Login'den farklı bir ekrana geçildiğinde menünün basılması için false yaptık.
       this.checkSession.fetch({ // Oturum açık mı kontrol et
         success: function () {  // Oturum açıksa
-          window.location.hash = 'cHomepage'; // Firma anasayfasına yönlendir
+          window.location.hash = 'statistics'; // Firma anasayfasına yönlendir
         },
         error: function () { // Oturum yoksa
           outer.showView(that.loginView); // Login formunu ekrana bas
@@ -104,7 +104,7 @@ define([
       });
     },
 
-    CompanyHomepage: function () {
+    StatisticsPage: function () {
       this.CheckSessionShowView(this.adminView);
     },
 
