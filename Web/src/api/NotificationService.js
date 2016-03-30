@@ -24,8 +24,12 @@ project.app.get("/notification/send/:id", function (req, res) {
       "SELECT * FROM User WHERE id IN(SELECT userId FROM Preference WHERE categoryId IN(SELECT categoryId FROM Product INNER JOIN NotificationProduct ON Product.id = NotificationProduct.productId INNER JOIN Notification ON NotificationProduct.notificationId = Notification.id WHERE Notification.id = ?) AND companyId = ?) AND tokenKey != '' AND notificationOpen = 1",
       [notification.id, companyId],
       function (err, users) {
+
         if (err) {
           return res.unknown();
+        }
+        if (users.length == 0) {
+          return res.json({error: "Gönderilecek Kullanıcı Bulunamadı"})
         }
         var userRegistrationIds = [];
         var userIds = [];
@@ -315,7 +319,7 @@ project.app.get("/user/notification/:id", function (req, res) {
               return res.unknown();
             }
 
-            if(result != null){
+            if (result != null) {
               result.userId = null;
               result.productId = null;
             }
@@ -352,7 +356,7 @@ project.app.get("/notification/updatestatus/:id", function (req, res) {
       if (err) {
         return res.unknown();
       }
-      if(userNotification != null){
+      if (userNotification != null) {
         userNotification.isRead = true;
         userNotification.save(function (err, result) {
           if (err) {
