@@ -1,17 +1,17 @@
+var compression = require('compression');
 var express = require('express');
 var config = require('config');
 var requireDir = require('require-dir');
 var bodyParser = require('body-parser');
 var session = require('express-session');
 var orm = require("orm");
-var compress = require('compression');
 
 
 var straightLine = new Array(50).join('-');
 console.log(straightLine);
 
 var app = express();
-app.use(compress());
+app.use(compression({threshold: 0}));
 console.log('Express initialized');
 app.use(bodyParser.urlencoded({extended: false}));
 app.use(bodyParser.json());
