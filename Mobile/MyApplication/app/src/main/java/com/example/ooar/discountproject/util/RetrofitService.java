@@ -20,6 +20,7 @@ import java.util.Map;
 import retrofit.Callback;
 import retrofit.client.Response;
 import retrofit.http.Body;
+import retrofit.http.DELETE;
 import retrofit.http.GET;
 import retrofit.http.POST;
 import retrofit.http.PUT;
@@ -79,6 +80,12 @@ public interface RetrofitService {
     void deleteSession(@Query("tokenKey") String tokenKey, Callback<Object> callback);
 
     @POST("/user/product/create")
-    void createUserProduct(@Query("tokenKey") String tokenKey, @Body UserProduct userProductList, Callback<Object> callback);
+    void createUserProduct(@Query("tokenKey") String tokenKey, @Body UserProduct userProduct, Callback<Object> callback);
+
+    @GET("/user/products/all")
+    void getAllUserProducts(@Query("tokenKey") String tokenKey, Callback<List<UserProduct>> callback);
+
+    @DELETE("/user/product/delete/{id}")
+    void deleteUserProduct(@Query("tokenKey") String tokenKey, @Path("id") int id, Callback<Object> callback);
 
 }

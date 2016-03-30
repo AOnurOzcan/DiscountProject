@@ -15,7 +15,7 @@ public class Product {
     private String productDescription;
     private String imageURL;
     private Category categoryId;
-    private List<UserProduct> followList;
+    private UserProduct follower;
 
     public Integer getId() {
         return id;
@@ -81,11 +81,11 @@ public class Product {
         this.categoryId = categoryId;
     }
 
-    public List<UserProduct> getFollowList() {
-        return followList;
+    public UserProduct getFollower() {
+        return follower;
     }
 
-    public void setFollowList(List<UserProduct> followList) {
-        this.followList = followList;
+    public void setFollower(UserProduct follower) {
+        this.follower = follower;
     }
 }

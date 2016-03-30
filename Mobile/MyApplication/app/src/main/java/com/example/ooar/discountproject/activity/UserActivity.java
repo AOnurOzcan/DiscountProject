@@ -46,6 +46,7 @@ import com.example.ooar.discountproject.fragment.NotificationDetailFragment;
 import com.example.ooar.discountproject.fragment.NotificationSettings;
 import com.example.ooar.discountproject.fragment.NotificationsFragment;
 import com.example.ooar.discountproject.fragment.ProfileFragment;
+import com.example.ooar.discountproject.fragment.UserProductList;
 import com.example.ooar.discountproject.fragment.UserTabsFragment;
 import com.example.ooar.discountproject.gcm.GcmBroadcastReceiver;
 import com.example.ooar.discountproject.util.FragmentChangeListener;
@@ -101,7 +102,7 @@ public class UserActivity extends AppCompatActivity implements FragmentChangeLis
 
         mTitle = "Menü";
 
-        mPlanetTitles = new String[]{"Profil", "Bildirim Ayarları", "Oturumu Kapat"};
+        mPlanetTitles = new String[]{"Profil", "Bildirim Ayarları", "Alışveriş Listem", "Oturumu Kapat"};
         mDrawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
         mDrawerList = (ListView) findViewById(R.id.left_drawer);
 
@@ -183,6 +184,10 @@ public class UserActivity extends AppCompatActivity implements FragmentChangeLis
                 replaceFragment(fragment, "notificationSettings");
                 break;
             case 2:
+                fragment = new UserProductList();
+                replaceFragment(fragment, "userProductList");
+                break;
+            case 3:
                 closeSession();
                 break;
             default:
@@ -246,6 +251,7 @@ public class UserActivity extends AppCompatActivity implements FragmentChangeLis
                     break;
                 case "notificationSettings":
                 case "notificationDetail":
+                case "userProductList":
                     replaceFragment(userTabsFragment, "userTabs");
                     getSupportActionBar().setTitle("Bildirimler");
                     break;

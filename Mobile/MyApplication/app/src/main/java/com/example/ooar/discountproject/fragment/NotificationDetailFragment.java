@@ -93,7 +93,7 @@ public class NotificationDetailFragment extends Fragment {
         LinearLayout.LayoutParams imageViewParams = new LinearLayout.LayoutParams(pixels[0] / 3, pixels[1] / 6);
 
         for (int i = 0; i < notification.getProductList().size(); i++) {
-            Product product = notification.getProductList().get(i);
+            final Product product = notification.getProductList().get(i);
             View custom = inflater.inflate(R.layout.notification_product_view, null);
 
             TextView productName = (TextView) custom.findViewById(R.id.productName);
@@ -115,11 +115,13 @@ public class NotificationDetailFragment extends Fragment {
             image.setLayoutParams(imageViewParams);
 
             final CheckBox checkBox = (CheckBox) custom.findViewById(R.id.addToList);
-            if (product.getFollowList().size() != 0) {
+            if (product.getFollower() != null) {
                 checkBox.setChecked(true);
-                checkBox.setTag(product.getFollowList().get(0).getId());
+                checkBox.setText("Alışveriş Listemden Kaldır");
+                checkBox.setTag(product.getFollower().getId());
             } else {
                 checkBox.setChecked(false);
+                checkBox.setText("Alışveriş Listeme Ekle");
                 checkBox.setTag(product.getId());
             }
 
@@ -138,19 +140,42 @@ public class NotificationDetailFragment extends Fragment {
                         Callback callback = new Callback() {
                             @Override
                             public void success(Object o, Response response) {
-                                int userProductId = (int) o;
-                                checkBox.setTag(userProductId);
+                                userProduct.setId(((Double) o).intValue());
+                                checkBox.setTag(userProduct.getId());
+                                checkBox.setText("Alışveriş Listemden Kaldır");
+                                product.setFollower(userProduct);
+                                Util.stopProgressDialog();
+                                Toast.makeText(getActivity().getApplicationContext(), "Başarıyla Kaydedildi", Toast.LENGTH_LONG).show();
                             }
 
                             @Override
                             public void failure(RetrofitError error) {
-
+                                Util.stopProgressDialog();
+                                Toast.makeText(getActivity().getApplicationContext(), error.toString(), Toast.LENGTH_LONG).show();
                             }
                         };
                         String tokenKey = getActivity().getSharedPreferences("Session", Activity.MODE_PRIVATE).getString("tokenKey", "");
-                        RetrofitConfiguration.getRetrofitService().createUserProduct(tokenKey, userProduct, callback);
+                        RetrofitConfiguration.getRetrofitService(true).createUserProduct(tokenKey, userProduct, callback);
                     } else {
 
+                        Callback callback = new Callback() {
+                            @Override
+                            public void success(Object o, Response response) {
+                                checkBox.setTag(product.getId());
+                                checkBox.setText("Alışveriş Listeme Ekle");
+                                product.setFollower(null);
+                                Util.stopProgressDialog();
+                                Toast.makeText(getActivity().getApplicationContext(), "Başarıyla Kaydedildi", Toast.LENGTH_LONG).show();
+                            }
+
+                            @Override
+                            public void failure(RetrofitError error) {
+                                Util.stopProgressDialog();
+                                Toast.makeText(getActivity().getApplicationContext(), error.toString(), Toast.LENGTH_LONG).show();
+                            }
+                        };
+                        String tokenKey = getActivity().getSharedPreferences("Session", Activity.MODE_PRIVATE).getString("tokenKey", "");
+                        RetrofitConfiguration.getRetrofitService(true).deleteUserProduct(tokenKey, (Integer) checkBox.getTag(), callback);
                     }
                 }
             });

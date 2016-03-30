@@ -10,6 +10,7 @@ var NotificationBranch = require('../model/NotificationBranch');
 var UserNotification = require('../model/UserNotification');
 var Product = require('../model/Product');
 var Preference = require('../model/Preference');
+var UserProduct = require('../model/UserProduct');
 
 ////////////////////////////////// WEB /////////////////////////////////////
 
@@ -285,6 +286,81 @@ project.app.get("/notification", function (req, res) {
       });
 
       res.json(notifications);
+    });
+  });
+});
+
+project.app.get("/user/notification/:id", function (req, res) {
+  var notificationId = req.params.id;
+  project.util.AuthorizedRouteForUser(req, res, function (userId) {
+    Notification.one({id: notificationId}, function (err, notification) {
+      notification.productList = [];
+      notification.branchList = [];
+
+      if (err) {
+        return res.unknown();
+      }
+
+      NotificationProduct.find({notificationId: notificationId}, function (err, products) {
+        if (err) {
+          return res.unknown();
+        }
+
+
+        products.asyncForEach(function (product, done) {
+          product.Product.categoryId = null;
+          product.Product.companyId = null;
+          UserProduct.one({userId: userId, productId: product.Product.id}, function (err, result) {
+            if (err) {
+              return res.unknown();
+            }
+
+            if(result != null){
+              result.userId = null;
+              result.productId = null;
+            }
+
+            product.Product.follower = result;
+            notification.productList.push(product.Product);
+
+            done();
+          });
+        }, function () {
+          NotificationBranch.find({notificationId: notificationId}, function (err, branchs) {
+            if (err) {
+              return res.unknown();
+            }
+
+            branchs.forEach(function (branch) {
+              branch.Branch.companyId = null;
+              branch.Branch.cityId = null;
+              notification.branchList.push(branch.Branch);
+            });
+
+            res.json(notification);
+          });
+        });
+      });
+    });
+  });
+});
+
+project.app.get("/notification/updatestatus/:id", function (req, res) {
+  project.util.AuthorizedRouteForUser(req, res, function (userId) {
+    var notificationId = req.params.id;
+    UserNotification.one({userId: userId, notificationId: notificationId}, function (err, userNotification) {
+      if (err) {
+        return res.unknown();
+      }
+      if(userNotification != null){
+        userNotification.isRead = true;
+        userNotification.save(function (err, result) {
+          if (err) {
+            return res.unknown();
+          }
+          return res.json({result: 'success'});
+        });
+      }
     });
   });
 });
