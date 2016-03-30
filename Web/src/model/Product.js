@@ -11,7 +11,7 @@ var Product = project.db.define('Product', {
   imageURL: String
 });
 
-Product.hasOne('Category', Category, {field: 'categoryId', autoFetch: true});
+Product.hasOne('Category', Category, {field: 'categoryId'});
 Product.hasOne('Company', Company, {field: 'companyId'});
 
 module.exports = Product;

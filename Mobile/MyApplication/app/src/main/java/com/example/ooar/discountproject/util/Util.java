@@ -15,6 +15,7 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.example.ooar.discountproject.R;
+import com.example.ooar.discountproject.model.Category;
 import com.example.ooar.discountproject.model.Company;
 import com.example.ooar.discountproject.model.CompanyCategory;
 import com.example.ooar.discountproject.model.Preference;
@@ -23,6 +24,7 @@ import org.w3c.dom.Text;
 
 import java.io.InputStream;
 import java.net.URL;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.regex.Matcher;
@@ -86,6 +88,17 @@ public class Util {
             }
         }
         return index;
+    }
+
+    public static CheckBox findCheckboxById(List<CheckBox> checkBoxList, int id) {
+        CheckBox checkBox = null;
+        for (int i = 0; i < checkBoxList.size(); i++) {
+            if (checkBoxList.get(i).getTag().equals(id)) {
+                checkBox = checkBoxList.get(i);
+                break;
+            }
+        }
+        return checkBox;
     }
 
     public static int companyCategoryFindId(List<CompanyCategory> companyCategoryList, int id) {
@@ -199,4 +212,26 @@ public class Util {
             return true;
         }
     }
+
+    public static List<Category> getSubCategory(Category parentCategory, List<Category> subCategoryList) {
+        List<Category> subCategories = new ArrayList<>();
+        for (Category category : subCategoryList) {
+            if (category.getParentCategory() == parentCategory.getId()) {
+                subCategories.add(category);
+            }
+        }
+        return subCategories;
+    }
+
+    public static Category findCategoryById(List<Category> categoryList, int id) {
+        Category category = null;
+        for (Category tempCategory : categoryList) {
+            if (tempCategory.getId() == id) {
+                category = tempCategory;
+                break;
+            }
+        }
+        return category;
+    }
+
 }

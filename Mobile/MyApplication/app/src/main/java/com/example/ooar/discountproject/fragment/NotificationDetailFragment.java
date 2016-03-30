@@ -15,6 +15,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.ooar.discountproject.R;
+import com.example.ooar.discountproject.activity.UserActivity;
 import com.example.ooar.discountproject.model.Branch;
 import com.example.ooar.discountproject.model.Notification;
 import com.example.ooar.discountproject.model.Product;
@@ -132,6 +133,7 @@ public class NotificationDetailFragment extends Fragment {
                             break;
                         }
                     }
+
                     if (tempBranch != null) {
                         BranchDetailFragment.branch = tempBranch;
                         FragmentChangeListener fc = (FragmentChangeListener) getActivity();

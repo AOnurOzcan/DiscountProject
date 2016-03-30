@@ -51,7 +51,7 @@ public class ProfileFragment extends Fragment {
     List<String> birthAdapterString = new ArrayList<>();
     List<String> cityNameList = new ArrayList<String>();
     public static boolean datePickerIsShow = false;
-    public static User userList;
+    public static User thisUser;
 
 
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -60,12 +60,12 @@ public class ProfileFragment extends Fragment {
 
     @Override
     public void onViewCreated(final View view, Bundle savedInstanceState) {
-        if (cityList == null || userList == null) {
+        if (cityList == null || thisUser == null) {
             getAllCity(view);
         } else {
             cityNameList.clear();
             setSpinner(view);
-            setUserValue(userList, view);
+            setUserValue(thisUser, view);
         }
     }
 
@@ -73,8 +73,8 @@ public class ProfileFragment extends Fragment {
         Callback callback = new Callback() {
             @Override
             public void success(Object o, Response response) {
-                ProfileFragment.userList = (User) o;
-                setUserValue(userList, v);
+                ProfileFragment.thisUser = (User) o;
+                setUserValue(thisUser, v);
                 Util.stopProgressDialog();
             }
 
@@ -194,15 +194,16 @@ public class ProfileFragment extends Fragment {
         Callback callback = new Callback() {
             @Override
             public void success(Object o, Response response) {
-                userList = null;
+                thisUser = null;
                 FragmentChangeListener fc = (FragmentChangeListener) getActivity();
-                fc.replaceFragment(UserActivity.userTabsFragment, null);
+                fc.replaceFragment(UserActivity.userTabsFragment, "userTabs");
                 Util.stopProgressDialog();
                 Toast.makeText(getActivity().getApplicationContext(), "Başarılı!", Toast.LENGTH_LONG).show();
             }
 
             @Override
             public void failure(RetrofitError error) {
+                Util.stopProgressDialog();
                 Toast.makeText(getActivity().getApplicationContext(), "Bir Hata Oluştu!", Toast.LENGTH_LONG).show();
             }
         };

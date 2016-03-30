@@ -14,69 +14,64 @@ var Preference = require('../model/Preference');
 ////////////////////////////////// WEB /////////////////////////////////////
 
 project.app.get("/notification/send/:id", function (req, res) {
-
-  var productIdList = [];
-  var categoryIdList = [];
-  var userList = [];
-  var companyId = req.session.companyId;
-
+  var companyId = req.session.admin.companyId;
   Notification.get(req.params.id, function (err, notification) {
     if (err) {
       return res.unknown();
     }
-
-    User.find({}, function (err, users) {
-      var userRegistrationIds = [];
-      var userIds = [];
-      var message = new GCM.Message({
-        data: {
-          notificationId: notification.id,
-          notificationTitle: notification.name,
-          notificationContent: notification.description
-        }
-      });
-
-      var sender = new GCM.Sender(project.config.get("GCMApiKey").key);
-
-      if (err) {
-        res.unknown();
-      }
-
-
-      users.forEach(function (user) {
-        userRegistrationIds.push(user.registrationId);
-        userIds.push(user.id);
-      });
-
-      sender.send(message, {registrationTokens: userRegistrationIds}, function (err, response) {
+    project.db.driver.execQuery(
+      "SELECT * FROM User WHERE id IN(SELECT userId FROM Preference WHERE categoryId IN(SELECT categoryId FROM Product INNER JOIN NotificationProduct ON Product.id = NotificationProduct.productId INNER JOIN Notification ON NotificationProduct.notificationId = Notification.id WHERE Notification.id = ?) AND companyId = ?) AND tokenKey != '' AND notificationOpen = 1",
+      [notification.id, companyId],
+      function (err, users) {
         if (err) {
-          console.error(err);
+          return res.unknown();
         }
-        else {
-          notification.isSent = true;
-          notification.sendDate = new Date();
-          notification.peopleCount = userRegistrationIds.length;
-          notification.save(function (err) {
-            if (err) {
-              return res.unknown();
-            }
-            userIds.asyncForEach(function (userId, done) {
-              UserNotification.create({
-                notificationId: notification.id,
-                userId: userId
-              }, function (err) {
-                if (err) {
-                  return res.unknown();
-                }
-                done();
+        var userRegistrationIds = [];
+        var userIds = [];
+        var message = new GCM.Message({
+          data: {
+            notificationId: notification.id,
+            notificationTitle: notification.name,
+            notificationContent: notification.description
+          }
+        });
+        var sender = new GCM.Sender(project.config.get("GCMApiKey").key);
+        if (err) {
+          res.unknown();
+        }
+        users.forEach(function (user) {
+          userRegistrationIds.push(user.registrationId);
+          userIds.push(user.id);
+        });
+        sender.send(message, {registrationTokens: userRegistrationIds}, function (err, response) {
+          if (err) {
+            console.error(err);
+          }
+          else {
+            notification.isSent = true;
+            notification.sendDate = new Date();
+            notification.peopleCount = userRegistrationIds.length;
+            notification.save(function (err) {
+              if (err) {
+                return res.unknown();
+              }
+              userIds.asyncForEach(function (userId, done) {
+                UserNotification.create({
+                  notificationId: notification.id,
+                  userId: userId
+                }, function (err) {
+                  if (err) {
+                    return res.unknown();
+                  }
+                  done();
+                });
+              }, function () {
+                res.json({"success": true});
               });
-            }, function () {
-              res.json({"success": true});
             });
-          });
-        }
+          }
+        });
       });
-    });
   });
 });
 

@@ -128,7 +128,9 @@ public class ChoisesFragment extends Fragment {
         List<Category> parentCategoryList = new ArrayList<Category>();
         List<Category> childCategoryList = new ArrayList<Category>();
         List<CheckBox> checkboxList = new ArrayList<CheckBox>();
-        final List<LinearLayout> linearLayoutList = new ArrayList<LinearLayout>();
+        List<CheckBox> selectAllCheckboxList = new ArrayList<CheckBox>();
+        List<LinearLayout> linearLayoutList = new ArrayList<LinearLayout>();
+        List<LinearLayout> checkboxLayoutList = new ArrayList<LinearLayout>();
         List<Button> buttonList = new ArrayList<Button>();
         List<Button> editCompanyList = new ArrayList<>();
 
@@ -150,16 +152,20 @@ public class ChoisesFragment extends Fragment {
             View custom = inflater.inflate(R.layout.preference_root_layout, null);
             LinearLayout checkboxLayout = (LinearLayout) custom.findViewById(R.id.checkboxLayout);//root layout dan checkboxların toplanacagı layout alınıyor
             checkboxLayout.setTag(category.getId());
+            checkboxLayoutList.add(checkboxLayout);
 
             LinearLayout mainLayout = (LinearLayout) custom.findViewById(R.id.mainLayout);//root layout dan main layout alınıyor
             mainLayout.setTag(category.getId());
             linearLayoutList.add(mainLayout);
 
-
             Button button = (Button) custom.findViewById(R.id.parentCategory);//Parent kategori butonları alınıp yenı degerler set ediliyor
             button.setText(category.getCategoryName());
             button.setTag(category.getId());
             buttonList.add(button);
+
+            CheckBox checkBox = (CheckBox) custom.findViewById(R.id.selectAll);
+            checkBox.setTag(category.getId());
+            selectAllCheckboxList.add(checkBox);
 
             boolean subCategorySizeBigZero = false;
             for (Category subCategory : childCategoryList) { //alt kategoriler için checkbox oluşturuluyor
@@ -192,6 +198,7 @@ public class ChoisesFragment extends Fragment {
 
             if (!subCategorySizeBigZero) {
                 custom.findViewById(R.id.helpBlockLayout).setVisibility(View.VISIBLE);
+                checkBox.setVisibility(View.GONE);
             }
 
             rootLayout.addView(custom);
@@ -284,13 +291,50 @@ public class ChoisesFragment extends Fragment {
         });
         rootLayout.addView(savePreferences);
 
-        setEvents(savePreferences, checkboxList, buttonList, linearLayoutList, editCompanyList);
+        setEvents(savePreferences, checkboxList, buttonList, linearLayoutList, editCompanyList, selectAllCheckboxList, checkboxLayoutList, parentCategoryList, childCategoryList);
     }
 
-    public void setEvents(final Button savePreferences, List<CheckBox> checkBoxList, List<Button> buttonList, final List<LinearLayout> linearLayoutList, final List<Button> editCompanyButtonList) {
+    public void setEvents(final Button savePreferences, final List<CheckBox> checkBoxList, List<Button> buttonList, final List<LinearLayout> linearLayoutList, final List<Button> editCompanyButtonList, final List<CheckBox> selectAllCheckboxList, final List<LinearLayout> checkboxLayoutList, final List<Category> parentCategoryList, final List<Category> childCategoryList) {
 
         final List<CheckBox> companyCategoryCheckedList = new ArrayList<>();
         final List<CheckBox> tempCompanyCategoryCheckedList = new ArrayList<>();
+        final boolean[] selectAll = {false};
+
+        for (final CheckBox checkBox : selectAllCheckboxList) {
+            checkBox.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+                @Override
+                public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                    selectAll[0] = true;
+                    Category parentCategory = Util.findCategoryById(parentCategoryList, (Integer) checkBox.getTag());
+                    if (parentCategory != null) {
+                        List<Category> subCategoryList = Util.getSubCategory(parentCategory, childCategoryList);
+                        if (subCategoryList.size() != 0) {
+                            for (Category subCategory : subCategoryList) {
+                                CheckBox subCheckbox = Util.findCheckboxById(checkBoxList, subCategory.getId());
+                                if (subCheckbox != null) {
+                                    subCheckbox.setChecked(isChecked);
+                                    if (isChecked) {
+                                        Button tempButton = (Button) ((ViewGroup) subCheckbox.getParent()).findViewById(R.id.editCompanyButton);
+                                        tempButton.setVisibility(View.VISIBLE);
+                                        for (CompanyCategory companyCategory : companyList) {
+                                            if (companyCategory.getCategoryId().getId() == subCategory.getId() && Util.companyCategoryFindId(selectedCompanyList, companyCategory.getId()) == -1) {
+                                                selectedCompanyList.add(companyCategory);
+                                            }
+                                        }
+                                        if (!Util.isEqual(preferencesList, selectedCompanyList)) {
+                                            savePreferences.setEnabled(true);
+                                        } else {
+                                            savePreferences.setEnabled(false);
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                    selectAll[0] = false;
+                }
+            });
+        }
 
         for (Preference preference : preferencesList) {
             for (CompanyCategory category : companyList) {
@@ -329,10 +373,15 @@ public class ChoisesFragment extends Fragment {
             checkBox.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
                 @Override
                 public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+
                     if (!isChecked) {
                         Iterator<CompanyCategory> iterator = selectedCompanyList.iterator();
                         while (iterator.hasNext()) {
                             CompanyCategory companyCategory = iterator.next();
+                            CheckBox checkedCheckbox = Util.findCheckboxById(companyCategoryCheckedList, companyCategory.getId());
+                            companyCategoryCheckedList.remove(checkedCheckbox);
+                            CheckBox tempCheckbox = Util.findCheckboxById(tempCompanyCategoryCheckedList, companyCategory.getId());
+                            tempCompanyCategoryCheckedList.remove(tempCheckbox);
                             if (checkBox.getTag().equals(companyCategory.getCategoryId().getId())) {
                                 iterator.remove();
                             }
@@ -347,7 +396,9 @@ public class ChoisesFragment extends Fragment {
                         Button tempButton = (Button) ((ViewGroup) checkBox.getParent()).findViewById(R.id.editCompanyButton);
                         tempButton.setVisibility(View.GONE);
                     } else {
-                        createBuilder(checkBox, null, companyCategoryCheckedList, tempCompanyCategoryCheckedList, savePreferences);
+                        if (!selectAll[0]) {
+                            createBuilder(checkBox, null, companyCategoryCheckedList, tempCompanyCategoryCheckedList, savePreferences);
+                        }
                     }
                 }
             });
@@ -370,9 +421,26 @@ public class ChoisesFragment extends Fragment {
         builder.setCancelable(false);
         builder.create().getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
 
-        LinearLayout newLayout = new LinearLayout(getActivity());
+        final LinearLayout newLayout = new LinearLayout(getActivity());
         newLayout.setOrientation(LinearLayout.VERTICAL);
 
+        CheckBox selectAllCheckbox = Util.createCheckbox(getActivity(), 0, new LinearLayout.LayoutParams(LinearLayout.LayoutParams.FILL_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT), "Hepsini Seç");
+        selectAllCheckbox.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                int count = newLayout.getChildCount();
+                for (int i = 0; i < count; i++) {
+                    try {
+                        CheckBox companyCheckbox = (CheckBox) newLayout.getChildAt(i);
+                        if (!companyCheckbox.getText().equals("Hepsini Seç")) {
+                            companyCheckbox.setChecked(isChecked);
+                        }
+                    } catch (Exception ex) {
+                    }
+                }
+            }
+        });
+        newLayout.addView(selectAllCheckbox);
         for (CompanyCategory companyCategory : companyList) {
             if (categoryId == companyCategory.getCategoryId().getId()) {
                 showDialog = true;
@@ -384,8 +452,8 @@ public class ChoisesFragment extends Fragment {
                         companyCategoryCheckedList.add(companyCheckBox);
                         tempCompanyCategoryCheckedList.add(companyCheckBox);
                     }
-
                 }
+
                 companyCheckbox.add(companyCheckBox);
                 companyIdList.add(companyCategory.getCompanyId().getId());
 
