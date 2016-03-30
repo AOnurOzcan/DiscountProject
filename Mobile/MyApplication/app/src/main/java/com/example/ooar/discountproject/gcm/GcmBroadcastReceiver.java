@@ -55,6 +55,9 @@ public class GcmBroadcastReceiver extends WakefulBroadcastReceiver {
                     myIntent = new Intent(context, UserActivity.class);
                     myIntent.putExtra("notificationId", notificationId);
                     myIntent.putExtra("fragmentName", "notificationDetailFragment");
+                } else {
+                    myIntent = new Intent(context, MainActivity.class);
+                    myIntent.putExtra("notificationId", notificationId);
                 }
 
                 number++;
@@ -77,7 +80,10 @@ public class GcmBroadcastReceiver extends WakefulBroadcastReceiver {
                 if (UserActivity.isOpen) {
                     myIntent = new Intent(context, UserActivity.class);
                     myIntent.putExtra("fragmentName", "notificationsFragment");
+                } else {
+                    myIntent = new Intent(context, MainActivity.class);
                 }
+
                 number++;
                 PendingIntent pendingIntent = PendingIntent.getActivity(context, 0, myIntent, Intent.FLAG_ACTIVITY_NEW_TASK);
                 SharedPreferences.Editor editor = context.getSharedPreferences("Session", context.MODE_PRIVATE).edit();

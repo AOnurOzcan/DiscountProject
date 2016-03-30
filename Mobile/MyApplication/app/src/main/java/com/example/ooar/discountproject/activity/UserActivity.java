@@ -101,7 +101,7 @@ public class UserActivity extends AppCompatActivity implements FragmentChangeLis
 
         mTitle = "Menü";
 
-        mPlanetTitles = new String[]{"Profil","Bildirim Ayarları" ,"Oturumu Kapat"};
+        mPlanetTitles = new String[]{"Profil", "Bildirim Ayarları", "Oturumu Kapat"};
         mDrawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
         mDrawerList = (ListView) findViewById(R.id.left_drawer);
 
@@ -313,7 +313,7 @@ public class UserActivity extends AppCompatActivity implements FragmentChangeLis
             String fragmentName = extras.getString("fragmentName");
             Integer notificationId = extras.getInt("notificationId");
             if (fragmentName != null || notificationId != null) {
-
+                NotificationsFragment.userNotificationList = null;
                 if (fragmentName.equals("notificationDetailFragment")) {
                     Bundle bundle = new Bundle();
                     bundle.putInt("notificationId", notificationId);

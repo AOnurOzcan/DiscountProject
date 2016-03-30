@@ -11,6 +11,7 @@ import com.example.ooar.discountproject.model.Notification;
 import com.example.ooar.discountproject.model.Preference;
 import com.example.ooar.discountproject.model.User;
 import com.example.ooar.discountproject.model.UserNotification;
+import com.example.ooar.discountproject.model.UserProduct;
 import com.squareup.okhttp.Call;
 
 import java.util.List;
@@ -53,7 +54,7 @@ public interface RetrofitService {
     @GET("/mobile/mainCategoryWithSubs")
     void getAllCategories(Callback<List<Category>> callback);
 
-    @GET("/company/withcategory")
+    @GET("/companies/withcategory")
     void getAllCompanyWithCategory(Callback<List<CompanyCategory>> callback);
 
     @POST("/user/preference/create")
@@ -68,7 +69,7 @@ public interface RetrofitService {
     @POST("/session/create")
     void createSession(@Body Map<String, String> phoneNumber, Callback<Map<String, String>> callback);
 
-    @GET("/notification/{id}")
+    @GET("/user/notification/{id}")
     void getNotificationById(@Query("tokenKey") String tokenKey, @Path("id") Integer notificationId, Callback<Notification> callback);
 
     @GET("/notification")
@@ -76,5 +77,8 @@ public interface RetrofitService {
 
     @GET("/session/delete")
     void deleteSession(@Query("tokenKey") String tokenKey, Callback<Object> callback);
+
+    @POST("/user/product/create")
+    void createUserProduct(@Query("tokenKey") String tokenKey, @Body UserProduct userProductList, Callback<Object> callback);
 
 }

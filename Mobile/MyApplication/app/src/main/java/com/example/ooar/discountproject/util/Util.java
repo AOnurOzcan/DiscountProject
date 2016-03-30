@@ -144,12 +144,16 @@ public class Util {
     }
 
     public static String parseDate(String date) {
-        String[] tempArray = date.split("T");
-        String day = tempArray[0].split("-")[2];
-        String mount = tempArray[0].split("-")[1];
-        String year = tempArray[0].split("-")[0];
+        if (date != null) {
+            String[] tempArray = date.split("T");
+            String day = tempArray[0].split("-")[2];
+            String mount = tempArray[0].split("-")[1];
+            String year = tempArray[0].split("-")[0];
 
-        return day + "/" + mount + "/" + year;
+            return day + "/" + mount + "/" + year;
+        } else {
+            return null;
+        }
     }
 
     public static class DownloadImageTask extends AsyncTask<String, Void, Bitmap> {

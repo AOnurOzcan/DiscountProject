@@ -5,7 +5,12 @@ var City = require('../model/City');
 var User = require('../model/User');
 var Preference = require('../model/Preference');
 var randtoken = require('rand-token');
+var UserProduct = require('../model/UserProduct');
+var NotificationProduct = require('../model/NotificationProduct');
+var NotificationBranch = require('../model/NotificationBranch');
+var Notification = require('../model/Notification');
 
+//Kullanıcı profili oluşturmak kullanılıyor
 project.app.post("/user/profile/create", function (req, res) {
   var user = req.body;
 
@@ -27,6 +32,34 @@ project.app.post("/user/profile/create", function (req, res) {
   });
 });
 
+//Kullanıcı profilini düzenlemede kullanılır.
+project.app.put("/user/profile/edit", function (req, res) {
+  project.util.AuthorizedRouteForUser(req, res, function (userId) {
+    User.get(userId, function (err, user) {
+
+      if (err) {
+        return res.unknown();
+      }
+
+      user.firstName = req.body.firstName;
+      user.lastName = req.body.lastName;
+      user.gender = req.body.gender;
+      user.birthday = project.util.ParseDate(req.body.birthday);
+      user.cityId = req.body.cityId.id;
+      user.notificationOpen = req.body.notificationOpen;
+
+      delete user['City'];
+      user.save(function (err, savedUser) {
+        if (err) {
+          return res.unknown();
+        }
+        res.json({success: true});
+      });
+    });
+  });
+});
+
+//Kullanıcı profili getirmede kullanılıyor
 project.app.get("/user/profile/get", function (req, res) {
 
   project.util.AuthorizedRouteForUser(req, res, function (userId) {
@@ -44,6 +77,7 @@ project.app.get("/user/profile/get", function (req, res) {
   });
 });
 
+//Kullanıcı ya yeni tercih eklemede kullanılıyor
 project.app.post("/user/preference/create", function (req, res) {
   project.util.AuthorizedRouteForUser(req, res, function (userId) {
     var preferences = req.body;
@@ -66,6 +100,7 @@ project.app.post("/user/preference/create", function (req, res) {
   });
 });
 
+//Kullanıcının bir tercihini silmede kullanılıyor
 project.app.post("/user/preference/delete", function (req, res) {
   project.util.AuthorizedRouteForUser(req, res, function (userId) {
     var preferences = req.body;
@@ -92,6 +127,7 @@ project.app.post("/user/preference/delete", function (req, res) {
   });
 });
 
+//Kullanıcının tüm tercihlerini getirmede kullanılır
 project.app.get("/user/preference/all", function (req, res) {
   project.util.AuthorizedRouteForUser(req, res, function (userId) {
     Preference.find({userId: userId}, function (err, preferences) {
@@ -114,27 +150,115 @@ project.app.get("/user/preference/all", function (req, res) {
   });
 });
 
-project.app.put("/user/profile/edit", function (req, res) {
+//Kullanıcının listesine eklediği ürünleri getirir
+project.app.get("/user/products/all", function (req, res) {
   project.util.AuthorizedRouteForUser(req, res, function (userId) {
-    User.get(userId, function (err, user) {
+    UserProduct.find({userId: userId}, function (err, userProducts) {
+      if (err) {
+        return res.unknown();
+      }
+
+      userProducts.asyncForEach(function (userProduct, done) {
+        userProduct.getProduct(function (err, product) {
+          if (err) {
+            return res.unknown();
+          }
+          product.categoryId = null;
+          product.companyId = null;
+          userProduct.productId = product;
+          userProduct.userId = null;
+          delete userProduct['product'];
+          done();
+        });
+      }, function () {
+        res.json(userProducts);
+      });
+    });
+  });
+});
+
+//Kullanıcının listesine yeni ürün ekler
+project.app.post("/user/product/create", function (req, res) {
+  project.util.AuthorizedRouteForUser(req, res, function (userId) {
+    var reqValues = req.body;
+    var userProduct = {userId: userId, productId: reqValues.productId.id};
+    UserProduct.create(userProduct, function (err, result) {
+      if (err) {
+        return res.unknown();
+      }
+      res.json(result.id);
+    });
+  });
+});
+
+//Kullanıcının listesinden yeni ürün siler
+project.app.delete("/user/product/delete/:id", function (req, res) {
+  project.util.AuthorizedRouteForUser(req, res, function (userId) {
+    var deleteId = req.params.id;
+    UserProduct.get(deleteId, function (err, userProduct) {
+      if (err) {
+        return res.unknown();
+      }
+      userProduct.remove(function (err, result) {
+        if (err) {
+          return res.unknown();
+        }
+        res.json({result: 'success'});
+      });
+    });
+  });
+});
+
+project.app.get("/user/notification/:id", function (req, res) {
+  var notificationId = req.params.id;
+  project.util.AuthorizedRouteForUser(req, res, function (userId) {
+    Notification.one({id: notificationId}, function (err, notification) {
+      notification.productList = [];
+      notification.branchList = [];
 
       if (err) {
         return res.unknown();
       }
 
-      user.firstName = req.body.firstName;
-      user.lastName = req.body.lastName;
-      user.gender = req.body.gender;
-      user.birthday = project.util.ParseDate(req.body.birthday);
-      user.cityId = req.body.cityId.id;
-      user.notificationOpen = req.body.notificationOpen;
-
-      delete user['City'];
-      user.save(function (err, savedUser) {
+      NotificationProduct.find({notificationId: notificationId}, function (err, products) {
         if (err) {
           return res.unknown();
         }
-        res.json({success: true});
+
+
+        products.asyncForEach(function (product, done) {
+          product.Product.categoryId = null;
+          product.Product.companyId = null;
+          UserProduct.find({userId: userId, productId: product.Product.id}, function (err, results) {
+            if (err) {
+              return res.unknown();
+            }
+
+            results.forEach(function (result) {
+              result.userId = null;
+              result.productId = null;
+            });
+
+            product.Product.followList = results;
+            notification.productList.push(product.Product);
+
+            done();
+          });
+        }, function () {
+          NotificationBranch.find({notificationId: notificationId}, function (err, branchs) {
+            if (err) {
+              return res.unknown();
+            }
+
+            branchs.forEach(function (branch) {
+              branch.Branch.companyId = null;
+              branch.Branch.cityId = null;
+              notification.branchList.push(branch.Branch);
+            });
+
+            res.json(notification);
+          });
+        });
       });
     });
   });

@@ -29,7 +29,7 @@ import retrofit.client.Response;
  */
 public class NotificationsFragment extends Fragment {
 
-    List<UserNotification> userNotificationList = null;
+    public static List<UserNotification> userNotificationList = null;
 
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
 

@@ -1,5 +1,7 @@
 package com.example.ooar.discountproject.model;
 
+import java.util.List;
+
 /**
  * Created by Onur Kuru on 5.3.2016.
  */
@@ -13,6 +15,7 @@ public class Product {
     private String productDescription;
     private String imageURL;
     private Category categoryId;
+    private List<UserProduct> followList;
 
     public Integer getId() {
         return id;
@@ -76,5 +79,13 @@ public class Product {
 
     public void setCategoryId(Category categoryId) {
         this.categoryId = categoryId;
+    }
+
+    public List<UserProduct> getFollowList() {
+        return followList;
+    }
+
+    public void setFollowList(List<UserProduct> followList) {
+        this.followList = followList;
     }
 }
