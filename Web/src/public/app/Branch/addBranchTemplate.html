@@ -5,7 +5,6 @@
         <div class="ui buttom attached segment">
             <form class="ui large form" id="addBranchForm">
                 {{#branch.id}}<input type="hidden" name="id">{{/branch.id}}
-
                 <div class="field">
                     <input type="text" name="name" placeholder="Şube Adı">
                 </div>
@@ -29,12 +28,12 @@
                 <div class="field">
                     <input type="text" name="locationURL" placeholder="Konum URL">
                 </div>
-                <div class="ui error message"></div>
                 {{#branch.id}}
                 <button class="fluid green ui button" id="saveBranchButton" data-id="{{id}}">Kaydet</button>
                 {{else}}
                 <button class="fluid ui primary button" id="addBranchButton">Ekle</button>
                 {{/branch.id}}
+                <div class="ui error message"></div>
             </form>
         </div>
     </div>

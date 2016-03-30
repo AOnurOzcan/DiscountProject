@@ -18,9 +18,24 @@ define([
   var AddCompanyView = core.CommonView.extend({
     autoLoad: true,
     el: '#page',
-    events: {
-      'click #addCompanyButton': 'saveCompany',
-      'click #updateCompanyButton': 'saveCompany'
+    validation: function () {
+      var that = this;
+      $('#addCompanyForm').form({
+        onSuccess: function (e) {
+          that.saveCompany(e);
+        },
+        fields: {
+          companyName: {
+            identifier: 'companyName',
+            rules: [
+              {
+                type: 'empty',
+                prompt: 'Firma adı alanı boş geçilemez!'
+              }
+            ]
+          },
+        }
+      });
     },
     saveCompany: function (e) {
       e.preventDefault();
@@ -43,12 +58,14 @@ define([
       var that = this;
       if (this.params == undefined) {
         this.$el.html(addCompanyTemplate());
+        this.validation();
       } else {
         var companyModel = new CompanyModel({id: this.params.companyId});
         companyModel.fetch({
           success: function (company) {
             that.$el.html(addCompanyTemplate({company: company.toJSON()}));
             that.form().setValues(company.toJSON());
+            that.validation();
           }
         });
       }

@@ -11,8 +11,68 @@ define(['backbone', 'handlebars', 'text!Profile/profileTemplate.html'], function
   var EditProfileView = core.CommonView.extend({
     el: "#page",
     autoLoad: true,
-    events: {
-      'click #saveProfileButton': 'saveProfile'
+    validation: function () {
+      var that = this;
+      $('#editProfileForm').form({
+        onSuccess: function (e) {
+          that.saveProfile(e);
+        },
+        fields: {
+          username: {
+            identifier: 'username',
+            rules: [
+              {
+                type: 'empty',
+                prompt: 'Kullanıcı adı alanı boş geçilemez!'
+              }
+            ]
+          },
+          email: {
+            identifier: 'email',
+            rules: [
+              {
+                type: 'empty',
+                prompt: 'Email alanı boş geçilemez!'
+              },
+              {
+                type: 'email',
+                prompt: 'Geçersiz Email!'
+              }
+            ]
+          },
+          oldPassword: {
+            identifier: 'oldPassword',
+            rules: [
+              {
+                type: 'empty',
+                prompt: 'Eski şifre alanı boş geçilemez!'
+              }
+            ]
+          },
+          password: {
+            identifier: 'password',
+            rules: [
+              {
+                type: 'empty',
+                prompt: 'Yeni şifre alanı boş geçilemez!'
+              }
+            ]
+          },
+          password2: {
+            identifier: 'password2',
+            rules: [
+              {
+                type: 'empty',
+                prompt: 'Yeni şifre tekrar alanı boş geçilemez!'
+              },
+              {
+                type: 'match[password]',
+                prompt: 'Şifre eşleşmedi!'
+              }
+            ]
+          }
+        }
+      });
     },
     initialize: function () {
       this.profile = new Profile();
@@ -28,6 +88,7 @@ define(['backbone', 'handlebars', 'text!Profile/profileTemplate.html'], function
     },
     render: function () {
       this.$el.html(profileTemplate({account: this.profile.toJSON()}));
+      this.validation();
     }
   });
 

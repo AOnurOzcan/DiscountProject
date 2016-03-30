@@ -30,8 +30,58 @@ define([
     autoLoad: true,
     events: {
       'change .accountTypeDropdown': 'ChangeAccountType',
-      'click #addAccountButton': 'saveAccount',
-      'click #saveAccountButton': 'saveAccount'
+      //'click #addAccountButton': 'saveAccount',
+      //'click #saveAccountButton': 'saveAccount'
+    },
+    validation: function () {
+      var that = this;
+      $('#addAccountForm').form({
+        onSuccess: function (e) {
+          that.saveAccount(e);
+        },
+        fields: {
+          username: {
+            identifier: 'username',
+            rules: [
+              {
+                type: 'empty',
+                prompt: 'Kullanıcı adı alanı boş geçilemez!'
+              }
+            ]
+          },
+          password: {
+            identifier: 'password',
+            rules: [
+              {
+                type: 'empty',
+                prompt: 'Şifre alanı boş geçilemez!'
+              }
+            ]
+          },
+          email: {
+            identifier: 'email',
+            rules: [
+              {
+                type: 'empty',
+                prompt: 'Email alanı boş geçilemez!'
+              },
+              {
+                type: 'email',
+                prompt: 'Geçersiz Email!'
+              }
+            ]
+          },
+          accountAuth: {
+            identifier: 'accountAuthDropdown',
+            rules: [
+              {
+                type: 'minCount[1]',
+                prompt: 'En az bir yetki seçiniz!'
+              }
+            ]
+          }
+        }
+      });
     },
     initialize: function () {
       this.companyCollection = new Companyollection();
@@ -71,6 +121,7 @@ define([
         $('#accountAuthDropdown').dropdown();
         $('.accountTypeDropdown').dropdown();
         $(".companyDropdown").dropdown().addClass('disabled');
+        this.validation();
       } else {
         var user = new Account({id: this.params.accountId});
         user.fetch({
@@ -79,6 +130,7 @@ define([
               account: savedUser.toJSON(),
               companies: that.companyCollection.toJSON()
             }));
+            that.validation();
             that.form().setValues(user.toJSON());
             $('.accountAuthDropdown').dropdown();
             $('.accountTypeDropdown').dropdown();

@@ -42,9 +42,68 @@ define([
   var AddNotificationView = core.CommonView.extend({
     autoLoad: true,
     el: "#page",
-    events: {
-      'click #addNotificationButton': 'addOrEditNotification',
-      'click #updateNotificationButton': 'addOrEditNotification'
+    validation: function () {
+      var that = this;
+      $('#addNotificationForm').form({
+        onSuccess: function (e) {
+          that.addOrEditNotification(e);
+        },
+        fields: {
+          name: {
+            identifier: 'name',
+            rules: [
+              {
+                type: 'empty',
+                prompt: 'Bildirim adı alanı boş geçilemez!'
+              }
+            ]
+          },
+          products: {
+            identifier: 'products',
+            rules: [
+              {
+                type: 'empty',
+                prompt: 'Ürünler alanı boş geçilemez!'
+              },
+              {
+                type: 'minCount[1]',
+                prompt: 'En az bir ürün seçiniz!'
+              }
+            ]
+          },
+          startDate: {
+            identifier: 'startDate',
+            rules: [
+              {
+                type: 'empty',
+                prompt: 'Bildirim başlangıç tarihi alanı boş geçilemez!'
+              }
+            ]
+          },
+          description: {
+            identifier: 'description',
+            rules: [
+              {
+                type: 'empty',
+                prompt: 'Açıklama alanı boş geçilemez!'
+              }
+            ]
+          },
+          branches: {
+            identifier: 'branches',
+            rules: [
+              {
+                type: 'empty',
+                prompt: 'Şube alanı boş geçilemez!'
+              },
+              {
+                type: 'minCount[1]',
+                prompt: 'En az bir şube seçiniz!'
+              }
+            ]
+          }
+        }
+      });
     },
     initialize: function () {
       this.productCollection = new ProductCollection();
@@ -90,6 +149,7 @@ define([
           products: this.productCollection.toJSON(),
           branches: this.branchCollection.toJSON()
         }));
+        this.validation();
         $(".ui.dropdown").dropdown({
           message: {
             noResults: 'Hiç sonuç bulunamadı.'
@@ -104,6 +164,7 @@ define([
               products: that.productCollection.toJSON(),
               branches: that.branchCollection.toJSON()
             }));
+            that.validation();
             that.form().setValues(notification.toJSON());
             $(".ui.dropdown").dropdown({
               message: {
@@ -241,6 +302,7 @@ define([
   });
 
   Handlebars.registerHelper('formatDate', function (date) {
+    debugger
     var months = ["Ocak", "Şubat", "Mart", "Nisan", "Mayıs", "Haziran", "Temmuz", "Ağustos", "Eylül", "Ekim", "Kasım", "Aralık"];
     var date = new Date(date);
     var day = date.getDate();

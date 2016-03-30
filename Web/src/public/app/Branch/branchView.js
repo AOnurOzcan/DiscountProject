@@ -23,14 +23,11 @@ define([
   var AddBranchView = core.CommonView.extend({
     autoLoad: true,
     el: "#page",
-    events: {
-      'click #saveBranchButton': 'saveBranch'
-    },
     validation: function () {
       var that = this;
       $('#addBranchForm').form({
         onSuccess: function (e) {
-          that.addBranch(e);
+          that.saveBranch(e);
         },
         fields: {
           name: {
@@ -39,10 +36,6 @@ define([
               {
                 type: 'empty',
                 prompt: 'Şube adı alanı boş geçilemez!'
-              },
-              {
-                type: 'minLength[6]',
-                prompt: 'Şube adı alanı minimum 6 karakter olmalı!'
               }
             ]
           },
@@ -51,7 +44,7 @@ define([
             rules: [
               {
                 type: 'empty',
-                prompt: 'Bu alan boş geçilemez!'
+                prompt: 'Adres alanı boş geçilemez!'
               }
             ]
           },
@@ -60,7 +53,7 @@ define([
             rules: [
               {
                 type: 'empty',
-                prompt: 'Bu alan boş geçilemez!'
+                prompt: 'Şehir alanı boş geçilemez!'
               }
             ]
           },
@@ -69,7 +62,7 @@ define([
             rules: [
               {
                 type: 'empty',
-                prompt: 'Bu alan boş geçilemez!'
+                prompt: 'Telefon alanı boş geçilemez!'
               }
             ]
           },
@@ -78,7 +71,7 @@ define([
             rules: [
               {
                 type: 'empty',
-                prompt: 'Bu alan boş geçilemez!'
+                prompt: 'Çalışma Saatleri alanı boş geçilemez!'
               }
             ]
           },
@@ -87,7 +80,11 @@ define([
             rules: [
               {
                 type: 'empty',
-                prompt: 'Bu alan boş geçilemez!'
+                prompt: 'Konum alanı boş geçilemez!'
+              },
+              {
+                type: 'url',
+                prompt: 'Geçersiz URL!'
               }
             ]
           }
@@ -97,31 +94,19 @@ define([
     initialize: function () {
       this.cityCollection = new CityCollection();
     },
-    addBranch: function (e) {
-      e.preventDefault();
-      var that = this;
-      var form = this.form();
-      var values = form.getValues;
-      var branchModel = new BranchModel();
-      branchModel.save(values, {
-        success: function () {
-          that.render();
-          alertify.success("Şube başarıyla eklendi.");
-        }
-      });
-    },
     saveBranch: function (e) {
       e.preventDefault();
       var form = this.form();
       var values = form.getValues;
-      if (values == null) return;
       var model = new BranchModel();
       model.save(values, {
         success: function () {
           window.location.hash = "branch/list";
-        },
-        error: function () {
-          alert("hataa");
+          if (this.params == undefined) {
+            alertify.success("Şube ekleme başarılı");
+          } else {
+            alertify.success("Şube güncelleme başarılı");
+          }
         }
       });
     },

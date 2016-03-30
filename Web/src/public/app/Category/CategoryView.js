@@ -121,11 +121,26 @@ define([
   var AddMainCategoryView = core.CommonView.extend({
     autoLoad: true,
     el: "#page",
-    events: {
-      'click #updateMainCategoryButton': 'addOrUpdateMainCategory',
-      'click #addMainCategoryButton': 'addOrUpdateMainCategory'
+    validation: function () {
+      var that = this;
+      $('#addMainCategoryForm').form({
+        onSuccess: function (e) {
+          that.saveMainCategory(e);
+        },
+        fields: {
+          categoryName: {
+            identifier: 'categoryName',
+            rules: [
+              {
+                type: 'empty',
+                prompt: 'Ana kategori alanı boş geçilemez!'
+              }
+            ]
+          }
+        }
+      });
     },
-    addOrUpdateMainCategory: function (e) {
+    saveMainCategory: function (e) {
       e.preventDefault();
       var that = this;
       var values = this.form().getValues;
@@ -145,12 +160,14 @@ define([
       var that = this;
       if (this.params == undefined) {
         this.$el.html(addMainCategoryTemplate());
+        this.validation();
       } else {
         var categoryModel = new MainCategoryModel({id: this.params.mainCategoryId});
         categoryModel.fetch({
           success: function (mainCategory) {
             that.$el.html(addMainCategoryTemplate({mainCategory: mainCategory.toJSON()}));
             that.form().setValues(mainCategory.toJSON());
+            that.validation();
           }
         });
       }
@@ -160,14 +177,38 @@ define([
   var AddSubCategoryView = core.CommonView.extend({
     autoLoad: true,
     el: "#page",
-    events: {
-      'click #updateSubCategoryButton': 'addOrUpdateSubCategory',
-      'click #addSubCategoryButton': 'addOrUpdateSubCategory'
+    validation: function () {
+      var that = this;
+      $('#addSubCategoryForm').form({
+        onSuccess: function (e) {
+          that.saveSubCategory(e);
+        },
+        fields: {
+          categoryName: {
+            identifier: 'categoryName',
+            rules: [
+              {
+                type: 'empty',
+                prompt: 'Alt kategori alanı boş geçilemez!'
+              }
+            ]
+          },
+          parentCategory: {
+            identifier: 'parentCategory',
+            rules: [
+              {
+                type: 'empty',
+                prompt: 'Ana kategori alanı boş geçilemez!'
+              }
+            ]
+          }
+        }
+      });
     },
     initialize: function () {
       this.mainCategoryCollection = new MainCategoryCollection();
     },
-    addOrUpdateSubCategory: function (e) {
+    saveSubCategory: function (e) {
       e.preventDefault();
       var that = this;
       var values = this.form().getValues;
@@ -188,6 +229,7 @@ define([
       if (this.params == undefined) {
         this.$el.html(addSubCategoryTemplate({mainCategories: this.mainCategoryCollection.toJSON()}));
         $('.ui.dropdown').dropdown();
+        this.validation();
       } else {
         var categoryModel = new SubCategoryModel({id: this.params.subCategoryId});
         categoryModel.fetch({
@@ -199,10 +241,10 @@ define([
             that.form().setValues(subCategory.toJSON());
             $("#subCategorySelect").dropdown("set selected", subCategory.toJSON().parentCategory);
             $('.ui.dropdown').dropdown();
+            that.validation();
           }
         });
       }
-
     }
   });
 

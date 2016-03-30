@@ -38,10 +38,63 @@ define([
     autoLoad: true,
     el: "#page",
     events: {
-      'click #addProductButton': 'addOrUpdateProduct',
-      'click #updateProductButton': 'addOrUpdateProduct',
       'change #productMainCategorySelect': 'renderSubCategories',
       'click #selectImage': 'openModal'
+    },
+    validation: function () {
+      var that = this;
+      $('#addProductForm').form({
+        onSuccess: function (e) {
+          that.saveProduct(e);
+        },
+        fields: {
+          mainCategory: {
+            identifier: 'mainCategory',
+            rules: [
+              {
+                type: 'empty',
+                prompt: 'Üst kategori alanı boş geçilemez!'
+              }
+            ]
+          },
+          categoryId: {
+            identifier: 'categoryId',
+            rules: [
+              {
+                type: 'empty',
+                prompt: 'Alt kategori alanı boş geçilemez!'
+              }
+            ]
+          },
+          productName: {
+            identifier: 'productName',
+            rules: [
+              {
+                type: 'empty',
+                prompt: 'Ürün adı alanı boş geçilemez!'
+              }
+            ]
+          },
+          price: {
+            identifier: 'price',
+            rules: [
+              {
+                type: 'empty',
+                prompt: 'Fiyat alanı boş geçilemez!'
+              }
+            ]
+          },
+          productDescription: {
+            identifier: 'productDescription',
+            rules: [
+              {
+                type: 'empty',
+                prompt: 'Ürün açıklaması alanı boş geçilemez!'
+              }
+            ]
+          }
+        }
+      });
     },
     initialize: function () {
       this.mainCategoryCollection = new MainCategoryCollection();
@@ -84,7 +137,7 @@ define([
         }
       });
     },
-    addOrUpdateProduct: function (e) {
+    saveProduct: function (e) {
       e.preventDefault();
       var that = this;
       var form = this.form();
@@ -108,6 +161,7 @@ define([
           mainCategories: this.mainCategoryCollection.toJSON(),
           images: this.imageCollection.toJSON()
         }));
+        this.validation();
         $('.ui.dropdown').dropdown();
       } else {
         var product = new Product({id: this.params.productId});
@@ -119,6 +173,7 @@ define([
               mainCategories: that.mainCategoryCollection.toJSON(),
               images: that.imageCollection.toJSON()
             }));
+            that.validation();
             $("#productMainCategorySelect").dropdown("set selected", product.toJSON().categoryId.parentCategory);
           }
         });
