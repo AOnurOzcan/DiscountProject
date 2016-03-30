@@ -54,7 +54,7 @@ project.app.get('/company', function (req, res) {
 
 //------------------------------ MOBILE --------------------------//
 
-project.app.get("/company/withcategory", function (req, res) {
+project.app.get("/companies/withcategory", function (req, res) {
 
   CompanyCategory.find(function (err, result) {
     if (err) {

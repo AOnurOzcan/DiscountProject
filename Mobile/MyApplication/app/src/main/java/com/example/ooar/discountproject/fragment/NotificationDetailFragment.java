@@ -8,6 +8,8 @@ import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.CheckBox;
+import android.widget.CompoundButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ScrollView;
@@ -15,9 +17,12 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.ooar.discountproject.R;
+import com.example.ooar.discountproject.activity.UserActivity;
 import com.example.ooar.discountproject.model.Branch;
 import com.example.ooar.discountproject.model.Notification;
 import com.example.ooar.discountproject.model.Product;
+import com.example.ooar.discountproject.model.User;
+import com.example.ooar.discountproject.model.UserProduct;
 import com.example.ooar.discountproject.util.FragmentChangeListener;
 import com.example.ooar.discountproject.util.RetrofitConfiguration;
 import com.example.ooar.discountproject.util.Util;
@@ -32,7 +37,6 @@ import retrofit.client.Response;
 public class NotificationDetailFragment extends Fragment {
 
     Notification notification;
-    View view;
     TextView notificationName;
     TextView startDate;
     TextView endDate;
@@ -49,7 +53,6 @@ public class NotificationDetailFragment extends Fragment {
 
     @Override
     public void onViewCreated(final View view, Bundle savedInstanceState) {
-        this.view = view;
         getNotification();
     }
 
@@ -111,6 +114,47 @@ public class NotificationDetailFragment extends Fragment {
             ImageView image = (ImageView) custom.findViewById(R.id.productImage);
             image.setLayoutParams(imageViewParams);
 
+            final CheckBox checkBox = (CheckBox) custom.findViewById(R.id.addToList);
+            if (product.getFollowList().size() != 0) {
+                checkBox.setChecked(true);
+                checkBox.setTag(product.getFollowList().get(0).getId());
+            } else {
+                checkBox.setChecked(false);
+                checkBox.setTag(product.getId());
+            }
+
+            checkBox.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+                @Override
+                public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                    if (isChecked) {
+                        final UserProduct userProduct = new UserProduct();
+                        Product tempProduct = new Product();
+                        User tempUser = new User();
+
+                        tempProduct.setId((Integer) checkBox.getTag());
+                        userProduct.setProductId(tempProduct);
+                        userProduct.setUserId(tempUser);
+
+                        Callback callback = new Callback() {
+                            @Override
+                            public void success(Object o, Response response) {
+                                int userProductId = (int) o;
+                                checkBox.setTag(userProductId);
+                            }
+
+                            @Override
+                            public void failure(RetrofitError error) {
+
+                            }
+                        };
+                        String tokenKey = getActivity().getSharedPreferences("Session", Activity.MODE_PRIVATE).getString("tokenKey", "");
+                        RetrofitConfiguration.getRetrofitService().createUserProduct(tokenKey, userProduct, callback);
+                    } else {
+
+                    }
+                }
+            });
+
             new Util.DownloadImageTask(image).execute(product.getImageURL());
             parent.addView(custom);
         }
@@ -132,6 +176,7 @@ public class NotificationDetailFragment extends Fragment {
                             break;
                         }
                     }
+
                     if (tempBranch != null) {
                         BranchDetailFragment.branch = tempBranch;
                         FragmentChangeListener fc = (FragmentChangeListener) getActivity();

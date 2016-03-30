@@ -11,6 +11,7 @@ import android.content.res.Configuration;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.os.Handler;
+import android.os.PersistableBundle;
 import android.preference.PreferenceManager;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
@@ -34,15 +35,19 @@ import android.view.ViewGroup;
 import android.view.WindowManager;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.LinearLayout;
 import android.widget.ListView;
+import android.widget.TabHost;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.ooar.discountproject.R;
 import com.example.ooar.discountproject.fragment.NotificationDetailFragment;
+import com.example.ooar.discountproject.fragment.NotificationSettings;
 import com.example.ooar.discountproject.fragment.NotificationsFragment;
 import com.example.ooar.discountproject.fragment.ProfileFragment;
 import com.example.ooar.discountproject.fragment.UserTabsFragment;
+import com.example.ooar.discountproject.gcm.GcmBroadcastReceiver;
 import com.example.ooar.discountproject.util.FragmentChangeListener;
 import com.example.ooar.discountproject.util.RetrofitConfiguration;
 import com.example.ooar.discountproject.util.Util;
@@ -58,12 +63,13 @@ public class UserActivity extends AppCompatActivity implements FragmentChangeLis
     private String[] mPlanetTitles;
     private DrawerLayout mDrawerLayout;
     private ListView mDrawerList;
-    private CharSequence mTitle;
+    public static CharSequence mTitle;
     private ActionBarDrawerToggle mDrawerToggle;
     int notificationId = 0;
     boolean isNotificationId = false;
     int check = 0;
     public static UserTabsFragment userTabsFragment;
+    public static boolean isOpen = false;
 
     public UserActivity() {
         userTabsFragment = new UserTabsFragment();
@@ -71,6 +77,7 @@ public class UserActivity extends AppCompatActivity implements FragmentChangeLis
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+
         super.onCreate(savedInstanceState);
         setContentView(R.layout.user_layout);
         Bundle extras = getIntent().getExtras();
@@ -82,19 +89,19 @@ public class UserActivity extends AppCompatActivity implements FragmentChangeLis
             isNotificationId = true;
         }
         if (isNotificationId) {
-            replaceFragment(userTabsFragment, null);
+            replaceFragment(userTabsFragment, "userTabs");
             Bundle bundle = new Bundle();
             bundle.putInt("notificationId", notificationId);
             Fragment notificationDetailFragment = new NotificationDetailFragment();
             notificationDetailFragment.setArguments(bundle);
             replaceFragment(notificationDetailFragment, "notificationDetail");
         } else {
-            replaceFragment(userTabsFragment, null);
+            replaceFragment(userTabsFragment, "userTabs");
         }
-        // replaceFragment(new UserTabsFragment());
+
         mTitle = "Menü";
 
-        mPlanetTitles = new String[]{"Profil", "Oturumu Kapat"};
+        mPlanetTitles = new String[]{"Profil", "Bildirim Ayarları", "Oturumu Kapat"};
         mDrawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
         mDrawerList = (ListView) findViewById(R.id.left_drawer);
 
@@ -118,7 +125,7 @@ public class UserActivity extends AppCompatActivity implements FragmentChangeLis
 
             /** Called when a drawer has settled in a completely open state. */
             public void onDrawerOpened(View drawerView) {
-                getSupportActionBar().setTitle(mTitle);
+                getSupportActionBar().setTitle("Menü");
             }
         };
         // Set the drawer toggle as the DrawerListener
@@ -126,8 +133,6 @@ public class UserActivity extends AppCompatActivity implements FragmentChangeLis
 
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setHomeButtonEnabled(true);
-
-
     }
 
     @Override
@@ -174,18 +179,15 @@ public class UserActivity extends AppCompatActivity implements FragmentChangeLis
                 replaceFragment(fragment, "profileFragment");
                 break;
             case 1:
+                fragment = new NotificationSettings();
+                replaceFragment(fragment, "notificationSettings");
+                break;
+            case 2:
                 closeSession();
                 break;
             default:
                 break;
         }
-//        if (fragment != null) {
-//            replaceFragment(fragment, null);
-//            // update selected item and title, then close the drawer
-//        } else {
-//            // error in creating fragment
-//            Log.e("MainActivity", "Error in creating fragment");
-//        }
 
         // Highlight the selected item, update the title, and close the drawer
         mDrawerList.setItemChecked(position, true);
@@ -225,14 +227,34 @@ public class UserActivity extends AppCompatActivity implements FragmentChangeLis
 
             switch (tag) {
                 case "profileFragment":
-                    replaceFragment(userTabsFragment, null);
+                    replaceFragment(userTabsFragment, "userTabs");
+                    switch (UserTabsFragment.mTabHost.getCurrentTab()) {
+                        case 0:
+                            getSupportActionBar().setTitle("Bildirimler");
+                            break;
+                        case 1:
+                            getSupportActionBar().setTitle("Tercihler");
+                            break;
+                        default:
+                            break;
+                    }
                     break;
                 case "branchFragment":
                     Fragment fragment = getSupportFragmentManager().findFragmentByTag("notificationDetail");
                     replaceFragment(fragment, "notificationDetail");
+                    getSupportActionBar().setTitle("İndirim Detayları");
                     break;
+                case "notificationSettings":
                 case "notificationDetail":
-                    replaceFragment(userTabsFragment, null);
+                    replaceFragment(userTabsFragment, "userTabs");
+                    getSupportActionBar().setTitle("Bildirimler");
+                    break;
+                case "userTabs":
+                    Intent startMain = new Intent(Intent.ACTION_MAIN);
+                    startMain.addCategory(Intent.CATEGORY_HOME);
+                    startMain.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                    startMain.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                    startActivity(startMain);
                     break;
             }
         }
@@ -275,5 +297,40 @@ public class UserActivity extends AppCompatActivity implements FragmentChangeLis
         });
 
         builder.show();
+    }
+
+    @Override
+    protected void onStart() {
+        isOpen = true;
+        super.onStart();
+    }
+
+    @Override
+    protected void onNewIntent(Intent newIntent) {
+        super.onNewIntent(newIntent);
+        Bundle extras = newIntent.getExtras();
+        if (extras != null) {
+            String fragmentName = extras.getString("fragmentName");
+            Integer notificationId = extras.getInt("notificationId");
+            if (fragmentName != null || notificationId != null) {
+                NotificationsFragment.userNotificationList = null;
+                if (fragmentName.equals("notificationDetailFragment")) {
+                    Bundle bundle = new Bundle();
+                    bundle.putInt("notificationId", notificationId);
+                    Fragment notificationDetailFragment = new NotificationDetailFragment();
+                    notificationDetailFragment.setArguments(bundle);
+                    replaceFragment(notificationDetailFragment, "notificationDetail");
+                } else if (fragmentName.equals("notificationsFragment")) {
+                    replaceFragment(userTabsFragment, "userTabs");
+                    UserTabsFragment.mTabHost.setCurrentTab(0);
+                }
+            }
+        }
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        isOpen = false;
     }
 }
