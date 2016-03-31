@@ -27,7 +27,7 @@ var sendMail = function (mailOptions) {
 };
 
 //Şifre sıfırlama maili gönderme
-project.app.get('/resetPassword/:accountId', AuthorizedRoute("RECOVERY_PASSWORD"), function (req, res) {
+project.app.get('/sendResetMail/:accountId', AuthorizedRoute("RECOVERY_PASSWORD"), function (req, res) {
 
   var accountId = req.params.accountId;
   var userMail;
@@ -86,8 +86,32 @@ project.app.get('/passwordRecoveryCheck/:token', function (req, res) {
       if (user.expiryDate.getTime() < new Date().getTime()) {
         return res.unauthorized();
       } else {
-        res.json({status: "success"});
+        res.json({account: user.accountId});
       }
     }
   });
+});
+
+project.app.post('/resetPassword', function (req, res) {
+
+  var pass1 = req.body.password1;
+  var pass2 = req.body.password2;
+  var accountId = req.body.accountId;
+
+  if (pass1 === pass2) {
+    Account.get(accountId, function (err, account) {
+      if (err) return res.unknown();
+
+      account.password = pass1;
+      account.save(function (err) {
+        if (err) return res.unknown();
+
+        PasswordRecovery.find({accountId: accountId}).remove(function (err) {
+          if (err) return res.unknown();
+
+          res.json({status: "success"});
+        });
+      });
+    });
+  }
 });

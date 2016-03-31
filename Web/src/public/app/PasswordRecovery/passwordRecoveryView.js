@@ -16,17 +16,36 @@ define([
     }
   });
 
+  var ResetPasswordModel = Backbone.Model.extend({
+    url: "/resetPassword"
+  });
+
   var PasswordRecoveryView = core.CommonView.extend({
     el: "#page",
     autoLoad: true,
-    events: {},
+    events: {
+      'click #passwordRecoveryButton': 'resetPassword'
+    },
+    resetPassword: function () {
+      var userId = $("#passwordRecoveryButton").attr("data-id");
+      var values = this.form().getValues;
+      values.userId = userId;
+      var resetPassword = new ResetPasswordModel();
+      resetPassword.save(values, {
+        success: function () {
+          alertify.success("Şifre değiştirme işlemi başarılı");
+          window.location.hash = "";
+        }
+      });
+
+    },
     render: function () {
       var that = this;
       var token = this.params.token;
       var checkToken = new CheckTokenModel({token: token});
       checkToken.fetch({
-        success: function () {
-          that.$el.html(passwordRecoveryTemplate);
+        success: function (account) {
+          that.$el.html(passwordRecoveryTemplate({account: account}));
         }
       });
     }
