@@ -26,7 +26,8 @@ define([
     events: {
       'click #passwordRecoveryButton': 'resetPassword'
     },
-    resetPassword: function () {
+    resetPassword: function (e) {
+      e.preventDefault();
       var userId = $("#passwordRecoveryButton").attr("data-id");
       var values = this.form().getValues;
       values.userId = userId;
