@@ -76,7 +76,7 @@ project.app.get('/resetPassword/:accountId', AuthorizedRoute("RECOVERY_PASSWORD"
 
 });
 
-project.app.get('passwordRecoveryCheck/:token', function (req, res) {
+project.app.get('/passwordRecoveryCheck/:token', function (req, res) {
   var token = req.params.token;
   PasswordRecovery.one({recoveryKey: token}, function (err, user) {
     if (err) return res.unknown();
