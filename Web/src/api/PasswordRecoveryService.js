@@ -86,7 +86,7 @@ project.app.get('/passwordRecoveryCheck/:token', function (req, res) {
       if (user.expiryDate.getTime() < new Date().getTime()) {
         return res.unauthorized();
       } else {
-        res.json({account: user.accountId});
+        res.json({accountId: user.accountId});
       }
     }
   });
