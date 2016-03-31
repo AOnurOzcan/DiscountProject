@@ -28,9 +28,9 @@ define([
     },
     resetPassword: function (e) {
       e.preventDefault();
-      var userId = $("#passwordRecoveryButton").attr("data-id");
+      var accountId = $("#passwordRecoveryButton").attr("data-id");
       var values = this.form().getValues;
-      values.userId = userId;
+      values.accountId = accountId;
       var resetPassword = new ResetPasswordModel();
       resetPassword.save(values, {
         success: function () {
