@@ -13,6 +13,7 @@ import android.widget.LinearLayout;
 import com.example.ooar.discountproject.R;
 import com.example.ooar.discountproject.model.Notification;
 import com.example.ooar.discountproject.model.UserNotification;
+import com.example.ooar.discountproject.util.ErrorHandler;
 import com.example.ooar.discountproject.util.FragmentChangeListener;
 import com.example.ooar.discountproject.util.RetrofitConfiguration;
 import com.example.ooar.discountproject.util.Util;
@@ -56,7 +57,7 @@ public class NotificationsFragment extends Fragment {
 
             @Override
             public void failure(RetrofitError error) {
-                Util.stopProgressDialog();
+                ErrorHandler.handleError(NotificationsFragment.this.getActivity(), error);
             }
         };
 

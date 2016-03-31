@@ -8,18 +8,18 @@ module.exports = function (req, res, callback) {
   var tokenKey = req.query.tokenKey;
 
   if (tokenKey == undefined) {
-    res.unauthorized();
+    return res.unauthorized();
   } else {
-    User.find({tokenKey: tokenKey}, function (err, result) {
+    User.one({tokenKey: tokenKey}, function (err, result) {
       if (err) {
-        res.unauthorized();
-      } else {
-        if (result.length > 1) {
-          //TODO aynı tokena sahip 1 den fazla kullanıcı varsa haber ver
-        } else {
-          callback(result[0].id);
-        }
+        return res.unknown();
       }
+
+      if (result == null) {
+        return res.unauthorized();
+      }
+
+      callback(result.id);
     });
   }
 };

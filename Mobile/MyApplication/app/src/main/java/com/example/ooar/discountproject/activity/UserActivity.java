@@ -42,13 +42,16 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.ooar.discountproject.R;
+import com.example.ooar.discountproject.fragment.ChoisesFragment;
 import com.example.ooar.discountproject.fragment.NotificationDetailFragment;
 import com.example.ooar.discountproject.fragment.NotificationSettings;
 import com.example.ooar.discountproject.fragment.NotificationsFragment;
 import com.example.ooar.discountproject.fragment.ProfileFragment;
+import com.example.ooar.discountproject.fragment.UserPreferencesFragment;
 import com.example.ooar.discountproject.fragment.UserProductList;
 import com.example.ooar.discountproject.fragment.UserTabsFragment;
 import com.example.ooar.discountproject.gcm.GcmBroadcastReceiver;
+import com.example.ooar.discountproject.model.Notification;
 import com.example.ooar.discountproject.util.FragmentChangeListener;
 import com.example.ooar.discountproject.util.RetrofitConfiguration;
 import com.example.ooar.discountproject.util.Util;
@@ -284,8 +287,10 @@ public class UserActivity extends AppCompatActivity implements FragmentChangeLis
                         editor.remove("tokenKey");
                         editor.commit();
                         dialog.dismiss();
+
                         Intent intent = new Intent(UserActivity.this, MainActivity.class);
-                        UserActivity.this.startActivity(intent);
+                        startActivity(intent);
+                        finish();
                     }
 
                     @Override
@@ -338,5 +343,14 @@ public class UserActivity extends AppCompatActivity implements FragmentChangeLis
     protected void onDestroy() {
         super.onDestroy();
         isOpen = false;
+        removeAllCache();
+    }
+
+    public void removeAllCache() {
+        UserTabsFragment.mTabHost = null;
+        ChoisesFragment.categoryList = null;
+        ChoisesFragment.companyList = null;
+        NotificationsFragment.userNotificationList = null;
+        ProfileFragment.thisUser = null;
     }
 }

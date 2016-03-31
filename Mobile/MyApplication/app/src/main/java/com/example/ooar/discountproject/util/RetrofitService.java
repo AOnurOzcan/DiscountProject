@@ -12,7 +12,6 @@ import com.example.ooar.discountproject.model.Preference;
 import com.example.ooar.discountproject.model.User;
 import com.example.ooar.discountproject.model.UserNotification;
 import com.example.ooar.discountproject.model.UserProduct;
-import com.squareup.okhttp.Call;
 
 import java.util.List;
 import java.util.Map;
