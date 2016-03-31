@@ -12,7 +12,8 @@ define([
   'Notification/NotificationView',
   'Profile/profileView',
   'ChooseCompany/chooseView',
-  'Company/CompanyView'
+  'Company/CompanyView',
+  'PasswordRecovery/passwordRecoveryView'
 ], function (Backbone,
              LoginView,
              AdminView,
@@ -26,7 +27,8 @@ define([
              NotificationView,
              ProfileView,
              ChooseCompany,
-             CompanyView) {
+             CompanyView,
+             PasswordRecoveryView) {
 
   var Router = Backbone.Router.extend({
 
@@ -59,7 +61,8 @@ define([
       'profile/edit': 'EditProfile',
       'company/add': 'AddCompany',
       'company/edit/:id': 'EditCompany',
-      'company/list': 'ListCompany'
+      'company/list': 'ListCompany',
+      'passwordRecovery/:token': 'PasswordRecovery'
     },
 
     initialize: function () {
@@ -87,7 +90,7 @@ define([
       this.chooseCompanyView = new ChooseCompany();
       this.addCompanyView = [this.menuView, new CompanyView.AddCompanyView()];
       this.listCompanyView = [this.menuView, new CompanyView.ListCompanyView()];
-
+      this.passwordRecoveryView = [new PasswordRecoveryView()];
     },
 
     Login: function () {
@@ -214,6 +217,10 @@ define([
 
     ListCompany: function () {
       this.CheckSessionShowView(this.listCompanyView);
+    },
+
+    PasswordRecovery: function (token) {
+      outer.showView(this.passwordRecoveryView, {token: token});
     },
 
     /* Bu fonksiyon önce oturumu kontrol eder, oturum varsa sayfayı ekrana basar.*/

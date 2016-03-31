@@ -11,7 +11,9 @@ require.config({
     'jquerySerialize': '../lib/jquery-serialize-object',
     'core': 'Util/core',
     'outer': 'Util/outer',
-    'googleMaps': 'http://maps.google.com/maps/api/js?key=AIzaSyAP3ORAEACIf0t1euI3Nwd22uR-bFtr6no'
+    'googlemaps': '../lib/googlemaps',
+    'async': '../lib/async',
+    'gmaps': '../lib/gmaps.min'
   },
   shim: {
     semanticJs: {
@@ -29,8 +31,18 @@ require.config({
     },
     handlebars: {
       exports: 'Handlebars'
+    },
+    gmaps: {
+      deps: ["googlemaps"],
+      exports: "gmaps"
+    }
+  },
+  googlemaps: {
+    params: {
+      key: 'AIzaSyAP3ORAEACIf0t1euI3Nwd22uR-bFtr6no'
     }
   }
+
 });
 
 require([
@@ -40,10 +52,12 @@ require([
   'core',
   'outer',
   'alertify',
-  'googleMaps',
   'handlebars',
   'semanticJs',
-  'jquerySerialize'
+  'jquerySerialize',
+  'async',
+  'googlemaps',
+  'gmaps'
 ], function ($, _, Backbone, Core, Outer, Alertify) {
   window.outer = new Outer();
   window.core = Core;

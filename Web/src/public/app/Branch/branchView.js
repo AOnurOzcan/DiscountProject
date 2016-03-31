@@ -2,7 +2,7 @@ define([
   'backbone',
   'handlebars',
   'text!Branch/addBranchTemplate.html',
-  'text!Branch/listBranchTemplate.html'], function (Backbone, Handlebars, AddBranchTemplate, ListBranchTemplate) {
+  'text!Branch/listBranchTemplate.html', 'gmaps'], function (Backbone, Handlebars, AddBranchTemplate, ListBranchTemplate, GMaps) {
 
   var addBranchTemplate = Handlebars.compile(AddBranchTemplate);
   var listBranchTemplate = Handlebars.compile(ListBranchTemplate);
@@ -23,6 +23,9 @@ define([
   var AddBranchView = core.CommonView.extend({
     autoLoad: true,
     el: "#page",
+    events: {
+      'click #selectLocation': 'selectLocation'
+    },
     validation: function () {
       var that = this;
       $('#addBranchForm').form({
@@ -110,23 +113,76 @@ define([
         }
       });
     },
+    selectLocation: function () {
+      var that = this;
+      $("#locationModal").modal({
+        observeChanges: true,
+        onVisible: function () {
+          var latLon = $("input[name=locationURL]").val().split(',');
+          var lat = latLon[0];
+          var lon = latLon[1];
+          that.googleMapsInitialize(lat, lon);
+        }
+      }).modal('show');
+    },
+    googleMapsInitialize: function (lat, lon) {
+      //Google maps initializing
+      var lat = lat || 43.765346;
+      var lng = lon || 30.360312;
+      var map = new GMaps({
+        el: '#googleMap',
+        lat: lat,
+        lng: lng,
+        click: function (e) {
+          map.addMarker({
+            lat: e.latLng.lat(),
+            lng: e.latLng.lng(),
+            title: 'Şube'
+          });
+          $("input[name=locationURL]").val(e.latLng.lat() + "," + e.latLng.lng());
+        },
+        open: function () {
+          alert("aasd");
+        }
+      });
+      map.addMarker({
+        lat: lat,
+        lng: lon,
+        title: 'Şube'
+      });
+      map.addControl({
+        position: 'top_right',
+        content: 'Konumuma git',
+        style: {
+          margin: '5px',
+          padding: '2px 7px',
+          border: 'solid 1px #717B87',
+          background: '#fff'
+        },
+        events: {
+          click: function () {
+            GMaps.geolocate({
+              success: function (position) {
+                map.setCenter(position.coords.latitude, position.coords.longitude);
+              },
+              error: function (error) {
+                alert('Konum bulma başarısız. Sebep : ' + error.message);
+              },
+              not_supported: function () {
+                alert("Tarayıcınız konum bulmayı desteklemiyor. Lütfen modern bir tarayıcı kullanınız.");
+              }
+            });
+          }
+        }
+      });
+    },
     render: function () {
       var that = this;
       if (this.params == undefined) {
         this.$el.html(addBranchTemplate({cities: this.cityCollection.toJSON()}));
         this.validation();
-        $('.ui.dropdown').dropdown();
-        function initialize() {
-          var mapProp = {
-            center: new google.maps.LatLng(51.508742, -0.120850),
-            zoom: 5,
-            mapTypeId: google.maps.MapTypeId.ROADMAP
+        $('#cityDropdown').dropdown();
 
-          };
-          var map = new google.maps.Map(document.getElementById("googleMap"), mapProp);
-        }
-
-        google.maps.event.addDomListener(window, 'load', initialize);
       } else {
         var branchModel = new BranchModel({id: this.params.branchId});
         branchModel.fetch({
@@ -134,7 +190,7 @@ define([
             that.$el.html(addBranchTemplate({branch: branch.toJSON(), cities: that.cityCollection.toJSON()}));
             that.validation();
             that.form().setValues(branch.toJSON());
-            $('.ui.dropdown').dropdown();
+            $('#cityDropdown').dropdown();
           }
         });
       }
