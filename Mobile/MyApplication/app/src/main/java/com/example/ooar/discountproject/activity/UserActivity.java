@@ -7,8 +7,10 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.content.pm.PackageManager;
 import android.content.res.Configuration;
 import android.graphics.Color;
+import android.location.Location;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.PersistableBundle;
@@ -43,6 +45,7 @@ import android.widget.Toast;
 
 import com.example.ooar.discountproject.R;
 import com.example.ooar.discountproject.fragment.ChoisesFragment;
+import com.example.ooar.discountproject.fragment.GoogleMapsFragment;
 import com.example.ooar.discountproject.fragment.NotificationDetailFragment;
 import com.example.ooar.discountproject.fragment.NotificationSettings;
 import com.example.ooar.discountproject.fragment.NotificationsFragment;
@@ -52,9 +55,24 @@ import com.example.ooar.discountproject.fragment.UserProductList;
 import com.example.ooar.discountproject.fragment.UserTabsFragment;
 import com.example.ooar.discountproject.gcm.GcmBroadcastReceiver;
 import com.example.ooar.discountproject.model.Notification;
+import com.example.ooar.discountproject.util.ErrorHandler;
 import com.example.ooar.discountproject.util.FragmentChangeListener;
 import com.example.ooar.discountproject.util.RetrofitConfiguration;
 import com.example.ooar.discountproject.util.Util;
+import com.google.android.gms.common.ConnectionResult;
+import com.google.android.gms.common.GooglePlayServicesClient;
+import com.google.android.gms.location.LocationClient;
+import com.google.android.gms.maps.CameraUpdateFactory;
+import com.google.android.gms.maps.GoogleMap;
+import com.google.android.gms.maps.MapFragment;
+import com.google.android.gms.maps.model.BitmapDescriptorFactory;
+import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.LatLngBounds;
+import com.google.android.gms.maps.model.Marker;
+import com.google.android.gms.maps.model.MarkerOptions;
+
+import java.util.ArrayList;
+import java.util.List;
 
 import retrofit.Callback;
 import retrofit.RetrofitError;
@@ -73,7 +91,9 @@ public class UserActivity extends AppCompatActivity implements FragmentChangeLis
     boolean isNotificationId = false;
     int check = 0;
     public static UserTabsFragment userTabsFragment;
-    public static boolean isOpen = false;
+    public static boolean isOpen = false;//uygulamanın açık olup olmadığını tutan değişken
+    public static boolean reload = false;//sayfanın yenılenmek istenipistenmediğini tutan değişken
+    LocationClient mLocationClient;
 
     public UserActivity() {
         userTabsFragment = new UserTabsFragment();
@@ -100,7 +120,7 @@ public class UserActivity extends AppCompatActivity implements FragmentChangeLis
             notificationDetailFragment.setArguments(bundle);
             replaceFragment(notificationDetailFragment, "notificationDetail");
         } else {
-            replaceFragment(userTabsFragment, "userTabs");
+            replaceFragment(userTabsFragment, "userTabs");//usertabsfragment basılıyor
         }
 
         mTitle = "Menü";
@@ -216,7 +236,7 @@ public class UserActivity extends AppCompatActivity implements FragmentChangeLis
         }
     }
 
-    public void replaceFragment(Fragment fragment, String tagName) {
+    public void replaceFragment(Fragment fragment, String tagName) {//fragment değişimlerini yöneten fonksiyon
         android.support.v4.app.FragmentManager fm = getSupportFragmentManager();
         android.support.v4.app.FragmentTransaction fragmentTransaction = fm.beginTransaction();
 
@@ -265,11 +285,15 @@ public class UserActivity extends AppCompatActivity implements FragmentChangeLis
                     startMain.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
                     startActivity(startMain);
                     break;
+                case "googleMapsFragment":
+                    Fragment branchFragment = getSupportFragmentManager().findFragmentByTag("branchFragment");
+                    replaceFragment(branchFragment, "branchFragment");
+                    break;
             }
         }
     }
 
-    public void closeSession() {
+    public void closeSession() {//outurum kapatma isteği yapan fonksiyon
 
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
         builder.setCancelable(false);
@@ -295,8 +319,7 @@ public class UserActivity extends AppCompatActivity implements FragmentChangeLis
 
                     @Override
                     public void failure(RetrofitError error) {
-                        Util.stopProgressDialog();
-                        Toast.makeText(getApplicationContext(), error.toString(), Toast.LENGTH_LONG).show();
+                        ErrorHandler.handleError(UserActivity.this, error);
                     }
                 };
                 RetrofitConfiguration.getRetrofitService(true).deleteSession(tokenKey, callback);
@@ -312,12 +335,12 @@ public class UserActivity extends AppCompatActivity implements FragmentChangeLis
 
     @Override
     protected void onStart() {
-        isOpen = true;
+        isOpen = true;//uygulama açık
         super.onStart();
     }
 
     @Override
-    protected void onNewIntent(Intent newIntent) {
+    protected void onNewIntent(Intent newIntent) {//activity nin intenti değiştiğinde gerekli fragmente yönlendirme işlemi yapan fonksiyon
         super.onNewIntent(newIntent);
         Bundle extras = newIntent.getExtras();
         if (extras != null) {
@@ -342,15 +365,19 @@ public class UserActivity extends AppCompatActivity implements FragmentChangeLis
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        isOpen = false;
-        removeAllCache();
+        isOpen = false;//ugulama kapalı
+        if (!reload) {//yenileme isteği yoksa cache bosaltılıyo
+            removeAllCache();
+        }
+        reload = false;
     }
 
-    public void removeAllCache() {
+    public static void removeAllCache() {//hafızayı bosaltan fonksiyon
         UserTabsFragment.mTabHost = null;
         ChoisesFragment.categoryList = null;
         ChoisesFragment.companyList = null;
         NotificationsFragment.userNotificationList = null;
         ProfileFragment.thisUser = null;
     }
+
 }

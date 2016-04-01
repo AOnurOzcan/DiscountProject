@@ -9,6 +9,7 @@ var UserProduct = require('../model/UserProduct');
 var NotificationProduct = require('../model/NotificationProduct');
 var NotificationBranch = require('../model/NotificationBranch');
 var Notification = require('../model/Notification');
+var Product = require('../model/Product');
 
 //Kullanıcı profili oluşturmak kullanılıyor
 project.app.post("/user/profile/create", function (req, res) {
@@ -204,6 +205,28 @@ project.app.delete("/user/product/delete/:id", function (req, res) {
           return res.unknown();
         }
         res.json({result: 'success'});
+      });
+    });
+  });
+});
+
+project.app.get("/user/product/search", function (req, res) {
+  var searchParam = req.query.queryParam;
+  project.util.AuthorizedRouteForUser(req, res, function (userId) {
+    Product.find({productName: project.orm.like('%' + searchParam + '%')}, function (err, products) {
+      if (err) {
+        return res.unknown();
+      }
+      products.asyncForEach(function (product, done) {
+        product.getCompany(function (err, company) {
+          product.companyId = company;
+          product.categoryId = null;
+          product.follower = null;
+          delete product['Company'];
+          done();
+        });
+      }, function () {
+        res.json(products);
       });
     });
   });

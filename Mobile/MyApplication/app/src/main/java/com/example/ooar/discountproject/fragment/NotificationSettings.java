@@ -12,6 +12,7 @@ import android.widget.Toast;
 
 import com.example.ooar.discountproject.R;
 import com.example.ooar.discountproject.model.User;
+import com.example.ooar.discountproject.util.ErrorHandler;
 import com.example.ooar.discountproject.util.RetrofitConfiguration;
 import com.example.ooar.discountproject.util.Util;
 
@@ -52,8 +53,7 @@ public class NotificationSettings extends Fragment {
 
             @Override
             public void failure(RetrofitError error) {
-                Util.stopProgressDialog();
-                Toast.makeText(getActivity().getApplicationContext(), "Bir Hata Oluştu!", Toast.LENGTH_LONG).show();
+                ErrorHandler.handleError(NotificationSettings.this.getActivity(), error);
             }
         };
 
@@ -72,8 +72,7 @@ public class NotificationSettings extends Fragment {
 
             @Override
             public void failure(RetrofitError error) {
-                Util.stopProgressDialog();
-                Toast.makeText(getActivity().getApplicationContext(), "Bir Hata Oluştu!", Toast.LENGTH_LONG).show();
+                ErrorHandler.handleError(NotificationSettings.this.getActivity(), error);
                 tempUser.setNotificationOpen(ProfileFragment.thisUser.isNotificationOpen());
             }
         };

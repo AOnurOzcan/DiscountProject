@@ -23,6 +23,7 @@ import com.example.ooar.discountproject.R;
 import com.example.ooar.discountproject.activity.UserActivity;
 import com.example.ooar.discountproject.model.Category;
 import com.example.ooar.discountproject.model.CompanyCategory;
+import com.example.ooar.discountproject.util.ErrorHandler;
 import com.example.ooar.discountproject.util.RetrofitConfiguration;
 import com.example.ooar.discountproject.util.Util;
 
@@ -31,6 +32,7 @@ import retrofit.RetrofitError;
 import retrofit.client.Response;
 
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 
 /**
@@ -38,27 +40,29 @@ import java.util.List;
  */
 public class UserPreferencesFragment extends Fragment {
 
-    public static List<Category> categoryList;
-    public static List<CompanyCategory> companyList;
-    public List<CompanyCategory> selectedCompanyList = new ArrayList<>();
+    public static List<Category> categoryList;//kategorilerin toplandığı liste
+    public static List<CompanyCategory> companyList;//firmaların toplandığı liste
+    public List<CompanyCategory> selectedCompanyList = new ArrayList<>();//seçilen firma ve kategorilerin toplandığı liste
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        return inflater.inflate(R.layout.preference_layout, container, false);
+        return inflater.inflate(R.layout.preference_layout, container, false);//content basılıyor
     }
 
     @Override
     public void onViewCreated(final View view, Bundle savedInstanceState) {
-        renderLayout(view);
+        renderLayout();
     }
 
-    public void renderLayout(View view) {
+    public void renderLayout() {
 
-        List<Category> parentCategoryList = new ArrayList<Category>();
-        List<Category> childCategoryList = new ArrayList<Category>();
-        List<CheckBox> checkboxList = new ArrayList<CheckBox>();
-        List<LinearLayout> linearLayoutList = new ArrayList<LinearLayout>();
-        List<Button> buttonList = new ArrayList<Button>();
+        List<Category> parentCategoryList = new ArrayList<Category>();//ana kategorilerin toplandığı liste
+        List<Category> childCategoryList = new ArrayList<Category>();//alt kategorilerin toplandıgı liste
+        List<CheckBox> checkboxList = new ArrayList<CheckBox>();//tüm checkbox(alt ketegori checkboxlarının) ların toplandığı liste(hepsini seç hariç)
+        List<CheckBox> selectAllCheckboxList = new ArrayList<CheckBox>();//hepsini seç checkboxlarınıntoplandığı liste
+        List<LinearLayout> linearLayoutList = new ArrayList<LinearLayout>();//ana layoutların toplandığı liste
+        List<LinearLayout> checkboxLayoutList = new ArrayList<LinearLayout>();// checkbox layoutlarının toplandığı liste
+        List<Button> buttonList = new ArrayList<Button>();//üst kategorilere ait butonların toplandığı liste
         List<Button> editCompanyList = new ArrayList<>();
 
 
@@ -80,6 +84,7 @@ public class UserPreferencesFragment extends Fragment {
             View custom = inflater.inflate(R.layout.preference_root_layout, null);
             LinearLayout checkboxLayout = (LinearLayout) custom.findViewById(R.id.checkboxLayout);//root layout dan checkboxların toplanacagı layout alınıyor
             checkboxLayout.setTag(category.getId());
+            checkboxLayoutList.add(checkboxLayout);
 
             LinearLayout mainLayout = (LinearLayout) custom.findViewById(R.id.mainLayout);//root layout dan main layout alınıyor
             mainLayout.setTag(category.getId());
@@ -90,6 +95,10 @@ public class UserPreferencesFragment extends Fragment {
             button.setTag(category.getId());
             button.setText(category.getCategoryName());
             buttonList.add(button);
+
+            CheckBox checkBox = (CheckBox) custom.findViewById(R.id.selectAll);
+            checkBox.setTag(category.getId());
+            selectAllCheckboxList.add(checkBox);
 
             boolean subCategorySizeBigZero = false;
             for (Category subCategory : childCategoryList) { //alt kategoriler için checkbox oluşturuluyor
@@ -115,6 +124,7 @@ public class UserPreferencesFragment extends Fragment {
 
             if (!subCategorySizeBigZero) {
                 custom.findViewById(R.id.helpBlockLayout).setVisibility(View.VISIBLE);
+                checkBox.setVisibility(View.GONE);
             }
 
             rootLayout.addView(custom);//oluşturulan tüm layoutlar ana layouta gomuluyor
@@ -132,8 +142,7 @@ public class UserPreferencesFragment extends Fragment {
 
                 @Override
                 public void failure(RetrofitError error) {
-                    Util.stopProgressDialog();
-                    Toast.makeText(getActivity(), "Sunucudan Yanıt Alınamadı", Toast.LENGTH_LONG).show();
+                    ErrorHandler.handleError(UserPreferencesFragment.this.getActivity(), error);
                 }
             };
 
@@ -147,24 +156,76 @@ public class UserPreferencesFragment extends Fragment {
         });
         rootLayout.addView(savePreferences);
 
-        setEvents(savePreferences, checkboxList, buttonList, linearLayoutList, editCompanyList);
+        setEvents(savePreferences, checkboxList, buttonList, linearLayoutList, editCompanyList, selectAllCheckboxList, checkboxLayoutList, parentCategoryList, childCategoryList);
     }
 
-    public void setEvents(final Button savePreferences, List<CheckBox> checkBoxList, List<Button> buttonList, final List<LinearLayout> linearLayoutList, final List<Button> editCompanyButtonList) {
+    //Checkbox ve buton eventlarının verildiği fonksiyon
+    public void setEvents(final Button savePreferences, final List<CheckBox> checkBoxList, List<Button> buttonList, final List<LinearLayout> linearLayoutList, final List<Button> editCompanyButtonList, final List<CheckBox> selectAllCheckboxList, final List<LinearLayout> checkboxLayoutList, final List<Category> parentCategoryList, final List<Category> childCategoryList) {
 
-        final List<CheckBox> companyCategoryCheckedList = new ArrayList<>();
-        final List<CheckBox> tempCompanyCategoryCheckedList = new ArrayList<>();
+        final List<CheckBox> companyCategoryCheckedList = new ArrayList<>();//seçilen alt kategorilerin toplandığı liste
+        final List<CheckBox> tempCompanyCategoryCheckedList = new ArrayList<>();//vazgeç butonu için seçili checkboxları hafızada tutan liste
+        final boolean[] selectAll = {false};// hepsini seç checkboxları için diğer checkbox evenlarını tetiklememesi için bu değişken kullanılıyo
 
+        //parentcategory listesinden ilgili categori bulunur.
+        //childcategory listesinden ilgili alt kategroiler bulunur
+        //daha sonra bulunan her alt kategoriye ait firmalar selected listesinde toplanır.
+        for (final CheckBox checkBox : selectAllCheckboxList) { //hepsini seç checkboxlarının evenları atanıyor
+            checkBox.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+                @Override
+                public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                    selectAll[0] = true;//diğer eventların tetiklenmemesi için değişken true yapılıyo
+                    Category parentCategory = Util.findCategoryById(parentCategoryList, (Integer) checkBox.getTag());
+                    if (parentCategory != null) {
+                        List<Category> subCategoryList = Util.getSubCategory(parentCategory, childCategoryList);
+                        if (subCategoryList.size() != 0) {
+                            for (Category subCategory : subCategoryList) {
+                                CheckBox subCheckbox = Util.findCheckboxById(checkBoxList, subCategory.getId());
+                                if (subCheckbox != null) {
+                                    subCheckbox.setChecked(isChecked);
+                                    if (isChecked) {
+                                        Button tempButton = (Button) ((ViewGroup) subCheckbox.getParent()).findViewById(R.id.editCompanyButton);
+                                        tempButton.setVisibility(View.VISIBLE);
+                                        for (CompanyCategory companyCategory : companyList) {
+                                            if (companyCategory.getCategoryId().getId() == subCategory.getId() && Util.companyCategoryFindId(selectedCompanyList, companyCategory.getId()) == -1) {
+                                                selectedCompanyList.add(companyCategory);
+                                            }
+                                        }
+                                        if (selectedCompanyList.size() > 0) {
+                                            savePreferences.setEnabled(true);
+                                        } else {
+                                            savePreferences.setEnabled(false);
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                    selectAll[0] = false;//değişken false yapıalrak evenların daha sonra çalışması sağlanıyor
+                }
+            });
+        }
+
+
+        //ilgili alt kategoricheckbox ı tikli ise create builder fonksiyonu çalıştırılarak dialogun ekrana basılması sağlanır.
+        //eğer tikli değilse selected listesinden ilgili firmalar kaldırılır.
         for (final CheckBox checkBox : checkBoxList) {//Kullanıcı takip ettiği bir kategoriyi kaldırırsa ona ve bu kategori selectedCompany listesinde bulunuyosa listeden kaldırılır.
             checkBox.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
                 @Override
                 public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
                     if (!isChecked) {
-                        for (CompanyCategory companyCategory : selectedCompanyList) {
+
+                        Iterator<CompanyCategory> iterator = selectedCompanyList.iterator();
+                        while (iterator.hasNext()) {
+                            CompanyCategory companyCategory = iterator.next();
+                            CheckBox checkedCheckbox = Util.findCheckboxById(companyCategoryCheckedList, companyCategory.getId());
+                            companyCategoryCheckedList.remove(checkedCheckbox);
+                            CheckBox tempCheckbox = Util.findCheckboxById(tempCompanyCategoryCheckedList, companyCategory.getId());
+                            tempCompanyCategoryCheckedList.remove(tempCheckbox);
                             if (checkBox.getTag().equals(companyCategory.getCategoryId().getId())) {
-                                selectedCompanyList.remove(companyCategory);
+                                iterator.remove();
                             }
                         }
+
                         if (selectedCompanyList.size() > 0) {
                             savePreferences.setEnabled(true);
                         } else {
@@ -173,12 +234,15 @@ public class UserPreferencesFragment extends Fragment {
                         Button tempButton = (Button) ((ViewGroup) checkBox.getParent()).findViewById(R.id.editCompanyButton);
                         tempButton.setVisibility(View.GONE);
                     } else {
-                        createBuilder(checkBox, null, companyCategoryCheckedList, tempCompanyCategoryCheckedList, savePreferences);
+                        if (!selectAll[0]) {
+                            createBuilder(checkBox, null, companyCategoryCheckedList, tempCompanyCategoryCheckedList, savePreferences);
+                        }
                     }
                 }
             });
         }
 
+        //kullanının ilgili kategori için firmaları yeniden seçmesini sağlayan evenlar atanıyor
         for (final Button button : editCompanyButtonList) {
             button.setOnClickListener(new View.OnClickListener() {
                 @Override
@@ -204,6 +268,8 @@ public class UserPreferencesFragment extends Fragment {
         }
     }
 
+
+    //Firma seçmek için dialog ekrana basan fonksiyon
     public void createBuilder(final CheckBox checkBox, final Button button, final List<CheckBox> companyCategoryCheckedList, final List<CheckBox> tempCompanyCategoryCheckedList, final Button savePreferences) {
         boolean showDialog = false;
         List<Integer> companyIdList = new ArrayList<Integer>();
@@ -222,6 +288,24 @@ public class UserPreferencesFragment extends Fragment {
 
         final LinearLayout newLayout = new LinearLayout(getActivity());
         newLayout.setOrientation(LinearLayout.VERTICAL);
+
+        CheckBox selectAllCheckbox = Util.createCheckbox(getActivity(), 0, new LinearLayout.LayoutParams(LinearLayout.LayoutParams.FILL_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT), "Hepsini Seç");
+        selectAllCheckbox.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                int count = newLayout.getChildCount();
+                for (int i = 0; i < count; i++) {
+                    try {
+                        CheckBox companyCheckbox = (CheckBox) newLayout.getChildAt(i);
+                        if (!companyCheckbox.getText().equals("Hepsini Seç")) {
+                            companyCheckbox.setChecked(isChecked);
+                        }
+                    } catch (Exception ex) {
+                    }
+                }
+            }
+        });
+        newLayout.addView(selectAllCheckbox);
 
         for (CompanyCategory companyCategory : companyList) {
             if (categoryId == companyCategory.getCategoryId().getId()) {

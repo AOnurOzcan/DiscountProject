@@ -25,7 +25,7 @@ public class UserTabsFragment extends Fragment {
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        if (mTabHost == null) {
+        if (mTabHost == null) {//tabhost yoksa içerik basılıyor varsa tabhost basılıyor
             return inflater.inflate(R.layout.user_tabs_layout, container, false);
         } else return mTabHost;
 
@@ -34,14 +34,14 @@ public class UserTabsFragment extends Fragment {
     @Override
     public void onViewCreated(final View view, Bundle savedInstanceState) {
         if (mTabHost == null) {
-            mTabHost = (FragmentTabHost) getActivity().findViewById(android.R.id.tabhost);
+            mTabHost = (FragmentTabHost) getActivity().findViewById(android.R.id.tabhost);//tabhost oluşturuluyor
             mTabHost.setup(getActivity(), getChildFragmentManager(), android.R.id.tabcontent);
 
-            mTabHost.addTab(mTabHost.newTabSpec("tab1").setIndicator("Bildirimler", null), NotificationsFragment.class, null);
+            mTabHost.addTab(mTabHost.newTabSpec("tab1").setIndicator("Bildirimler", null), NotificationsFragment.class, null);//bildirimler ve tercihler fragmenti taba gömülüyor
             mTabHost.addTab(mTabHost.newTabSpec("tab2").setIndicator("Tercihler", null), ChoisesFragment.class, null);
             UserTabsFragment.mTabHost.setOnTabChangedListener(new TabHost.OnTabChangeListener() {
                 public void onTabChanged(String tabId) {
-                    switch (UserTabsFragment.mTabHost.getCurrentTab()) {
+                    switch (UserTabsFragment.mTabHost.getCurrentTab()) {//tab değişim eventları
                         case 0:
                             ((AppCompatActivity) getActivity()).getSupportActionBar().setTitle("Bildirimler");
                             UserActivity.mTitle = "Bildirimler";

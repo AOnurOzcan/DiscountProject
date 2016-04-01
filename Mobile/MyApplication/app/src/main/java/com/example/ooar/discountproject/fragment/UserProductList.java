@@ -19,6 +19,7 @@ import com.example.ooar.discountproject.R;
 import com.example.ooar.discountproject.model.Product;
 import com.example.ooar.discountproject.model.User;
 import com.example.ooar.discountproject.model.UserProduct;
+import com.example.ooar.discountproject.util.ErrorHandler;
 import com.example.ooar.discountproject.util.RetrofitConfiguration;
 import com.example.ooar.discountproject.util.Util;
 
@@ -56,8 +57,7 @@ public class UserProductList extends Fragment {
 
             @Override
             public void failure(RetrofitError error) {
-                Util.stopProgressDialog();
-                Toast.makeText(getActivity().getApplicationContext(), error.toString(), Toast.LENGTH_LONG).show();
+                ErrorHandler.handleError(UserProductList.this.getActivity(), error);
             }
         };
         String tokenKey = getActivity().getSharedPreferences("Session", Activity.MODE_PRIVATE).getString("tokenKey", "");
@@ -112,8 +112,7 @@ public class UserProductList extends Fragment {
 
                             @Override
                             public void failure(RetrofitError error) {
-                                Util.stopProgressDialog();
-                                Toast.makeText(getActivity().getApplicationContext(), error.toString(), Toast.LENGTH_LONG).show();
+                                ErrorHandler.handleError(UserProductList.this.getActivity(), error);
                             }
                         };
                         String tokenKey = getActivity().getSharedPreferences("Session", Activity.MODE_PRIVATE).getString("tokenKey", "");
