@@ -8,21 +8,17 @@ import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.location.Location;
 import android.location.LocationManager;
+import android.net.Uri;
 import android.os.Bundle;
 import android.provider.Settings;
-import android.support.v4.app.ActivityCompat;
-import android.support.v4.app.DialogFragment;
 import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentTransaction;
 import android.support.v4.content.ContextCompat;
-import android.view.InflateException;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Toast;
+import android.widget.Button;
 
 import com.example.ooar.discountproject.R;
-import com.example.ooar.discountproject.util.FragmentChangeListener;
 import com.example.ooar.discountproject.util.Util;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.GooglePlayServicesClient;
@@ -38,20 +34,22 @@ import com.google.android.gms.maps.model.MarkerOptions;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 
 /**
  * Created by Onur Kuru on 31.3.2016.
  */
 public class GoogleMapsFragment extends Fragment implements GooglePlayServicesClient.ConnectionCallbacks, GooglePlayServicesClient.OnConnectionFailedListener {
+
     LocationClient mLocationClient;
     private static final int REQUEST_CODE_LOCATION = 2;
     public static GoogleMap googleMap = null;
     private static boolean restartFragment = false;
     private static boolean locationEnabled = false;
+    private Button showInMaps;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        Toast.makeText(getActivity(), "onCreateView", Toast.LENGTH_SHORT).show();
         return inflater.inflate(R.layout.google_maps_layout, container, false);
     }
 
@@ -71,7 +69,6 @@ public class GoogleMapsFragment extends Fragment implements GooglePlayServicesCl
 
     @Override
     public void onDestroyView() {
-        Toast.makeText(getActivity(), "onDestroyView", Toast.LENGTH_SHORT).show();
         super.onDestroyView();
         mLocationClient.disconnect();
         MapFragment mapFragment = (MapFragment) getActivity().getFragmentManager().findFragmentById(R.id.map);
@@ -101,9 +98,9 @@ public class GoogleMapsFragment extends Fragment implements GooglePlayServicesCl
     public void onConnected(Bundle bundle) {
 
         Location currentLocation;
-        LatLng branchCoordinates;
+        final LatLng branchCoordinates;
         LatLngBounds.Builder lBuilder;
-        LatLng myCoordinates;
+        LatLng myCoordinates = null;
         List<LatLng> latLngList;
         Marker currentMarker;
         String latlng = getArguments().getString("url");
@@ -116,8 +113,7 @@ public class GoogleMapsFragment extends Fragment implements GooglePlayServicesCl
             try {
                 googleMap = ((MapFragment) getActivity().getFragmentManager().findFragmentById(R.id.map)).getMap();
                 Marker destinationMarker = googleMap.addMarker(new MarkerOptions().position(branchCoordinates).title(branchName));
-                destinationMarker.setIcon(BitmapDescriptorFactory.fromResource(R.drawable.destination_marker));
-
+                showInMaps = (Button) getActivity().findViewById(R.id.showInMaps);
                 if (locationEnabled) {
                     if (checkLocationEnabled()) {
                         currentLocation = mLocationClient.getLastLocation();
@@ -144,6 +140,21 @@ public class GoogleMapsFragment extends Fragment implements GooglePlayServicesCl
                 } else {
                     googleMap.animateCamera(CameraUpdateFactory.newLatLngZoom(branchCoordinates, 15));
                 }
+
+                final LatLng finalMyCoordinates = myCoordinates;
+                showInMaps.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        String uri;
+                        if (locationEnabled) {
+                            uri = String.format(Locale.ENGLISH, "http://maps.google.com/maps?saddr=+%f+,+%f+&daddr=+%f+,+%f", finalMyCoordinates.latitude, finalMyCoordinates.longitude, branchCoordinates.latitude, branchCoordinates.longitude);
+                        } else {
+                            uri = String.format(Locale.ENGLISH, "http://maps.google.com/maps?saddr=+%f+", branchCoordinates.longitude, branchCoordinates.longitude);
+                        }
+                        Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse(uri));
+                        getActivity().startActivity(intent);
+                    }
+                });
             } catch (Exception e) {
                 e.printStackTrace();
             }

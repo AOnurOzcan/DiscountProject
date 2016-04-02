@@ -3,76 +3,37 @@ package com.example.ooar.discountproject.activity;
 
 import android.app.Activity;
 import android.app.AlertDialog;
-import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.content.pm.PackageManager;
 import android.content.res.Configuration;
-import android.graphics.Color;
-import android.location.Location;
 import android.os.Bundle;
-import android.os.Handler;
-import android.os.PersistableBundle;
-import android.preference.PreferenceManager;
 import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentActivity;
-import android.support.v4.app.FragmentManager;
-import android.support.v4.app.FragmentTabHost;
-import android.support.v4.app.FragmentTransaction;
 import android.support.v4.widget.DrawerLayout;
-import android.support.v7.app.ActionBarActivity;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
-import android.text.Editable;
-import android.util.AttributeSet;
-import android.util.Log;
-import android.view.InflateException;
-import android.view.LayoutInflater;
 import android.view.Menu;
-import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
-import android.view.ViewGroup;
 import android.view.WindowManager;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
-import android.widget.LinearLayout;
 import android.widget.ListView;
-import android.widget.TabHost;
-import android.widget.TextView;
-import android.widget.Toast;
 
 import com.example.ooar.discountproject.R;
 import com.example.ooar.discountproject.fragment.ChoisesFragment;
-import com.example.ooar.discountproject.fragment.GoogleMapsFragment;
 import com.example.ooar.discountproject.fragment.NotificationDetailFragment;
 import com.example.ooar.discountproject.fragment.NotificationSettings;
 import com.example.ooar.discountproject.fragment.NotificationsFragment;
 import com.example.ooar.discountproject.fragment.ProfileFragment;
-import com.example.ooar.discountproject.fragment.UserPreferencesFragment;
 import com.example.ooar.discountproject.fragment.UserProductList;
 import com.example.ooar.discountproject.fragment.UserTabsFragment;
-import com.example.ooar.discountproject.gcm.GcmBroadcastReceiver;
-import com.example.ooar.discountproject.model.Notification;
 import com.example.ooar.discountproject.util.ErrorHandler;
 import com.example.ooar.discountproject.util.FragmentChangeListener;
+import com.example.ooar.discountproject.util.ImageCache;
 import com.example.ooar.discountproject.util.RetrofitConfiguration;
 import com.example.ooar.discountproject.util.Util;
-import com.google.android.gms.common.ConnectionResult;
-import com.google.android.gms.common.GooglePlayServicesClient;
 import com.google.android.gms.location.LocationClient;
-import com.google.android.gms.maps.CameraUpdateFactory;
-import com.google.android.gms.maps.GoogleMap;
-import com.google.android.gms.maps.MapFragment;
-import com.google.android.gms.maps.model.BitmapDescriptorFactory;
-import com.google.android.gms.maps.model.LatLng;
-import com.google.android.gms.maps.model.LatLngBounds;
-import com.google.android.gms.maps.model.Marker;
-import com.google.android.gms.maps.model.MarkerOptions;
-
-import java.util.ArrayList;
-import java.util.List;
 
 import retrofit.Callback;
 import retrofit.RetrofitError;
@@ -93,10 +54,11 @@ public class UserActivity extends AppCompatActivity implements FragmentChangeLis
     public static UserTabsFragment userTabsFragment;
     public static boolean isOpen = false;//uygulamanın açık olup olmadığını tutan değişken
     public static boolean reload = false;//sayfanın yenılenmek istenipistenmediğini tutan değişken
-    LocationClient mLocationClient;
+    public static ImageCache imageCache;
 
     public UserActivity() {
         userTabsFragment = new UserTabsFragment();
+        imageCache = new ImageCache(this);
     }
 
     @Override

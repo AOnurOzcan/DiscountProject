@@ -43,7 +43,7 @@ public class ChoisesFragment extends Fragment {
     public static List<Category> categoryList = null;
     public static List<CompanyCategory> companyList = null;
     public static List<Preference> preferencesList = null;
-    public List<CompanyCategory> selectedCompanyList = new ArrayList<>();
+    public List<CompanyCategory> selectedCompanyList = null;
     public boolean deleteResponse = false;
     public boolean createResponse = false;
 
@@ -56,6 +56,7 @@ public class ChoisesFragment extends Fragment {
     @Override
     public void onViewCreated(View view, Bundle savedInstanceState) {
         getAllCategories();
+        selectedCompanyList = new ArrayList<>();
 //        if (categoryList == null || companyList == null || preferencesList == null) {
 //            getAllCategories();
 //        } else {

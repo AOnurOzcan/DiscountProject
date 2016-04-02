@@ -2,10 +2,13 @@ package com.example.ooar.discountproject.util;
 
 import android.app.Activity;
 import android.app.ProgressDialog;
+import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Color;
 import android.os.AsyncTask;
+import android.os.Build;
+import android.os.Environment;
 import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.WindowManager;
@@ -14,20 +17,27 @@ import android.widget.CheckBox;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.example.ooar.discountproject.R;
+import com.example.ooar.discountproject.activity.UserActivity;
 import com.example.ooar.discountproject.fragment.GoogleMapsFragment;
 import com.example.ooar.discountproject.model.Category;
 import com.example.ooar.discountproject.model.Company;
 import com.example.ooar.discountproject.model.CompanyCategory;
 import com.example.ooar.discountproject.model.Preference;
+import com.example.ooar.discountproject.model.User;
+import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.Marker;
+import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.maps.model.PolylineOptions;
 
 import org.json.JSONObject;
 import org.w3c.dom.Text;
 
 import java.io.BufferedReader;
+import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
@@ -46,7 +56,6 @@ import java.util.regex.Pattern;
 
 //Yardımcı fonksiyonların tanımlandığı sınıf
 public class Util {
-
     public static ProgressDialog progressDialog;
 
     public static boolean checkValidation(Map<String, Object> object) {//validasyon fonksiyonu
@@ -176,16 +185,20 @@ public class Util {
         }
 
         protected Bitmap doInBackground(String... urls) {
-            String urldisplay = urls[0];
-            Bitmap mIcon11 = null;
+            String imageUrl = urls[0];
+            Bitmap image = null;
             try {
-                InputStream in = new java.net.URL(urldisplay).openStream();
-                mIcon11 = BitmapFactory.decodeStream(in);
+                image = UserActivity.imageCache.getBitmapFromMemCache(imageUrl);
+                if (image == null) {
+                    InputStream in = new java.net.URL(imageUrl).openStream();
+                    image = BitmapFactory.decodeStream(in);
+                }
+                UserActivity.imageCache.addBitmapToMemoryCache(imageUrl, image);
             } catch (Exception e) {
                 Log.e("Error", e.getMessage());
                 e.printStackTrace();
             }
-            return mIcon11;
+            return image;
         }
 
         protected void onPostExecute(Bitmap result) {
@@ -249,7 +262,6 @@ public class Util {
         }
         return category;
     }
-
 
     public static String getDirectionsUrl(LatLng origin, LatLng dest) {
 
@@ -335,11 +347,9 @@ public class Util {
         protected void onPostExecute(List<List<HashMap<String, String>>> result) {
             ArrayList points = null;
             PolylineOptions lineOptions = null;
-
+            lineOptions = new PolylineOptions();
             for (int i = 0; i < result.size(); i++) {
                 points = new ArrayList();
-                lineOptions = new PolylineOptions();
-
                 List<HashMap<String, String>> path = result.get(i);
 
                 for (int j = 0; j < path.size(); j++) {
@@ -351,14 +361,13 @@ public class Util {
 
                     points.add(position);
                 }
-
-                lineOptions.addAll(points);
-                lineOptions.width(5);
-                lineOptions.color(Color.BLUE);
-
             }
-
+            lineOptions.addAll(points);
+            lineOptions.width(35);
+            lineOptions.color(Color.parseColor("#0551F2"));
+            lineOptions.geodesic(true);
             GoogleMapsFragment.googleMap.addPolyline(lineOptions);
+
         }
     }
 
