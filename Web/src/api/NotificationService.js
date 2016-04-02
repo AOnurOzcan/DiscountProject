@@ -272,25 +272,42 @@ project.app.get("/getNotifications/:isSent", function (req, res) {
 
 /////////////////////////////////// MOBILE /////////////////////////////////////
 
-project.app.get("/notification", function (req, res) {
+project.app.get("/user/notification", function (req, res) {
 
   project.util.AuthorizedRouteForUser(req, res, function (userId) {
 
-    UserNotification.find({userId: userId}, function (err, notifications) {
-      if (err) {
-        return res.unknown();
-      }
+    var start = req.query.startIndex;
+    var length = req.query.notificationLength;
 
-      notifications.forEach(function (notification) {
-        notification.userId = null;
-        notification.Notification.branchList = null;
-        notification.Notification.productList = null;
-        notification.notificationId = notification.Notification;
-        delete notification['Notification'];
+    project.db.driver.execQuery(
+      "SELECT UserNotification.id, UserNotification.isRead, UserNotification.userId, UserNotification.notificationId FROM UserNotification INNER JOIN Notification ON UserNotification.notificationId = Notification.id WHERE userId =? ORDER BY Notification.sendDate DESC LIMIT ?,?",
+      [userId, parseInt(start), parseInt(length)],
+      function (err, userNotifications) {
+        if (err) {
+          return res.unknown();
+        }
+
+        userNotifications.asyncForEach(function (userNotification, done) {
+          Notification.get(userNotification.notificationId, function (err, notification) {
+            if (err) {
+              return res.unknown();
+            }
+            notification.branchList = null;
+            notification.productList = null;
+            userNotification.notificationId = notification;
+            userNotification.userId = null;
+
+            if (userNotification.isRead == 0) {
+              userNotification.isRead = false;
+            } else {
+              userNotification.isRead = true;
+            }
+            done();
+          });
+        }, function () {
+          return res.json(userNotifications);
+        });
       });
-
-      res.json(notifications);
-    });
   });
 });
 
