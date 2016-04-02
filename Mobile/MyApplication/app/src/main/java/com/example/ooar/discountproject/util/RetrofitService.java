@@ -85,9 +85,9 @@ public interface RetrofitService {
 //kullanıcı bildirim getiren servis
     void getNotificationById(@Query("tokenKey") String tokenKey, @Path("id") Integer notificationId, Callback<Notification> callback);
 
-    @GET("/notification")
+    @GET("/user/notification")
 //kullanıcının tüm bildirimlerini getiren servis
-    void getAllNotification(@Query("tokenKey") String tokenKey, Callback<List<UserNotification>> callback);
+    void getAllNotification(@Query("tokenKey") String tokenKey, @Query("startIndex") int startIndex, @Query("notificationLength") int length, Callback<List<UserNotification>> callback);
 
     @GET("/session/delete")
 //oturum silen servis

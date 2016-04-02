@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.content.Context;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -31,6 +32,13 @@ import retrofit.client.Response;
 public class NotificationsFragment extends Fragment {
 
     public static List<UserNotification> userNotificationList = null;
+    private int notificationStartIndex = 0;
+    private int notificationLength = 2;
+    private boolean loadMore = false;
+    private boolean loadAllContent = false;
+    private LinearLayout loadMoreLayout;
+    private Button loadMoreButton;
+
 
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
 
@@ -39,18 +47,42 @@ public class NotificationsFragment extends Fragment {
 
     @Override
     public void onViewCreated(final View view, Bundle savedInstanceState) {
+        final SwipeRefreshLayout swipeContainer = (SwipeRefreshLayout) getActivity().findViewById(R.id.swipeContainer);
+        swipeContainer.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+            @Override
+            public void onRefresh() {
+                getUserNotifications(notificationStartIndex, userNotificationList.size());
+                swipeContainer.setRefreshing(false);
+            }
+        });
         if (userNotificationList == null) {
-            getUserNotifications();
+            getUserNotifications(notificationStartIndex, notificationLength);
         } else {
             renderPage();
         }
     }
 
-    public void getUserNotifications() {
+    public void getUserNotifications(int startIndex, int length) {
         Callback callback = new Callback() {
             @Override
             public void success(Object o, Response response) {
-                userNotificationList = (List<UserNotification>) o;
+                if (loadMore) {
+                    loadMore = false;
+                    List<UserNotification> tempList = (List<UserNotification>) o;
+                    if (tempList.size() == 0) {
+                        loadAllContent = true;
+                    } else {
+                        loadAllContent = false;
+                    }
+                    userNotificationList.addAll(tempList);
+                } else {
+                    userNotificationList = (List<UserNotification>) o;
+                    if (userNotificationList.size() == 0) {
+                        loadAllContent = true;
+                    } else {
+                        loadAllContent = false;
+                    }
+                }
                 renderPage();
                 Util.stopProgressDialog();
             }
@@ -62,12 +94,24 @@ public class NotificationsFragment extends Fragment {
         };
 
         String tokenKey = getActivity().getSharedPreferences("Session", Activity.MODE_PRIVATE).getString("tokenKey", "");
-        RetrofitConfiguration.getRetrofitService(true).getAllNotification(tokenKey, callback);
+        RetrofitConfiguration.getRetrofitService(true).getAllNotification(tokenKey, startIndex, length, callback);
     }
 
     public void renderPage() {
         LayoutInflater inflater = (LayoutInflater) getActivity().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         LinearLayout parent = (LinearLayout) getActivity().findViewById(R.id.notificationRootLayout);
+
+        loadMoreLayout = (LinearLayout) parent.findViewById(R.id.loadMoreLayout);
+        loadMoreButton = (Button) parent.findViewById(R.id.loadMore);
+        parent.removeAllViews();
+
+        loadMoreButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                loadMore = true;
+                getUserNotifications(userNotificationList.size(), notificationLength);
+            }
+        });
 
         for (int i = 0; i < userNotificationList.size(); i++) {
             final Notification notification = userNotificationList.get(i).getNotificationId();
@@ -97,6 +141,18 @@ public class NotificationsFragment extends Fragment {
             });
             parent.addView(custom);
 
+        }
+
+        parent.addView(loadMoreLayout);
+        if (userNotificationList.size() >= notificationLength) {
+            loadMoreLayout.setVisibility(View.VISIBLE);
+        }
+        if (loadAllContent) {
+            loadMoreButton.setText("Tüm Bildirimlerin Bu Kadar");
+            loadMoreButton.setClickable(false);
+        } else {
+            loadMoreButton.setText("Daha fazla yükle");
+            loadMoreButton.setClickable(true);
         }
     }
 
