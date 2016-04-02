@@ -71,12 +71,16 @@ public class NotificationsFragment extends Fragment {
                     List<UserNotification> tempList = (List<UserNotification>) o;
                     if (tempList.size() == 0) {
                         loadAllContent = true;
+                    } else {
+                        loadAllContent = false;
                     }
                     userNotificationList.addAll(tempList);
                 } else {
                     userNotificationList = (List<UserNotification>) o;
                     if (userNotificationList.size() == 0) {
                         loadAllContent = true;
+                    } else {
+                        loadAllContent = false;
                     }
                 }
                 renderPage();
@@ -146,6 +150,9 @@ public class NotificationsFragment extends Fragment {
         if (loadAllContent) {
             loadMoreButton.setText("Tüm Bildirimlerin Bu Kadar");
             loadMoreButton.setClickable(false);
+        } else {
+            loadMoreButton.setText("Daha fazla yükle");
+            loadMoreButton.setClickable(true);
         }
     }
 
