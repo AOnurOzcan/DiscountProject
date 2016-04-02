@@ -13,7 +13,8 @@ require.config({
     'outer': 'Util/outer',
     'googlemaps': '../lib/googlemaps',
     'async': '../lib/async',
-    'gmaps': '../lib/gmaps.min'
+    'gmaps': '../lib/gmaps.min',
+    'nprogress': '../lib/nprogress'
   },
   shim: {
     semanticJs: {
@@ -52,13 +53,16 @@ require([
   'core',
   'outer',
   'alertify',
+  'nprogress',
   'handlebars',
   'semanticJs',
   'jquerySerialize',
   'async',
   'googlemaps',
   'gmaps'
-], function ($, _, Backbone, Core, Outer, Alertify) {
+], function ($, _, Backbone, Core, Outer, Alertify, NProgress) {
+  NProgress.configure({showSpinner: false});
+  //NProgress.configure({parent: '.page'});
   window.outer = new Outer();
   window.core = Core;
   window.alertify = Alertify;
@@ -67,15 +71,26 @@ require([
     Backbone.history.start();
   });
 
-  //var $body = $("#ld");
-  //$(document).on({
-  //  ajaxStart: function () {
-  //    $body.addClass("active");
-  //  },
-  //  ajaxStop: function () {
-  //    $body.removeClass("loading");
-  //  }
-  //});
+  var loading = $("#loading");
+
+
+  $(document).on({
+    ajaxStart: function () {
+      //Login sayfasında değilse ve loading divinde active classı yoksa(sayfa refresh edilmediyse)
+      if (window.location.hash != "" && !loading.hasClass("active")) {
+        NProgress.start();
+      }
+    },
+    ajaxStop: function () {
+      //loading divinde active classı varsa sil
+      if (loading.hasClass("active")) {
+        loading.removeClass("active");
+      } else { //Yoksa NProggressi durdur.
+        NProgress.done();
+      }
+    }
+  });
+
   $.ajaxSetup({cache: false});
   $(document).ajaxError(function (event, xhr, settings, object) {
     if (xhr.status == 401) {

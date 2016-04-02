@@ -3,9 +3,9 @@ body {
     overflow-y: scroll;
 }
 
-/*body > .grid {*/
-/*height: 100%;*/
-/*}*/
+#nprogress .bar {
+    background: red;
+}
 
 .main.container {
     margin-top: 5em;

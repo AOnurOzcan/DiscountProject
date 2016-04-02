@@ -37,12 +37,15 @@ project.app.get("/product", function (req, res) {
         return res.unknown();
       }
 
-      products.forEach(function (product) {
-        product.categoryId = product.Category;
-        delete product.Category;
+      products.asyncForEach(function (product, done) {
+        product.getCategory(function (err, category) {
+          if (err) return res.unknown();
+          product.categoryId = category;
+          done();
+        });
+      }, function () {
+        res.json(products);
       });
-
-      res.json(products);
     });
   }
 });
