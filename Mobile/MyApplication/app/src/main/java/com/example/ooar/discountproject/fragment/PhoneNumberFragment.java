@@ -15,6 +15,7 @@ import android.widget.EditText;
 import android.widget.Toast;
 
 import com.example.ooar.discountproject.R;
+import com.example.ooar.discountproject.util.ErrorHandler;
 import com.example.ooar.discountproject.util.FragmentChangeListener;
 import com.example.ooar.discountproject.util.RetrofitConfiguration;
 import com.example.ooar.discountproject.util.Util;
@@ -36,18 +37,19 @@ public class PhoneNumberFragment extends Fragment {
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        return inflater.inflate(R.layout.phone_number, container, false);
+        return inflater.inflate(R.layout.phone_number, container, false);//content basılıyor
     }
 
     @Override
     public void onViewCreated(final View view, Bundle savedInstanceState) {
         editText = (EditText) view.findViewById(R.id.telNo);
         editText.addTextChangedListener(new PhoneNumberFormattingTextWatcher());
-        setOnClickButton(view);
-        setChangeText(view);
+        setOnClickButton();
+        setChangeText();
     }
 
-    public void setOnClickButton(final View view) {
+    //postConfirmationCode butonuna tıklandığında server a istek yapan event
+    public void setOnClickButton() {
         final String[] phoneNumber = new String[1];
         final Callback callback = new Callback() {
             @Override
@@ -63,8 +65,7 @@ public class PhoneNumberFragment extends Fragment {
 
             @Override
             public void failure(RetrofitError error) {
-                Util.stopProgressDialog();
-                Toast.makeText(getActivity().getApplicationContext(), "Sunucudan Yanıt Alınamadı", Toast.LENGTH_LONG).show();
+                ErrorHandler.handleError(PhoneNumberFragment.this.getActivity(), error);
             }
         };
 
@@ -85,7 +86,8 @@ public class PhoneNumberFragment extends Fragment {
         });
     }
 
-    public void setChangeText(View view) {
+    //text uzunluğunu kontrol eden kısım
+    public void setChangeText() {
         editText.addTextChangedListener(new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence s, int start, int count, int after) {

@@ -23,6 +23,7 @@ import com.example.ooar.discountproject.model.Notification;
 import com.example.ooar.discountproject.model.Product;
 import com.example.ooar.discountproject.model.User;
 import com.example.ooar.discountproject.model.UserProduct;
+import com.example.ooar.discountproject.util.ErrorHandler;
 import com.example.ooar.discountproject.util.FragmentChangeListener;
 import com.example.ooar.discountproject.util.RetrofitConfiguration;
 import com.example.ooar.discountproject.util.Util;
@@ -48,7 +49,7 @@ public class NotificationDetailFragment extends Fragment {
         SharedPreferences.Editor editor = getActivity().getSharedPreferences("Session", getActivity().MODE_PRIVATE).edit();
         editor.putInt("NotificationId", 0).commit();
         notificationId = getArguments().getInt("notificationId");
-        return inflater.inflate(R.layout.notification_detail, container, false);
+        return inflater.inflate(R.layout.notification_detail, container, false);//content basılıyor
     }
 
     @Override
@@ -56,7 +57,7 @@ public class NotificationDetailFragment extends Fragment {
         getNotification();
     }
 
-    public void getNotification() {
+    public void getNotification() {// id ye göre bildirim getiren fonksiyon
         Callback callback = new Callback() {
             @Override
             public void success(Object o, Response response) {
@@ -70,16 +71,14 @@ public class NotificationDetailFragment extends Fragment {
 
             @Override
             public void failure(RetrofitError error) {
-                Toast.makeText(getActivity().getApplicationContext(), "Sunucudan yanıt alınamadı!", Toast.LENGTH_LONG).show();
-                Util.stopProgressDialog();
+                ErrorHandler.handleError(NotificationDetailFragment.this.getActivity(), error);
             }
         };
-        Util.startProgressDialog();
         String tokenKey = getActivity().getSharedPreferences("Session", Activity.MODE_PRIVATE).getString("tokenKey", "");
-        RetrofitConfiguration.getRetrofitService().getNotificationById(tokenKey, notificationId, callback);
+        RetrofitConfiguration.getRetrofitService(true).getNotificationById(tokenKey, notificationId, callback);
     }
 
-    public void renderPage() {
+    public void renderPage() {//sayfa dinamik olarak basılıyor
 
         LayoutInflater inflater = (LayoutInflater) getActivity().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         ScrollView scrollView = (ScrollView) getActivity().findViewById(R.id.scrollView);
@@ -92,26 +91,27 @@ public class NotificationDetailFragment extends Fragment {
         int[] pixels = Util.getScreenPixels(getActivity());
         LinearLayout.LayoutParams imageViewParams = new LinearLayout.LayoutParams(pixels[0] / 3, pixels[1] / 6);
 
+        //ürünler basılıyor
         for (int i = 0; i < notification.getProductList().size(); i++) {
             final Product product = notification.getProductList().get(i);
             View custom = inflater.inflate(R.layout.notification_product_view, null);
 
-            TextView productName = (TextView) custom.findViewById(R.id.productName);
+            TextView productName = (TextView) custom.findViewById(R.id.productName);//ürün ismi
             productName.setText(product.getProductName());
 
-            TextView price = (TextView) custom.findViewById(R.id.price);
+            TextView price = (TextView) custom.findViewById(R.id.price);//ürün fiyatı
             price.setText(String.valueOf(product.getPrice()));
 
-            TextView previousPrice = (TextView) custom.findViewById(R.id.previousPrice);
+            TextView previousPrice = (TextView) custom.findViewById(R.id.previousPrice);//önceki fiyat
             previousPrice.setText(String.valueOf(product.getPreviousPrice()));
 
-            TextView stock = (TextView) custom.findViewById(R.id.stock);
+            TextView stock = (TextView) custom.findViewById(R.id.stock);//stok
             stock.setText(String.valueOf(product.getStock()));
 
-            TextView description = (TextView) custom.findViewById(R.id.description);
+            TextView description = (TextView) custom.findViewById(R.id.description);//açıklama
             description.setText(product.getProductDescription());
 
-            ImageView image = (ImageView) custom.findViewById(R.id.productImage);
+            ImageView image = (ImageView) custom.findViewById(R.id.productImage);//resim
             image.setLayoutParams(imageViewParams);
 
             final CheckBox checkBox = (CheckBox) custom.findViewById(R.id.addToList);
@@ -125,6 +125,7 @@ public class NotificationDetailFragment extends Fragment {
                 checkBox.setTag(product.getId());
             }
 
+            //alışveriş listesine ekleme ve cıkarma işlemi yapan fonksiyon
             checkBox.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
                 @Override
                 public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
@@ -150,8 +151,7 @@ public class NotificationDetailFragment extends Fragment {
 
                             @Override
                             public void failure(RetrofitError error) {
-                                Util.stopProgressDialog();
-                                Toast.makeText(getActivity().getApplicationContext(), error.toString(), Toast.LENGTH_LONG).show();
+                                ErrorHandler.handleError(NotificationDetailFragment.this.getActivity(), error);
                             }
                         };
                         String tokenKey = getActivity().getSharedPreferences("Session", Activity.MODE_PRIVATE).getString("tokenKey", "");
@@ -170,8 +170,7 @@ public class NotificationDetailFragment extends Fragment {
 
                             @Override
                             public void failure(RetrofitError error) {
-                                Util.stopProgressDialog();
-                                Toast.makeText(getActivity().getApplicationContext(), error.toString(), Toast.LENGTH_LONG).show();
+                                ErrorHandler.handleError(NotificationDetailFragment.this.getActivity(), error);
                             }
                         };
                         String tokenKey = getActivity().getSharedPreferences("Session", Activity.MODE_PRIVATE).getString("tokenKey", "");
@@ -184,6 +183,7 @@ public class NotificationDetailFragment extends Fragment {
             parent.addView(custom);
         }
 
+        //subeler basılıyor
         for (int i = 0; i < notification.getBranchList().size(); i++) {
             Branch branch = notification.getBranchList().get(i);
             View custom = inflater.inflate(R.layout.notification_branch_view, null);
@@ -219,6 +219,7 @@ public class NotificationDetailFragment extends Fragment {
         setOtherContent();
     }
 
+    //diğer içerikler set ediliyor
     public void setOtherContent() {
         notificationName = (TextView) getActivity().findViewById(R.id.notificationName);
         startDate = (TextView) getActivity().findViewById(R.id.startDate);

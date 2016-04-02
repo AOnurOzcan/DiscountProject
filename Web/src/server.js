@@ -44,6 +44,7 @@ orm.connect(config.get("database"), function (err, db) { // create connection fr
   db.settings.set('instance.cache', false);
   console.log("Connected to database");
   project.db = db;
+  project.orm = orm;
   project.app = app;
 
   project.util = {

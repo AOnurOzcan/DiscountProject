@@ -25,6 +25,7 @@ import com.example.ooar.discountproject.model.Category;
 import com.example.ooar.discountproject.model.City;
 import com.example.ooar.discountproject.model.CompanyCategory;
 import com.example.ooar.discountproject.model.User;
+import com.example.ooar.discountproject.util.ErrorHandler;
 import com.example.ooar.discountproject.util.FragmentChangeListener;
 import com.example.ooar.discountproject.util.RetrofitConfiguration;
 import com.example.ooar.discountproject.util.Util;
@@ -55,7 +56,7 @@ public class CreateProfilFragment extends Fragment {
     RadioButton radioSexButton;
     Spinner citySpinner;
     Button button;
-    boolean callbackCategorySuccess = false;
+    boolean callbackCategorySuccess = false;//diğer sayfa için callbackler tanımlanıyor
     boolean callbackUserSuccess = false;
     boolean callbackCompanySuccess = false;
     boolean callbackCitySuccess = false;
@@ -63,12 +64,12 @@ public class CreateProfilFragment extends Fragment {
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        return inflater.inflate(R.layout.create_profil, container, false);
+        return inflater.inflate(R.layout.create_profil, container, false);//content basılıyor
     }
 
     @Override
     public void onViewCreated(final View view, Bundle savedInstanceState) {
-        getAllCity(view);
+        getAllCity(view);//veriler alınıyor
         getAllCategories();
         getAllCompanyWithCategory();
         setOnClickListener(view);
@@ -178,6 +179,7 @@ public class CreateProfilFragment extends Fragment {
         });
     }
 
+    //user oluşturma fonksiyonu
     public void createUserProfil(User user) {
 
         Callback callback = new Callback() {
@@ -196,7 +198,7 @@ public class CreateProfilFragment extends Fragment {
 
             @Override
             public void failure(RetrofitError error) {
-                Toast.makeText(getActivity().getApplicationContext(), "Bir Hata Oluştu!", Toast.LENGTH_LONG).show();
+                ErrorHandler.handleError(CreateProfilFragment.this.getActivity(), error);
             }
         };
         Util.startProgressDialog();
@@ -222,7 +224,7 @@ public class CreateProfilFragment extends Fragment {
 
             @Override
             public void failure(RetrofitError error) {
-                Toast.makeText(getActivity().getApplicationContext(), error.toString(), Toast.LENGTH_LONG).show();
+                ErrorHandler.handleError(CreateProfilFragment.this.getActivity(), error);
             }
         };
         Util.startProgressDialog();
@@ -246,7 +248,7 @@ public class CreateProfilFragment extends Fragment {
 
             @Override
             public void failure(RetrofitError error) {
-                Toast.makeText(getActivity().getApplicationContext(), error.toString(), Toast.LENGTH_LONG).show();
+                ErrorHandler.handleError(CreateProfilFragment.this.getActivity(), error);
             }
         };
 
@@ -270,7 +272,7 @@ public class CreateProfilFragment extends Fragment {
 
             @Override
             public void failure(RetrofitError error) {
-                Toast.makeText(getActivity().getApplicationContext(), error.toString(), Toast.LENGTH_LONG).show();
+                ErrorHandler.handleError(CreateProfilFragment.this.getActivity(), error);
             }
         };
 

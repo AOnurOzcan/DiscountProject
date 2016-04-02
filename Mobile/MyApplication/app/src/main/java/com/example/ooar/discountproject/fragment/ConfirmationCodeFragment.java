@@ -16,6 +16,7 @@ import android.widget.Toast;
 import com.example.ooar.discountproject.R;
 import com.example.ooar.discountproject.activity.UserActivity;
 import com.example.ooar.discountproject.model.ConfirmationCode;
+import com.example.ooar.discountproject.util.ErrorHandler;
 import com.example.ooar.discountproject.util.FragmentChangeListener;
 import com.example.ooar.discountproject.util.RetrofitConfiguration;
 import com.example.ooar.discountproject.util.Util;
@@ -39,7 +40,7 @@ public class ConfirmationCodeFragment extends Fragment {
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        return inflater.inflate(R.layout.confirmation_code_layout, container, false);
+        return inflater.inflate(R.layout.confirmation_code_layout, container, false);//content basılıyor
     }
 
     @Override
@@ -47,20 +48,18 @@ public class ConfirmationCodeFragment extends Fragment {
         textTelNo = (TextView) view.findViewById(R.id.textTelNo);
         sendConfirmationCode = (Button) view.findViewById(R.id.sendConfirmationCode);
         confirmationCodeInput = (EditText) view.findViewById(R.id.confirmationCodeInput);
-
-        setOnclickButton(view);
+        setOnclickButton();
     }
 
-    public void setOnclickButton(final View view) {
+    //onay kodu gönderme eventı tanımlanıyor
+    public void setOnclickButton() {
         final String phoneNumber = getActivity().getSharedPreferences("Session", Activity.MODE_PRIVATE).getString("phoneNumber", "");
 
         if (!phoneNumber.equals("")) {
-
             textTelNo.setText(phoneNumber);
-
             final Callback callback = new Callback() {
                 @Override
-                public void success(Object o, Response response) {
+                public void success(Object o, Response response) {//serverdan gelen veriler alınıyor
                     Util.stopProgressDialog();
                     String confirmationCodeResponse = null, tokenKeyResponse = null;
                     Map<String, String> serverResponse = (Map<String, String>) o;
@@ -72,7 +71,7 @@ public class ConfirmationCodeFragment extends Fragment {
                         }
                     }
                     if (confirmationCodeResponse != null && tokenKeyResponse != null) {
-                        if (confirmationCodeResponse.equals("err") && tokenKeyResponse.equals("err")) {//onay kodu yanlış
+                        if (confirmationCodeResponse.equals("err") && tokenKeyResponse.equals("err")) {//iki alanda err ise onay kodu yanlış demektir
                             Toast.makeText(getActivity(), "Onay kodu yanlış tekrar deneyiniz", Toast.LENGTH_LONG).show();
                         } else if (confirmationCodeResponse.equals("true") && tokenKeyResponse.equals("err")) {//onay kodu doğru kullanıcı ilk kez giriş yapıyor
                             FragmentChangeListener fc = (FragmentChangeListener) getActivity();
@@ -89,8 +88,7 @@ public class ConfirmationCodeFragment extends Fragment {
 
                 @Override
                 public void failure(RetrofitError error) {
-                    Util.stopProgressDialog();
-                    Toast.makeText(getActivity(), "Sunucudan Yanıt Alınamadı", Toast.LENGTH_LONG).show();
+                    ErrorHandler.handleError(ConfirmationCodeFragment.this.getActivity(), error);
                 }
             };
 

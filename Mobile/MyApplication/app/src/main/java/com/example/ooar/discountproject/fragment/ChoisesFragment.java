@@ -23,6 +23,7 @@ import com.example.ooar.discountproject.activity.UserActivity;
 import com.example.ooar.discountproject.model.Category;
 import com.example.ooar.discountproject.model.CompanyCategory;
 import com.example.ooar.discountproject.model.Preference;
+import com.example.ooar.discountproject.util.ErrorHandler;
 import com.example.ooar.discountproject.util.FragmentChangeListener;
 import com.example.ooar.discountproject.util.RetrofitConfiguration;
 import com.example.ooar.discountproject.util.Util;
@@ -42,7 +43,7 @@ public class ChoisesFragment extends Fragment {
     public static List<Category> categoryList = null;
     public static List<CompanyCategory> companyList = null;
     public static List<Preference> preferencesList = null;
-    public List<CompanyCategory> selectedCompanyList = new ArrayList<>();
+    public List<CompanyCategory> selectedCompanyList = null;
     public boolean deleteResponse = false;
     public boolean createResponse = false;
 
@@ -55,6 +56,7 @@ public class ChoisesFragment extends Fragment {
     @Override
     public void onViewCreated(View view, Bundle savedInstanceState) {
         getAllCategories();
+        selectedCompanyList = new ArrayList<>();
 //        if (categoryList == null || companyList == null || preferencesList == null) {
 //            getAllCategories();
 //        } else {
@@ -82,7 +84,7 @@ public class ChoisesFragment extends Fragment {
 
             @Override
             public void failure(RetrofitError error) {
-                Toast.makeText(getActivity().getApplicationContext(), error.toString(), Toast.LENGTH_LONG).show();
+                ErrorHandler.handleError(ChoisesFragment.this.getActivity(), error);
             }
         };
 
@@ -99,7 +101,7 @@ public class ChoisesFragment extends Fragment {
 
             @Override
             public void failure(RetrofitError error) {
-                Toast.makeText(getActivity().getApplicationContext(), error.toString(), Toast.LENGTH_LONG).show();
+                ErrorHandler.handleError(ChoisesFragment.this.getActivity(), error);
             }
         };
 
@@ -117,7 +119,7 @@ public class ChoisesFragment extends Fragment {
 
             @Override
             public void failure(RetrofitError error) {
-                Toast.makeText(getActivity().getApplicationContext(), error.toString(), Toast.LENGTH_LONG).show();
+                ErrorHandler.handleError(ChoisesFragment.this.getActivity(), error);
             }
         };
         String tokenKey = getActivity().getSharedPreferences("Session", Activity.MODE_PRIVATE).getString("tokenKey", "");
@@ -219,7 +221,7 @@ public class ChoisesFragment extends Fragment {
 
                 @Override
                 public void failure(RetrofitError error) {
-                    Toast.makeText(getActivity(), error.toString(), Toast.LENGTH_LONG).show();
+                    ErrorHandler.handleError(ChoisesFragment.this.getActivity(), error);
                 }
             };
             final Callback deleteCallback = new Callback() {
@@ -235,7 +237,7 @@ public class ChoisesFragment extends Fragment {
 
                 @Override
                 public void failure(RetrofitError error) {
-                    Toast.makeText(getActivity(), error.toString(), Toast.LENGTH_LONG).show();
+                    ErrorHandler.handleError(ChoisesFragment.this.getActivity(), error);
                 }
             };
 

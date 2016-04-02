@@ -12,6 +12,12 @@ import android.widget.TextView;
 
 import com.example.ooar.discountproject.R;
 import com.example.ooar.discountproject.model.Branch;
+import com.example.ooar.discountproject.util.FragmentChangeListener;
+import com.google.android.gms.maps.GoogleMap;
+import com.google.android.gms.maps.MapFragment;
+import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.Marker;
+import com.google.android.gms.maps.model.MarkerOptions;
 
 /**
  * Created by Onur Kuru on 24.3.2016.
@@ -27,11 +33,11 @@ public class BranchDetailFragment extends Fragment {
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        return inflater.inflate(R.layout.branch_detail, container, false);
+        return inflater.inflate(R.layout.branch_detail, container, false);//content basılıyor
     }
 
     @Override
-    public void onViewCreated(final View view, Bundle savedInstanceState) {
+    public void onViewCreated(final View view, Bundle savedInstanceState) {//içerikler set ediliyor
         branchName = (TextView) view.findViewById(R.id.branchName);
         branchPhone = (TextView) view.findViewById(R.id.branchPhone);
         branchAdress = (TextView) view.findViewById(R.id.branchAdress);
@@ -45,8 +51,14 @@ public class BranchDetailFragment extends Fragment {
         branchMap.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent = new Intent(android.content.Intent.ACTION_VIEW, Uri.parse(branch.getLocationURL()));
-                startActivity(intent);
+
+                Bundle bundle = new Bundle();
+                bundle.putString("url", branch.getLocationURL());
+                bundle.putString("branchName", branch.getName());
+                Fragment fragment = new GoogleMapsFragment();
+                fragment.setArguments(bundle);
+                FragmentChangeListener fc = (FragmentChangeListener) getActivity();
+                fc.replaceFragment(fragment, "googleMapsFragment");
             }
         });
     }

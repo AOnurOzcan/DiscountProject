@@ -23,6 +23,7 @@ import com.example.ooar.discountproject.activity.UserActivity;
 import com.example.ooar.discountproject.model.Category;
 import com.example.ooar.discountproject.model.City;
 import com.example.ooar.discountproject.model.User;
+import com.example.ooar.discountproject.util.ErrorHandler;
 import com.example.ooar.discountproject.util.FragmentChangeListener;
 import com.example.ooar.discountproject.util.RetrofitConfiguration;
 import com.example.ooar.discountproject.util.Util;
@@ -80,7 +81,7 @@ public class ProfileFragment extends Fragment {
 
             @Override
             public void failure(RetrofitError error) {
-                Toast.makeText(getActivity().getApplicationContext(), error.toString(), Toast.LENGTH_LONG).show();
+                ErrorHandler.handleError(ProfileFragment.this.getActivity(), error);
             }
         };
         String tokenKey = getActivity().getSharedPreferences("Session", Activity.MODE_PRIVATE).getString("tokenKey", "");
@@ -98,7 +99,7 @@ public class ProfileFragment extends Fragment {
 
             @Override
             public void failure(RetrofitError error) {
-                Toast.makeText(getActivity().getApplicationContext(), error.toString(), Toast.LENGTH_LONG).show();
+                ErrorHandler.handleError(ProfileFragment.this.getActivity(), error);
             }
         };
         RetrofitConfiguration.getRetrofitService(true).getAllCity(callback);
@@ -203,8 +204,7 @@ public class ProfileFragment extends Fragment {
 
             @Override
             public void failure(RetrofitError error) {
-                Util.stopProgressDialog();
-                Toast.makeText(getActivity().getApplicationContext(), "Bir Hata Oluştu!", Toast.LENGTH_LONG).show();
+                ErrorHandler.handleError(ProfileFragment.this.getActivity(), error);
             }
         };
         String tokenKey = getActivity().getSharedPreferences("Session", Activity.MODE_PRIVATE).getString("tokenKey", "");

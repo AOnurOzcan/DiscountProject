@@ -21,7 +21,7 @@ import java.io.IOException;
 public class MainActivity extends AppCompatActivity {
 
     private final static int PLAY_SERVICES_RESOLUTION_REQUEST = 9000;
-    String SENDER_ID = "279341591262";
+    String SENDER_ID = "279341591262";//gcm sender id
 
     GoogleCloudMessaging gcm;
     Context context;
@@ -50,9 +50,9 @@ public class MainActivity extends AppCompatActivity {
         editor.putInt("NotificationCount", 0).commit();
 
         String regId = getSharedPreferences("Session", Activity.MODE_PRIVATE).getString("regId", "");
-        if (checkPlayServices()) {
+        if (checkPlayServices()) {//play servis kontrol ediliyor
             if (regId.equals("")) {
-                new Register().execute();
+                new Register().execute();//telefonun register id si yoksa oluşturuluyor
             } else {
                 successRegistration();
             }
@@ -63,10 +63,10 @@ public class MainActivity extends AppCompatActivity {
 
         String phoneNumber = getSharedPreferences("Session", Activity.MODE_PRIVATE).getString("phoneNumber", "");
         String tokenKey = getSharedPreferences("Session", Activity.MODE_PRIVATE).getString("tokenKey", "");
-        if (phoneNumber.equals("") || tokenKey.equals("") || tokenKey.equals("err")) {
+        if (phoneNumber.equals("") || tokenKey.equals("") || tokenKey.equals("err")) {//telefonda tokenkey ve telefon numarası yoksa register işlemleri başlatılıyor
             Intent intent = new Intent(this, RegisterActivity.class);
             this.startActivity(intent);
-        } else {//Oturum var token güncellendi
+        } else {//Oturum varsa kullanıcı anasayfa başlatılıyor
             Intent intent = new Intent(MainActivity.this, UserActivity.class);
             if (notificationId != 0) {
                 intent.putExtra("notificationId", notificationId);
@@ -82,7 +82,7 @@ public class MainActivity extends AppCompatActivity {
         finish();
     }
 
-    private boolean checkPlayServices() {
+    private boolean checkPlayServices() {//play service olup olmadığını kontrol eden fonksiyon
         int resultCode = GooglePlayServicesUtil.isGooglePlayServicesAvailable(this);
         if (resultCode != ConnectionResult.SUCCESS) {
             if (GooglePlayServicesUtil.isUserRecoverableError(resultCode)) {
@@ -96,7 +96,7 @@ public class MainActivity extends AppCompatActivity {
         return true;
     }
 
-    public class Register extends AsyncTask {
+    public class Register extends AsyncTask {//telefon için register id alan fonksiyon
         boolean success = true;
 
         @Override
@@ -106,7 +106,7 @@ public class MainActivity extends AppCompatActivity {
                 if (gcm == null) {
                     gcm = GoogleCloudMessaging.getInstance(context);
                 }
-                regId = gcm.register(SENDER_ID);
+                regId = gcm.register(SENDER_ID);//register id alınıp sharedpreference ye yazılıyor
                 SharedPreferences.Editor editor = getSharedPreferences("Session", Activity.MODE_PRIVATE).edit();
                 editor.putString("regId", regId).commit();
             } catch (IOException ex) {
