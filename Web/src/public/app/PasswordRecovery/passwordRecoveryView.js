@@ -46,7 +46,6 @@ define([
       var checkToken = new CheckTokenModel({token: token});
       checkToken.fetch({
         success: function (account) {
-          debugger
           that.$el.html(passwordRecoveryTemplate({account: account.toJSON()}));
         }
       });

@@ -70,6 +70,8 @@ window.define(['backbone', 'handlebars'], function (Backbone, Handlebars) {
      * },
      */
     "waitData": function (model, callback) {
+      var page = $("#page");
+      page.hide();
       var self = this;
       if (callback == undefined) {
         callback = this.render;
@@ -87,7 +89,9 @@ window.define(['backbone', 'handlebars'], function (Backbone, Handlebars) {
         });
 
         $.when.apply($, group).then(function () {
+
           callback.call(self);
+          page.fadeIn(400);
 
           if (self.ready) {
             self.ready(); // Activate i18n
@@ -98,6 +102,8 @@ window.define(['backbone', 'handlebars'], function (Backbone, Handlebars) {
 
       $.when(model["fetch"]()).then(function () {
         callback.call(self);
+        page.fadeIn(400);
+
       });
     },
 

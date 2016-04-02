@@ -10,7 +10,7 @@ define(['backbone',
   });
 
   var MenuView = core.CommonView.extend({
-    el: $(".menu"),
+    el: ".menu",
     autoLoad: true,
     events: {
       'click #logoutButton': 'logout'
