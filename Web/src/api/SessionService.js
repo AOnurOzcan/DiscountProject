@@ -3,7 +3,8 @@ var Company = require("../model/Company");
 var BodyControl = require("../util/BodyControl");
 var AuthorizedRoute = require("../util/AuthorizedRoute");
 var md5 = require("js-md5");
-
+var AccountAuthority = require('../model/AccountAuthority');
+var Authority = require('../model/Authority');
 /**
  * Kullanıcı isim ve şifresini yazıp login dediğinde buraya düşer.
  * BodyControl gelen isim ve şifrenin boş olup olmadığını kontrol eder.
@@ -14,19 +15,31 @@ project.app.post("/login", BodyControl("username", "password"), function (req, r
     if (admin == null) {
       return res.unauthorized();
     }
-    req.session.admin = admin;
-    if (admin.accountType == "COMPANY") {
-      Company.one({id: admin.companyId}, function (err, company) {
-        if (err) {
-          return res.unknown();
+
+    admin.accountAuth = [];
+    AccountAuthority.find({accountId: admin.id}, function (err, accountAuthories) {
+      if (err) return res.unknown();
+      accountAuthories.asyncForEach(function (accountAuthority, done) {
+        accountAuthority.getAuthority(function (err, authority) {
+          admin.accountAuth.push(authority.authorityCode);
+          done();
+        });
+      }, function () {
+        req.session.admin = admin;
+        if (admin.accountType == "COMPANY") {
+          Company.one({id: admin.companyId}, function (err, company) {
+            if (err) {
+              return res.unknown();
+            }
+            req.session.admin.companyName = company.companyName;
+            res.json({status: true});
+          });
+        } else {
+          req.session.admin.companyAccess = false;
+          res.json({status: true});
         }
-        req.session.admin.companyName = company.companyName;
-        res.json({status: true});
       });
-    } else {
-      req.session.admin.companyAccess = false;
-      res.json({status: true});
-    }
+    });
   });
 });
 

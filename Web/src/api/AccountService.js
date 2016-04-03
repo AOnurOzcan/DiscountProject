@@ -1,5 +1,6 @@
 var Account = require("../model/Account");
 var Company = require("../model/Company");
+var AccountAuthority = require("../model/AccountAuthority");
 
 //Hesap oluşturma
 project.app.post('/account', function (req, res) {
@@ -48,11 +49,24 @@ project.app.get('/account/:id', function (req, res) {
     if (err) {
       res.unknown();
     }
-    account.username = acc.username;
-    account.password = acc.password;
-    account.email = acc.email;
-    account.accountAuth = acc.accountAuth;
-    res.json(account);
+    acc.accountAuth = [];
+    AccountAuthority.find({accountId: acc.id}, function (err, accountAuthories) {
+      if (err) return res.unknown();
+      accountAuthories.asyncForEach(function (accountAuthority, done) {
+        accountAuthority.getAuthority(function (err, authority) {
+          acc.accountAuth.push(authority.authorityCode);
+          done();
+        });
+      }, function () {
+
+        account.username = acc.username;
+        account.password = acc.password;
+        account.email = acc.email;
+        account.accountAuth = acc.accountAuth;
+        res.json(account);
+      });
+    });
+
   });
 });
 

@@ -18,9 +18,9 @@
                 <div class="field">
                     <select name="accountAuth[]" multiple="" class="ui fluid dropdown" id="accountAuthDropdown">
                         <option value="">Yetki Seçiniz</option>
-                        <option value="CREATE_ACCOUNT">Hesap Oluşturabilir</option>
-                        <option value="REMOVE_ACCOUNT">Hesap Silebilir</option>
-                        <option value="CREATE_COMPANY_ACCOUNT">Firma Hesabı Oluşturabilir</option>
+                        {{#each authorities}}
+                        <option value="{{authorityCode}}">{{authorityValue}}</option>
+                        {{/each}}
                     </select>
                 </div>
                 {{#account.id}}

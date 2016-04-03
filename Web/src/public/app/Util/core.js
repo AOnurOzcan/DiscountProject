@@ -246,7 +246,7 @@ window.define(['backbone', 'handlebars'], function (Backbone, Handlebars) {
   });
 
   Handlebars.registerHelper('can', function (permission, options) {
-    var auths = $router.checkSession.attributes.accountAuth.split(',');
+    var auths = $router.checkSession.attributes.accountAuth;
     var check = auths.some(function (auth) {
       return auth == permission;
     });

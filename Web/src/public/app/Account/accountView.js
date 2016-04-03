@@ -22,6 +22,18 @@ define([
   var Companyollection = Backbone.Collection.extend({
     url: "/company"
   });
+  var AuthorityCollection = Backbone.Collection.extend({
+    url: '/authority'
+  });
+
+  var PasswordRecovery = Backbone.Model.extend({
+    url: "/sendResetMail",
+    initialize: function (properties) {
+      if (properties != undefined) {
+        this.url += "/" + properties.id;
+      }
+    }
+  });
 
   //------------------- Views ------------------------//
 
@@ -85,6 +97,7 @@ define([
     },
     initialize: function () {
       this.companyCollection = new Companyollection();
+      this.authorityCollection = new AuthorityCollection();
     },
     ChangeAccountType: function (e) {
       var accountType = $(".accountTypeDropdown").dropdown('get value');
@@ -117,7 +130,10 @@ define([
     render: function () {
       var that = this;
       if (this.params == undefined) {
-        this.$el.html(addAccountTemplate({companies: this.companyCollection.toJSON()}));
+        this.$el.html(addAccountTemplate({
+          companies: this.companyCollection.toJSON(),
+          authorities: this.authorityCollection.toJSON()
+        }));
         $('#accountAuthDropdown').dropdown();
         $('.accountTypeDropdown').dropdown();
         $(".companyDropdown").dropdown().addClass('disabled');
@@ -128,13 +144,14 @@ define([
           success: function (savedUser) {
             that.$el.html(addAccountTemplate({
               account: savedUser.toJSON(),
-              companies: that.companyCollection.toJSON()
+              companies: that.companyCollection.toJSON(),
+              authorities: that.authorityCollection.toJSON()
             }));
             that.validation();
             that.form().setValues(user.toJSON());
             $('.accountAuthDropdown').dropdown();
             $('.accountTypeDropdown').dropdown();
-            $('#accountAuthDropdown').dropdown("set selected", savedUser.toJSON().accountAuth.split(','));
+            $('#accountAuthDropdown').dropdown("set selected", savedUser.toJSON().accountAuth);
           }
         });
       }
@@ -145,10 +162,28 @@ define([
     el: "#page",
     autoLoad: true,
     events: {
-      'click .deleteAccountButton': 'deleteAccount'
+      'click .deleteAccountButton': 'deleteAccount',
+      'click .recoverPassword': 'recoverPassword'
     },
     initialize: function () {
       this.accountCollection = new AccountCollection();
+    },
+    recoverPassword: function (e) {
+      var button = $(e.currentTarget);
+      var accountId = button.attr("data-id");
+      var accountEmail = button.attr("data-mail");
+      alertify.confirm("Onay", '<b>' + accountEmail + '</b>' + " adresine şifre sıfırlama isteği gönderilecek. Onaylıyor musunuz?",
+        function () { //Tamam'a basarsa
+          var passwordRecovery = new PasswordRecovery({id: accountId});
+          passwordRecovery.fetch({
+            success: function () {
+              alertify.success("Şifre sıfırlama isteği gönderildi.");
+            }
+          });
+        },
+        function () { //Vazgeç'e basarsa.
+          alertify.message("İsteğiniz iptal edildi.");
+        }).set('labels', {ok: 'Tamam', cancel: 'Vazgeç'});
     },
     deleteAccount: function (e) {
       var userId = $(e.currentTarget).attr('data-id');

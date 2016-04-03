@@ -65,10 +65,10 @@ project.app.get('/sendResetMail/:accountId', AuthorizedRoute("RECOVERY_PASSWORD"
       transporter.sendMail(mailOptions, function (error, info) {
         if (error) {
           console.log(error);
-          res.json({yo: 'error'});
+          res.unknown();
         } else {
           console.log('Message sent: ' + info.response);
-          res.json({yo: info.response});
+          res.json({status: "success"});
         }
       });
     });

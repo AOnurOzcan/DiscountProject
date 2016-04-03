@@ -6,7 +6,6 @@ var Account = project.db.define('Account', {
   password: String,
   email: String,
   accountType: ["ADMIN", "COMPANY"],
-  accountAuth: ["CREATE_ACCOUNT", "REMOVE_ACCOUNT", "CREATE_COMPAN", "RECOVERY_PASSWORD"]
 });
 
 Account.hasOne('company', Company, {field: 'companyId'});

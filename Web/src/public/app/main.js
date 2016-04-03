@@ -62,7 +62,6 @@ require([
   'gmaps'
 ], function ($, _, Backbone, Core, Outer, Alertify, NProgress) {
   NProgress.configure({showSpinner: false});
-  //NProgress.configure({parent: '.page'});
   window.outer = new Outer();
   window.core = Core;
   window.alertify = Alertify;
@@ -72,7 +71,6 @@ require([
   });
 
   var loading = $("#loading");
-
 
   $(document).on({
     ajaxStart: function () {
@@ -92,11 +90,17 @@ require([
   });
 
   $.ajaxSetup({cache: false});
+
+  alertify.alert()
+    .setting({
+      'label': 'Tamam'
+    });
+
   $(document).ajaxError(function (event, xhr, settings, object) {
     if (xhr.status == 401) {
       window.location.hash = ""; // Login sayfasına gönder
     } else if (xhr.status == 500) {
-      alertify.alert("Bilinmeyen bir hata oluştu!");
+      alertify.alert("Hata!", "Bilinmeyen bir hata oluştu!");
     }
   });
 });

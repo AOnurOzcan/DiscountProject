@@ -4,7 +4,6 @@
     <tr>
         <th>Kullanıcı Adı</th>
         <th>E-posta</th>
-        <th>Yetkiler</th>
         <th>İşlemler</th>
     </tr>
     </thead>
@@ -13,10 +12,12 @@
     <tr>
         <td>{{username}}</td>
         <td>{{email}}</td>
-        <td>{{accountAuth}}</td>
         <td>
+            {{#can 'DELETE_ACCOUNT'}}
             <button class="red ui button deleteAccountButton" data-id="{{id}}">Sil</button>
-            <button class="ui primary button recoverPassword" data-id="{{id}}">Şifre Sıfırla</button>
+            {{/can}}
+            <button class="ui primary button recoverPassword" data-id="{{id}}" data-mail="{{email}}">Şifre Sıfırla
+            </button>
             <a class="teal ui button editAccountButton" href="#account/edit/{{id}}">Düzenle</a>
         </td>
     </tr>
