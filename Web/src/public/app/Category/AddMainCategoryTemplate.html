@@ -12,7 +12,9 @@
                 {{#mainCategory.id}}
                 <button class="fluid green ui button" id="updateMainCategoryButton" data-id="{{id}}">Kaydet</button>
                 {{else}}
+                {{#can 'CREATE_CATEGORY'}}
                 <button class="fluid ui primary button" id="addMainCategoryButton">Oluştur</button>
+                {{/can}}
                 {{/mainCategory.id}}
                 <div class="ui error message"></div>
             </form>

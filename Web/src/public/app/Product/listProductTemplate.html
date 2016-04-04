@@ -19,8 +19,12 @@
         <td>{{stock}}</td>
         <td><img src="{{imageURL}}" alt="resim yok" class="ui centered small image"></td>
         <td>
+            {{#can 'DELETE_PRODUCT'}}
             <button class="red ui button" id="deleteProductButton" data-id="{{id}}">Sil</button>
+            {{/can}}
+            {{#can 'UPDATE_PRODUCT'}}
             <a class="teal ui button" href="#product/edit/{{id}}" id="editProductButton" data-id="{{id}}">Düzenle</a>
+            {{/can}}
         </td>
     </tr>
     {{else}}

@@ -21,8 +21,12 @@
         <td>{{workingHours}}</td>
         <td>{{locationURL}}</td>
         <td>
+            {{#can 'DELETE_BRANCH'}}
             <button class="red ui button" id="deleteBranchButton" data-id="{{id}}">Sil</button>
+            {{/can}}
+            {{#can 'UPDATE_BRANCH'}}
             <a class="teal ui button" href="#branch/edit/{{id}}" id="editBranchButton">Düzenle</a>
+            {{/can}}
         </td>
     </tr>
     {{else}}

@@ -2,10 +2,12 @@
 <div class="ui center aligned grid">
     <div class="four wide column">
         <form id="uploadForm" method="post" enctype="multipart/form-data">
+            {{#can 'UPLOAD_FILE'}}
             <label for="fileUpload" class="ui icon primary button">
                 <i class="picture icon"></i>
                 Resim Seçin
             </label>
+            {{/can}}
             <input type="file" id="fileUpload" name="imageURL" multiple style="display:none">
         </form>
     </div>
@@ -16,7 +18,9 @@
     </div>
     <div class="row">
         <div class="four wide column">
+            {{#can 'UPLOAD_FILE'}}
             <button id="uploadButton" class="ui blue large fluid button" style="display:none">Yükle</button>
+            {{/can}}
         </div>
     </div>
 </div>
@@ -32,10 +36,12 @@
             <div class="extra content">
                 <label>Resim Adı</label>
             </div>
+            {{#can 'DELETE_FILE'}}
             <button class="ui bottom attached button removeImageButton" data-id="{{id}}">
                 <i class="remove icon"></i>
                 Sil
             </button>
+            {{/can}}
         </div>
         {{/each}}
     </div>

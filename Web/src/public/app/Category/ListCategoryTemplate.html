@@ -8,8 +8,12 @@
                 <option value="{{id}}">{{categoryName}}</option>
                 {{/each}}
             </select>
+            {{#can 'DELETE_CATEGORY'}}
             <button class="red ui button disabled" id="deleteMainCategoryButton">Sil</button>
+            {{/can}}
+            {{#can 'UPDATE_CATEGORY'}}
             <button class="teal ui button disabled" id="editMainCategoryButton">Düzenle</button>
+            {{/can}}
         </div>
     </div>
     <div class="row">

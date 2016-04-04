@@ -19,8 +19,12 @@
         <td>{{formatDate endDate}}</td>
         <td>{{description}}</td>
         <td>
+            {{#can 'DELETE_NOTIFICATION'}}
             <button class="red ui button" id="deleteNotificationButton" data-id="{{id}}">Sil</button>
+            {{/can}}
+            {{#can 'UPDATE_NOTIFICATION'}}
             <a class="teal ui button" href="#notification/edit/{{id}}">Düzenle</a>
+            {{/can}}
             <button class="ui primary button" id="sendNotificationButton" data-id="{{id}}">Bildirim Gönder</button>
         </td>
     </tr>

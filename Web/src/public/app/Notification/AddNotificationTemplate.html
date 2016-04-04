@@ -51,7 +51,9 @@
                 {{#notification.id}}
                 <button class="fluid green ui button" id="updateNotificationButton" data-id="{{id}}">Kaydet</button>
                 {{else}}
+                {{#can 'CREATE_NOTIFICATION'}}
                 <button class="fluid ui primary button" id="addNotificationButton">Ekle</button>
+                {{/can}}
                 {{/notification.id}}
                 <div class="ui error message"></div>
             </form>

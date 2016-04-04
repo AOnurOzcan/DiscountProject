@@ -55,7 +55,9 @@
                     <a class="red ui button" href="#product/list"><i class="remove circle icon"></i>İptal</a>
                 </div>
                 {{else}}
+                {{#can 'CREATE_PRODUCT'}}
                 <button class="fluid ui primary button" id="addProductButton">Ekle</button>
+                {{/can}}
                 {{/if}}
                 <div class="ui error message"></div>
             </form>

@@ -38,7 +38,9 @@
                 {{#branch.id}}
                 <button class="fluid green ui button" id="saveBranchButton" data-id="{{id}}">Kaydet</button>
                 {{else}}
+                {{#can 'CREATE_BRANCH'}}
                 <button class="fluid ui primary button" id="addBranchButton">Ekle</button>
+                {{/can}}
                 {{/branch.id}}
                 <div class="ui error message"></div>
             </form>

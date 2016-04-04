@@ -2,8 +2,12 @@
 <tr>
     <td>{{categoryName}}</td>
     <td>
+        {{#can 'DELETE_CATEGORY'}}
         <button class="red ui button" id="deleteCategoryButton" data-id="{{id}}">Sil</button>
+        {{/can}}
+        {{#can 'UPDATE_CATEGORY'}}
         <a class="teal ui button" href="#category/sub/edit/{{id}}" id="editCategoryButton">Düzenle</a>
+        {{/can}}
     </td>
 </tr>
 {{else}}
