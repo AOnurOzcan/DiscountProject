@@ -1,5 +1,6 @@
 package com.example.ooar.discountproject.activity;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
@@ -19,9 +20,6 @@ import com.example.ooar.discountproject.util.Util;
  */
 public class RegisterActivity extends FragmentActivity implements FragmentChangeListener {
 
-    Button button;
-    EditText editText;
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -40,5 +38,14 @@ public class RegisterActivity extends FragmentActivity implements FragmentChange
             fragmentTransaction.replace(R.id.changeRegisterFragment, fragment);
         }
         fragmentTransaction.commit();
+    }
+
+    @Override
+    public void onBackPressed() {
+        Intent startMain = new Intent(Intent.ACTION_MAIN);
+        startMain.addCategory(Intent.CATEGORY_HOME);
+        startMain.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+        startMain.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+        startActivity(startMain);
     }
 }

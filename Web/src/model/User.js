@@ -12,6 +12,6 @@ var User = project.db.define('User', {
   registrationId: String
 });
 
-User.hasOne('City', City, {field: 'cityId', autoFetch: true});
+User.hasOne('city', City, {field: 'cityId'});
 
 module.exports = User;

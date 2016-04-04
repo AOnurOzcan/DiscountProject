@@ -15,11 +15,13 @@ import android.widget.EditText;
 import android.widget.Toast;
 
 import com.example.ooar.discountproject.R;
+import com.example.ooar.discountproject.util.CookieHandler;
 import com.example.ooar.discountproject.util.ErrorHandler;
 import com.example.ooar.discountproject.util.FragmentChangeListener;
 import com.example.ooar.discountproject.util.RetrofitConfiguration;
 import com.example.ooar.discountproject.util.Util;
 
+import java.io.Serializable;
 import java.util.Hashtable;
 import java.util.Map;
 
@@ -34,9 +36,17 @@ public class PhoneNumberFragment extends Fragment {
 
     Button button;
     EditText editText;
+    private RetrofitConfiguration retrofitConfiguration = null;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+        String cookieKey = getActivity().getSharedPreferences("Session", Activity.MODE_PRIVATE).getString("cookieKey", "");
+        String cookieValue = getActivity().getSharedPreferences("Session", Activity.MODE_PRIVATE).getString("cookieValue", "");
+
+        if (!cookieKey.equals("") && !cookieValue.equals("")) {
+            retrofitConfiguration = new RetrofitConfiguration(cookieKey, cookieValue);
+        }
+
         return inflater.inflate(R.layout.phone_number, container, false);//content basılıyor
     }
 
@@ -59,8 +69,13 @@ public class PhoneNumberFragment extends Fragment {
                 editor.putString("phoneNumber", phoneNumber[0]).commit();
 
                 Toast.makeText(getActivity(), o.toString(), Toast.LENGTH_LONG).show();
+                Bundle bundle = new Bundle();
+
+                bundle.putSerializable("map", (Serializable) CookieHandler.readCookies(response));
+                Fragment fragment = new ConfirmationCodeFragment();
+                fragment.setArguments(bundle);
                 FragmentChangeListener fc = (FragmentChangeListener) getActivity();
-                fc.replaceFragment(new ConfirmationCodeFragment(), null);
+                fc.replaceFragment(fragment, null);
             }
 
             @Override
@@ -78,7 +93,11 @@ public class PhoneNumberFragment extends Fragment {
                 validationMapper.put("phoneNumber", phoneNumber[0]);
                 if (Util.checkValidation(validationMapper)) {
                     Util.startProgressDialog();
-                    RetrofitConfiguration.getRetrofitService().getConfirmationCode(String.valueOf(phoneNumber[0]), callback);
+                    if (retrofitConfiguration != null) {
+                        retrofitConfiguration.getRetrofitService(true).getConfirmationCode(String.valueOf(phoneNumber[0]), callback);
+                    } else {
+                        RetrofitConfiguration.getRetrofitService(true).getConfirmationCode(String.valueOf(phoneNumber[0]), callback);
+                    }
                 } else {
                     Toast.makeText(getActivity().getApplicationContext(), "Hatalı Giriş", Toast.LENGTH_LONG).show();
                 }

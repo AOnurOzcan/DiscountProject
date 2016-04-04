@@ -76,12 +76,6 @@ public class MainActivity extends AppCompatActivity {
 
     }
 
-    @Override
-    protected void onRestart() {
-        super.onRestart();
-        finish();
-    }
-
     private boolean checkPlayServices() {//play service olup olmadığını kontrol eden fonksiyon
         int resultCode = GooglePlayServicesUtil.isGooglePlayServicesAvailable(this);
         if (resultCode != ConnectionResult.SUCCESS) {

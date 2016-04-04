@@ -97,7 +97,7 @@ public class GoogleMapsFragment extends Fragment implements GooglePlayServicesCl
     @Override
     public void onConnected(Bundle bundle) {
 
-        Location currentLocation;
+        Location currentLocation = null;
         final LatLng branchCoordinates;
         LatLngBounds.Builder lBuilder;
         LatLng myCoordinates = null;

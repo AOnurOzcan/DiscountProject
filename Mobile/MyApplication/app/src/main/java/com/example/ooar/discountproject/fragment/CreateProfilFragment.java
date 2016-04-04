@@ -56,11 +56,12 @@ public class CreateProfilFragment extends Fragment {
     RadioButton radioSexButton;
     Spinner citySpinner;
     Button button;
-    boolean callbackCategorySuccess = false;//diğer sayfa için callbackler tanımlanıyor
-    boolean callbackUserSuccess = false;
-    boolean callbackCompanySuccess = false;
-    boolean callbackCitySuccess = false;
+    private boolean callbackCategorySuccess = false;//diğer sayfa için callbackler tanımlanıyor
+    private boolean callbackUserSuccess = false;
+    private boolean callbackCompanySuccess = false;
+    private boolean callbackCitySuccess = false;
     public static boolean datePickerIsShow = false;
+    private List<City> cityList = new ArrayList<>();
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -144,7 +145,12 @@ public class CreateProfilFragment extends Fragment {
                 User user = new User();
                 City city = new City();
 
-                city.setCityName(citySpinner.getSelectedItem().toString());
+                for (City tempCity : cityList) {
+                    if (tempCity.getCityName().equals(citySpinner.getSelectedItem().toString())) {
+                        city = tempCity;
+                        break;
+                    }
+                }
 
                 String firstName = String.valueOf(firstNameText.getText());
                 String lastName = String.valueOf(lastNameText.getText());
@@ -210,7 +216,7 @@ public class CreateProfilFragment extends Fragment {
             @Override
             public void success(Object o, Response response) {
                 callbackCitySuccess = true;
-                List<City> cityList = (List<City>) o;
+                cityList = (List<City>) o;
                 List<String> cityNameList = new ArrayList<String>();
                 for (City city : cityList) {
                     cityNameList.add(city.getCityName());
