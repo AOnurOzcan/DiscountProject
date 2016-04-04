@@ -4,6 +4,7 @@
     <tr>
         <th>Kullanıcı Adı</th>
         <th>E-posta</th>
+        <th>Yetkiler</th>
         <th>İşlemler</th>
     </tr>
     </thead>
@@ -12,6 +13,9 @@
     <tr>
         <td>{{username}}</td>
         <td>{{email}}</td>
+        <td>
+            {{accountAuth}}
+        </td>
         <td>
             {{#can 'DELETE_ACCOUNT'}}
             <button class="red ui button deleteAccountButton" data-id="{{id}}">Sil</button>

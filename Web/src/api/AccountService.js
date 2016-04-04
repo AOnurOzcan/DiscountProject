@@ -1,11 +1,16 @@
 var Account = require("../model/Account");
 var Company = require("../model/Company");
 var AccountAuthority = require("../model/AccountAuthority");
+var Authority = require("../model/Authority");
 
 //Hesap oluşturma
 project.app.post('/account', function (req, res) {
-  var account = req.body;
+  var account = {};
+  var authList = req.body.accountAuth;
   var session = req.session.admin;
+  account.username = req.body.username;
+  account.email = req.body.email;
+
   //Standart Admin Girişi
   if (session.accountType == "ADMIN" && session.companyAccess == false) {
     account.accountType = "ADMIN";
@@ -24,21 +29,29 @@ project.app.post('/account', function (req, res) {
     account.companyId = session.companyId;
   }
 
-  Account.create(account, function (err) {
-    if (err) {
-      return res.unknown();
-    }
-    res.json({status: true});
+  Account.create(account, function (err, account) {
+    if (err) return res.unknown();
+    authList.asyncForEach(function (auth, done) {
+      AccountAuthority.create({accountId: account.id, authorityId: auth}, function (err) {
+        if (err) return res.unknown();
+        done();
+      });
+    }, function () {
+      res.json({status: true});
+    });
   });
 });
 
 //Hesap silme
 project.app.delete('/account/:id', function (req, res) {
-  Account.find({id: req.params.id}).remove(function (err) {
-    if (err) {
-      return res.unknown();
-    }
-    res.json({status: "success"});
+  AccountAuthority.find({accountId: req.params.id}).remove(function (err) {
+    if (err) return res.unknown();
+
+    Account.find({id: req.params.id}).remove(function (err) {
+      if (err) return res.unknown();
+
+      res.json({status: "success"});
+    });
   });
 });
 
@@ -47,20 +60,16 @@ project.app.get('/account/:id', function (req, res) {
   var account = {};
   Account.one({id: req.params.id}, function (err, acc) {
     if (err) {
-      res.unknown();
+      return res.unknown();
     }
     acc.accountAuth = [];
     AccountAuthority.find({accountId: acc.id}, function (err, accountAuthories) {
       if (err) return res.unknown();
       accountAuthories.asyncForEach(function (accountAuthority, done) {
-        accountAuthority.getAuthority(function (err, authority) {
-          acc.accountAuth.push(authority.authorityCode);
-          done();
-        });
+        acc.accountAuth.push(accountAuthority.authority.id);
+        done();
       }, function () {
-
         account.username = acc.username;
-        account.password = acc.password;
         account.email = acc.email;
         account.accountAuth = acc.accountAuth;
         res.json(account);
@@ -70,7 +79,7 @@ project.app.get('/account/:id', function (req, res) {
   });
 });
 
-//Oturum açan kişinin hesabını getirme
+//Profil düzenleme için oturum açan kişinin hesabını getirme /
 project.app.get('/account', function (req, res) {
   var account = {};
   var session = req.session.admin;
@@ -89,12 +98,29 @@ project.app.get('/account', function (req, res) {
 
 //Hesap düzenleme
 project.app.put('/account/:id', function (req, res) {
+  var addAuthArray = req.body.addAuthArray;
+  var removeAuthArray = req.body.removeAuthArray;
+
   Account.get(req.params.id, function (err, account) {
-    account.save(req.body, function (err) {
-      if (err) {
-        return res.unknown();
-      }
-      res.json({status: "success"});
+    account.email = req.body.email;
+    account.save(function (err) {
+      if (err) return res.unknown();
+
+      addAuthArray.asyncForEach(function (authId, done) {
+        AccountAuthority.create({accountId: account.id, authorityId: authId}, function (err) {
+          if (err) return res.unknown();
+          done();
+        });
+      }, function () {
+        removeAuthArray.asyncForEach(function (authId, done) {
+          AccountAuthority.find({accountId: account.id, authorityId: authId}).remove(function (err) {
+            if (err) return res.unknown();
+            done();
+          });
+        }, function () {
+          res.json({status: "success"});
+        });
+      });
     })
   });
 });
@@ -108,10 +134,19 @@ project.app.get('/accounts', function (req, res) {
     params.companyId = session.companyId;
   }
 
-  Account.find(params).each().filter(function (account) {
+  Account.find(params).only("id", "username", "email").each().filter(function (account) {
     return account.id != req.session.admin.id;
   }).get(function (accounts) {
-    res.json(accounts);
+    accounts.asyncForEach(function (account, done) {
+      AccountAuthority.find({accountId: account.id}, function (err, accountAuths) {
+        account.accountAuth = [];
+        accountAuths.forEach(function (auth) {
+          account.accountAuth.push(auth.authority.authorityValue);
+        });
+        done();
+      });
+    }, function () {
+      res.json(accounts);
+    });
   });
-
 });

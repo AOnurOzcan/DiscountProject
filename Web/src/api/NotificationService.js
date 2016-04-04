@@ -179,38 +179,33 @@ project.app.put("/notification/:id", function (req, res) {
     notification.endDate = req.body.endDate;
     notification.description = req.body.description;
     notification.save(function (err) {
-      if (err) {
-        return res.unknown();
-      }
+      if (err) return res.unknown();
+
       addProductArray.asyncForEach(function (productId, done) {
         NotificationProduct.create({notificationId: notification.id, productId: productId}, function (err) {
-          if (err) {
-            return res.unknown();
-          }
+          if (err) return res.unknown();
+
           done();
         });
       }, function () {
         removeProductArray.asyncForEach(function (productId, done) {
           NotificationProduct.find({notificationId: notification.id, productId: productId}).remove(function (err) {
-            if (err) {
-              return res.unknown();
-            }
+            if (err) return res.unknown();
+
             done();
           });
         }, function () {
           addBranchArray.asyncForEach(function (branchId, done) {
             NotificationBranch.create({notificationId: notification.id, branchId: branchId}, function (err) {
-              if (err) {
-                return res.unknown();
-              }
+              if (err) return res.unknown();
+
               done();
             });
           }, function () {
             removeBranchArray.asyncForEach(function (branchId, done) {
               NotificationBranch.find({notificationId: notification.id, branchId: branchId}).remove(function (err) {
-                if (err) {
-                  return res.unknown();
-                }
+                if (err) return res.unknown();
+
                 done();
               });
             }, function () {

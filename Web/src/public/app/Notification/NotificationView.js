@@ -215,11 +215,7 @@ define([
                 } else { // Seçilen ürün daha önceden eklenmişse, silinecekler listesinden sil
                   that.removeBranchArray.splice(that.removeBranchArray.indexOf(addedValue), 1);
                 }
-                console.log("AddBranchArray");
-                console.log(that.addBranchArray);
-                console.log("RemoveBranchArray");
-                console.log(that.removeBranchArray);
-                console.log("---------------------------");
+
               },
               onRemove: function (removedValue) { //Bir ürün silindiğinde
                 var branch = notification.toJSON().branchList.find(function (branch) {

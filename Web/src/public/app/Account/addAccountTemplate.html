@@ -6,22 +6,26 @@
             <form class="ui large form" id="addAccountForm">
                 {{#account.id}}<input type="hidden" name="id">{{/account.id}}
                 <div class="field">
-                    <input type="text" name="username" placeholder="Kullanıcı Adı">
-                </div>
-                <div class="field">
-                    <input type="text" name="password" placeholder="Şifre">
+                    <input type="text" name="username" placeholder="Kullanıcı Adı" {{#account.id}}disabled{{/account.id}}>
                 </div>
                 <div class="field">
                     <input type="text" name="email" placeholder="E-Posta">
                 </div>
 
                 <div class="field">
-                    <select name="accountAuth[]" multiple="" class="ui fluid dropdown" id="accountAuthDropdown">
-                        <option value="">Yetki Seçiniz</option>
-                        {{#each authorities}}
-                        <option value="{{authorityCode}}">{{authorityValue}}</option>
-                        {{/each}}
-                    </select>
+
+                    <div class="ui fluid multiple selection dropdown" id="accountAuthDropdown">
+                        <input type="hidden" name="accountAuth">
+                        <i class="dropdown icon"></i>
+                        <div class="default text">Yetki Seçiniz</div>
+                        <div class="menu">
+                            {{#each authorities}}
+                            <div class="item" data-value="{{id}}">
+                                {{authorityValue}}
+                            </div>
+                            {{/each}}
+                        </div>
+                    </div>
                 </div>
                 {{#account.id}}
                 <button class="fluid green ui button" id="saveAccountButton" data-id="{{id}}">Kaydet</button>

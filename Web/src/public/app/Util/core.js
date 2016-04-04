@@ -90,6 +90,7 @@ window.define(['backbone', 'handlebars'], function (Backbone, Handlebars) {
 
         $.when.apply($, group).then(function () {
 
+          //TODO eğer view menü ise fade in efekti kaldırılacak
           callback.call(self);
           page.fadeIn(400);
 
@@ -246,10 +247,13 @@ window.define(['backbone', 'handlebars'], function (Backbone, Handlebars) {
   });
 
   Handlebars.registerHelper('can', function (permission, options) {
-    var auths = $router.checkSession.attributes.accountAuth;
+    var session = $router.checkSession.attributes;
+    var auths = session.accountAuth;
+
     var check = auths.some(function (auth) {
       return auth == permission;
     });
+
     if (check == true) {
       return options.fn(this);
     } else {

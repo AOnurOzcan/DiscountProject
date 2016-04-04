@@ -7,7 +7,7 @@ module.exports = function () {
       res.unauthorized();
     } else {
       if (args[0] != "") {
-        var auths = req.session.admin.accountAuth.split(",");
+        var auths = req.session.admin.accountAuth;
         var check = auths.some(function (auth) {
           return auth == args[0];
         });
@@ -22,11 +22,3 @@ module.exports = function () {
     }
   };
 };
-
-//module.exports = function (req, res, next) {
-//  if (req.session.admin == undefined) {
-//    res.unauthorized();
-//  } else {
-//    next();
-//  }
-//};

@@ -6,7 +6,7 @@ var AccountAuthority = project.db.define('AccountAuthority', {
 });
 
 AccountAuthority.hasOne('account', Account, {field: 'accountId'});
-AccountAuthority.hasOne('authority', Authority, {field: 'authorityId'});
+AccountAuthority.hasOne('authority', Authority, {field: 'authorityId', autoFetch: true});
 
 module.exports = AccountAuthority;
 

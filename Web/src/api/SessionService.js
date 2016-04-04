@@ -19,11 +19,10 @@ project.app.post("/login", BodyControl("username", "password"), function (req, r
     admin.accountAuth = [];
     AccountAuthority.find({accountId: admin.id}, function (err, accountAuthories) {
       if (err) return res.unknown();
+
       accountAuthories.asyncForEach(function (accountAuthority, done) {
-        accountAuthority.getAuthority(function (err, authority) {
-          admin.accountAuth.push(authority.authorityCode);
-          done();
-        });
+        admin.accountAuth.push(accountAuthority.authority.authorityCode);
+        done();
       }, function () {
         req.session.admin = admin;
         if (admin.accountType == "COMPANY") {

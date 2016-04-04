@@ -1,9 +1,11 @@
 define([
   'backbone',
   'handlebars',
+  'underscore',
   'text!Account/addAccountTemplate.html',
   'text!Account/listAccountTemplate.html'], function (Backbone,
                                                       Handlebars,
+                                                      _,
                                                       AddAccountTemplate,
                                                       ListAccountTemplate) {
 
@@ -41,9 +43,7 @@ define([
     el: "#page",
     autoLoad: true,
     events: {
-      'change .accountTypeDropdown': 'ChangeAccountType',
-      //'click #addAccountButton': 'saveAccount',
-      //'click #saveAccountButton': 'saveAccount'
+      'change .accountTypeDropdown': 'ChangeAccountType'
     },
     validation: function () {
       var that = this;
@@ -98,6 +98,8 @@ define([
     initialize: function () {
       this.companyCollection = new Companyollection();
       this.authorityCollection = new AuthorityCollection();
+      this.addAuthArray = [];
+      this.removeAuthArray = [];
     },
     ChangeAccountType: function (e) {
       var accountType = $(".accountTypeDropdown").dropdown('get value');
@@ -112,12 +114,17 @@ define([
       e.preventDefault();
       var that = this;
       var values = this.form().getValues;
-      if (values.accountAuth != undefined) {
-        values.accountAuth = values.accountAuth.toString();
+      if (this.params == undefined) {
+        values.accountAuth = values.accountAuth.split(',');
+      } else {
+        values.addAuthArray = this.addAuthArray;
+        values.removeAuthArray = this.removeAuthArray;
       }
       var account = new Account();
       account.save(values, {
         success: function () {
+          that.addAuthArray.length = 0;
+          that.removeAuthArray.length = 0;
           if (that.params == undefined) {
             alertify.success("Hesap ekleme başarılı");
           } else {
@@ -134,9 +141,8 @@ define([
           companies: this.companyCollection.toJSON(),
           authorities: this.authorityCollection.toJSON()
         }));
-        $('#accountAuthDropdown').dropdown();
-        $('.accountTypeDropdown').dropdown();
-        $(".companyDropdown").dropdown().addClass('disabled');
+        var accountAuthDropdown = $('#accountAuthDropdown');
+        accountAuthDropdown.dropdown();
         this.validation();
       } else {
         var user = new Account({id: this.params.accountId});
@@ -147,11 +153,33 @@ define([
               companies: that.companyCollection.toJSON(),
               authorities: that.authorityCollection.toJSON()
             }));
+            var accountAuthDropdown = $('#accountAuthDropdown');
             that.validation();
             that.form().setValues(user.toJSON());
-            $('.accountAuthDropdown').dropdown();
-            $('.accountTypeDropdown').dropdown();
-            $('#accountAuthDropdown').dropdown("set selected", savedUser.toJSON().accountAuth);
+            accountAuthDropdown.dropdown("set selected", savedUser.toJSON().accountAuth.toString().split(','));
+            $('#accountAuthDropdown').dropdown({
+              onAdd: function (addedValue) { //Bir ürün seçildiğinde
+                var auth = savedUser.toJSON().accountAuth.find(function (authId) {
+                  return authId == addedValue;
+                });
+                if (auth == undefined) { //Seçilen ürün zaten daha önceden eklenmemişse
+                  that.addAuthArray.push(addedValue); //Eklenecekler listesine ekle
+                } else { // Seçilen ürün daha önceden eklenmişse, silinecekler listesinden sil
+                  that.removeAuthArray.splice(that.removeAuthArray.indexOf(addedValue), 1);
+                }
+              },
+              onRemove: function (removedValue) { //Bir ürün silindiğinde
+                var auth = savedUser.toJSON().accountAuth.find(function (authId) {
+                  return authId == removedValue;
+                });
+
+                if (auth == undefined) {
+                  that.addAuthArray.splice(that.addAuthArray.indexOf(removedValue), 1);
+                } else {
+                  that.removeAuthArray.push(removedValue); //Silinecekler listesine ata
+                }
+              }
+            });
           }
         });
       }

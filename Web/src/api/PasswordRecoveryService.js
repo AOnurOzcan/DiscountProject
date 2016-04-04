@@ -27,7 +27,7 @@ var sendMail = function (mailOptions) {
 };
 
 //Şifre sıfırlama maili gönderme
-project.app.get('/sendResetMail/:accountId', AuthorizedRoute("RECOVERY_PASSWORD"), function (req, res) {
+project.app.get('/sendResetMail/:accountId', AuthorizedRoute("RESET_PASSWORD"), function (req, res) {
 
   var accountId = req.params.accountId;
   var userMail;
