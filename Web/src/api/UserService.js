@@ -15,27 +15,21 @@ var Product = require('../model/Product');
 project.app.post("/user/profile/create", function (req, res) {
   var user = req.body;
 
-  City.find({cityName: user.cityId.cityName}, 1, function (err, result) {
+  user.cityId = req.body.cityId.id;
+  user.birthday = project.util.ParseDate(user.birthday);
+  user.tokenKey = randtoken.generate(20);
+  User.create(user, function (err, userResult) {
     if (err) {
-      res.send('error');
-    } else {
-      user.cityId = result[0].id;
-      user.birthday = project.util.ParseDate(user.birthday);
-      user.tokenKey = randtoken.generate(20);
-      User.create(user, function (err, userResult) {
-
-        if (err) {
-          res.send(err);
-        }
-        res.json(userResult.tokenKey);
-      });
+      return res.unknown();
     }
+    return res.json(userResult.tokenKey);
   });
 });
 
 //Kullanıcı profilini düzenlemede kullanılır.
 project.app.put("/user/profile/edit", function (req, res) {
   project.util.AuthorizedRouteForUser(req, res, function (userId) {
+
     User.get(userId, function (err, user) {
 
       if (err) {
@@ -54,7 +48,7 @@ project.app.put("/user/profile/edit", function (req, res) {
         if (err) {
           return res.unknown();
         }
-        res.json({success: true});
+        return res.json({success: true});
       });
     });
   });
@@ -62,18 +56,23 @@ project.app.put("/user/profile/edit", function (req, res) {
 
 //Kullanıcı profili getirmede kullanılıyor
 project.app.get("/user/profile/get", function (req, res) {
-
   project.util.AuthorizedRouteForUser(req, res, function (userId) {
     User.get(userId, function (err, user) {
       if (err) {
-        res.unknown();
+        return res.unknown();
       }
 
       user.id = null;
       user.tokenKey = null;
       user.registrationId = null;
-      user.cityId = user.City;
-      res.json(user);
+      user.getCity(function (err, result) {
+        if (err) {
+          return res.unknown();
+        }
+        user.cityId = result;
+        delete user['city'];
+        return res.json(user);
+      });
     });
   });
 });
@@ -93,10 +92,10 @@ project.app.post("/user/preference/create", function (req, res) {
 
     Preference.create(preferences, function (err, result) {
       if (err) {
-        res.unknown();
+        return res.unknown();
       }
 
-      res.json('true');
+      return res.json('true');
     });
   });
 });
@@ -112,18 +111,19 @@ project.app.post("/user/preference/delete", function (req, res) {
 
     Preference.find({id: deleteIdList}, function (err, preferences) {
       if (err) {
-        res.unknown();
+        return res.unknown();
       }
 
-      preferences.forEach(function (preference) {
+      preferences.asyncForEach(function (preference, done) {
         preference.remove(function (err) {
           if (err) {
-            res.unknown();
+            return res.unknown();
           }
+          done();
         });
+      }, function () {
+        return res.json('true');
       });
-      res.json('true');
-
     });
   });
 });
@@ -133,7 +133,7 @@ project.app.get("/user/preference/all", function (req, res) {
   project.util.AuthorizedRouteForUser(req, res, function (userId) {
     Preference.find({userId: userId}, function (err, preferences) {
       if (err) {
-        res.unknown();
+        return res.unknown();
       }
 
       preferences.forEach(function (preference) {
@@ -145,8 +145,7 @@ project.app.get("/user/preference/all", function (req, res) {
         delete preference['Category'];
         delete preference['Company'];
       });
-      res.json(preferences);
-
+      return res.json(preferences);
     });
   });
 });
@@ -172,7 +171,7 @@ project.app.get("/user/products/all", function (req, res) {
           done();
         });
       }, function () {
-        res.json(userProducts);
+        return res.json(userProducts);
       });
     });
   });
@@ -187,7 +186,7 @@ project.app.post("/user/product/create", function (req, res) {
       if (err) {
         return res.unknown();
       }
-      res.json(result.id);
+      return res.json(result.id);
     });
   });
 });
@@ -196,17 +195,35 @@ project.app.post("/user/product/create", function (req, res) {
 project.app.delete("/user/product/delete/:id", function (req, res) {
   project.util.AuthorizedRouteForUser(req, res, function (userId) {
     var deleteId = req.params.id;
-    UserProduct.get(deleteId, function (err, userProduct) {
-      if (err) {
-        return res.unknown();
-      }
-      userProduct.remove(function (err, result) {
+    if (deleteId == 'all') {//id kısmından gelen parametre all ise kullanıcının tüm urunlerı sılınır
+      UserProduct.find({userId: userId}, function (err, userProducts) {
         if (err) {
           return res.unknown();
         }
-        res.json({result: 'success'});
+        userProducts.asyncForEach(function (userProduct, done) {
+          userProduct.remove(function (err, result) {
+            if (err) {
+              return res.unknown();
+            }
+            done();
+          });
+        }, function () {
+          return res.json({result: 'success'});
+        });
       });
-    });
+    } else {
+      UserProduct.get(deleteId, function (err, userProduct) {
+        if (err) {
+          return res.unknown();
+        }
+        userProduct.remove(function (err, result) {
+          if (err) {
+            return res.unknown();
+          }
+          return res.json({result: 'success'});
+        });
+      });
+    }
   });
 });
 
@@ -226,7 +243,7 @@ project.app.get("/user/product/search", function (req, res) {
           done();
         });
       }, function () {
-        res.json(products);
+        return res.json(products);
       });
     });
   });

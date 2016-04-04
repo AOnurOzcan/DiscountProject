@@ -37,9 +37,20 @@ public class ConfirmationCodeFragment extends Fragment {
     TextView textTelNo;
     EditText confirmationCodeInput;
     Button sendConfirmationCode;
+    private Map<String, String> thisMapObject;
+    private RetrofitConfiguration retrofitConfiguration;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+        thisMapObject = (Map<String, String>) getArguments().getSerializable("map");
+        String cookieKey = thisMapObject.keySet().iterator().next();
+        String cookieValue = thisMapObject.get(thisMapObject.keySet().iterator().next());
+        retrofitConfiguration = new RetrofitConfiguration(cookieKey, cookieValue);
+        SharedPreferences.Editor editor = getActivity().getSharedPreferences("Session", Activity.MODE_PRIVATE).edit();
+        editor.putString("cookieKey", cookieKey);
+        editor.putString("cookieValue", cookieValue);
+        editor.commit();
+
         return inflater.inflate(R.layout.confirmation_code_layout, container, false);//content basılıyor
     }
 
@@ -104,7 +115,8 @@ public class ConfirmationCodeFragment extends Fragment {
                         confirmationCode.setConfirmationCode(Integer.valueOf(String.valueOf(confirmationCodeInput.getText())));
                         confirmationCode.setPhoneNumber(phoneNumber);
                         Util.startProgressDialog();
-                        RetrofitConfiguration.getRetrofitService().checkConfirmationCode(confirmationCode, callback);
+                        retrofitConfiguration.getRetrofitService().checkConfirmationCode(confirmationCode, callback);
+//                        RetrofitConfiguration.getRetrofitService().checkConfirmationCode(confirmationCode, callback);
                     } else {
                         Toast.makeText(getActivity().getApplicationContext(), "Hatalı Giriş", Toast.LENGTH_LONG).show();
                     }

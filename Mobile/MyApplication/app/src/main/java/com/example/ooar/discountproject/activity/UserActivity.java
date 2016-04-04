@@ -33,7 +33,6 @@ import com.example.ooar.discountproject.util.FragmentChangeListener;
 import com.example.ooar.discountproject.util.ImageCache;
 import com.example.ooar.discountproject.util.RetrofitConfiguration;
 import com.example.ooar.discountproject.util.Util;
-import com.google.android.gms.location.LocationClient;
 
 import retrofit.Callback;
 import retrofit.RetrofitError;
@@ -55,6 +54,7 @@ public class UserActivity extends AppCompatActivity implements FragmentChangeLis
     public static boolean isOpen = false;//uygulamanın açık olup olmadığını tutan değişken
     public static boolean reload = false;//sayfanın yenılenmek istenipistenmediğini tutan değişken
     public static ImageCache imageCache;
+    private boolean backPressed = false;
 
     public UserActivity() {
         userTabsFragment = new UserTabsFragment();
@@ -201,6 +201,12 @@ public class UserActivity extends AppCompatActivity implements FragmentChangeLis
     public void replaceFragment(Fragment fragment, String tagName) {//fragment değişimlerini yöneten fonksiyon
         android.support.v4.app.FragmentManager fm = getSupportFragmentManager();
         android.support.v4.app.FragmentTransaction fragmentTransaction = fm.beginTransaction();
+        if (backPressed) {
+            fragmentTransaction.setCustomAnimations(android.R.anim.slide_in_left, android.R.anim.slide_out_right);
+            backPressed = false;
+        } else {
+            fragmentTransaction.setCustomAnimations(R.anim.fragment_slide_right_enter, R.anim.fragment_slide_left_exit);
+        }
 
         if (tagName != null) {
             fragmentTransaction.replace(R.id.userFragments, fragment, tagName).addToBackStack(tagName);
@@ -214,7 +220,7 @@ public class UserActivity extends AppCompatActivity implements FragmentChangeLis
     public void onBackPressed() {
         if (getSupportFragmentManager().getBackStackEntryCount() != 0) {
             String tag = getSupportFragmentManager().getBackStackEntryAt(getSupportFragmentManager().getBackStackEntryCount() - 1).getName();
-
+            backPressed = true;
             switch (tag) {
                 case "profileFragment":
                     replaceFragment(userTabsFragment, "userTabs");
@@ -241,6 +247,7 @@ public class UserActivity extends AppCompatActivity implements FragmentChangeLis
                     getSupportActionBar().setTitle("Bildirimler");
                     break;
                 case "userTabs":
+                    backPressed = false;
                     Intent startMain = new Intent(Intent.ACTION_MAIN);
                     startMain.addCategory(Intent.CATEGORY_HOME);
                     startMain.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
@@ -271,6 +278,8 @@ public class UserActivity extends AppCompatActivity implements FragmentChangeLis
                         SharedPreferences.Editor editor = getSharedPreferences("Session", Activity.MODE_PRIVATE).edit();
                         editor.remove("phoneNumber");
                         editor.remove("tokenKey");
+                        editor.remove("cookieKey");
+                        editor.remove("cookieValue");
                         editor.commit();
                         dialog.dismiss();
 

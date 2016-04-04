@@ -364,7 +364,7 @@ public class Util {
             }
             lineOptions.addAll(points);
             lineOptions.width(35);
-            lineOptions.color(Color.parseColor("#0551F2"));
+            lineOptions.color(Color.parseColor("#00B6FF"));
             lineOptions.geodesic(true);
             GoogleMapsFragment.googleMap.addPolyline(lineOptions);
 

@@ -3,6 +3,7 @@ package com.example.ooar.discountproject.util;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 
+import retrofit.RequestInterceptor;
 import retrofit.RestAdapter;
 import retrofit.client.ApacheClient;
 import retrofit.converter.GsonConverter;
@@ -13,14 +14,25 @@ import retrofit.converter.GsonConverter;
 //Retrofit ayarları yapılıyor
 public class RetrofitConfiguration {
 
-    //        private static final String API_URL = "http://192.168.1.2";//local
-    private static final String API_URL = "http://37.139.11.216";//remote
+    private static final String API_URL = "http://192.168.1.2";//local
+//    private static final String API_URL = "http://37.139.11.216";//remote
 
     private static RetrofitService retrofitService;
 
     public RetrofitConfiguration() {
         Gson gson = new GsonBuilder().create();
         RestAdapter restAdapter = new RestAdapter.Builder().setEndpoint(API_URL).setConverter(new GsonConverter(gson)).build();
+        retrofitService = restAdapter.create(RetrofitService.class);
+    }
+
+    public RetrofitConfiguration(final String cookieKey, final String cookieValue) {
+        Gson gson = new GsonBuilder().create();
+        RestAdapter restAdapter = new RestAdapter.Builder().setRequestInterceptor(new RequestInterceptor() {
+            @Override
+            public void intercept(RequestFacade request) {
+                request.addHeader("Cookie", cookieKey + "=" + cookieValue);
+            }
+        }).setEndpoint(API_URL).setConverter(new GsonConverter(gson)).build();
         retrofitService = restAdapter.create(RetrofitService.class);
     }
 

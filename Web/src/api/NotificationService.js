@@ -20,9 +20,18 @@ project.app.get("/notification/send/:id", function (req, res) {
     if (err) {
       return res.unknown();
     }
+    /**
+     * temel olarak bildirim içindeki ürünlerin kategorisine göre preferences tablosundan kullanıcıların takip ettiği kategori ve firma bilgilerine göre ilgili kullanıcılar getirilir.
+     * kullanıcı getirirken kullanılan diğer parametreler bildirimdeki şubelerın bulunduğu şehir ile kullanıcıların şehirlerinin aynı olması
+     * kullanıcıların tokenkey alanının boş olmaması(oturum açık) ve firma bildirimlerini açık olması
+     */
     project.db.driver.execQuery(
-      "SELECT * FROM User WHERE id IN(SELECT userId FROM Preference WHERE categoryId IN(SELECT categoryId FROM Product INNER JOIN NotificationProduct ON Product.id = NotificationProduct.productId INNER JOIN Notification ON NotificationProduct.notificationId = Notification.id WHERE Notification.id = ?) AND companyId = ?) AND tokenKey != '' AND notificationOpen = 1",
-      [notification.id, companyId],
+      "SELECT * FROM User WHERE id IN(SELECT userId FROM Preference WHERE categoryId " +
+      "IN(SELECT categoryId FROM Product INNER JOIN NotificationProduct ON Product.id = NotificationProduct.productId " +
+      "INNER JOIN Notification ON NotificationProduct.notificationId = Notification.id WHERE Notification.id = ?) AND companyId = ?) " +
+      "AND cityId IN(SELECT cityId FROM Branch INNER JOIN NotificationBranch ON Branch.id = NotificationBranch.branchId WHERE NotificationBranch.notificationId = ?) " +
+      "AND tokenKey != '' AND notificationOpen = 1",
+      [notification.id, companyId, notification.id],
       function (err, users) {
 
         if (err) {
@@ -279,8 +288,13 @@ project.app.get("/user/notification", function (req, res) {
     var start = req.query.startIndex;
     var length = req.query.notificationLength;
 
+    /**
+     * kullanıcı bildirimleri ara tablosu ile bildirimler tablosu birleştirilir ve sendDate alanına göre DESC olarak sıralanarak verilen limite göre ara tablo alanlarını getirir
+     */
     project.db.driver.execQuery(
-      "SELECT UserNotification.id, UserNotification.isRead, UserNotification.userId, UserNotification.notificationId FROM UserNotification INNER JOIN Notification ON UserNotification.notificationId = Notification.id WHERE userId =? ORDER BY Notification.sendDate DESC LIMIT ?,?",
+      "SELECT UserNotification.id, UserNotification.isRead, UserNotification.userId, UserNotification.notificationId FROM " +
+      "UserNotification INNER JOIN Notification ON UserNotification.notificationId = Notification.id" +
+      " WHERE userId =? ORDER BY Notification.sendDate DESC LIMIT ?,?",
       [userId, parseInt(start), parseInt(length)],
       function (err, userNotifications) {
         if (err) {

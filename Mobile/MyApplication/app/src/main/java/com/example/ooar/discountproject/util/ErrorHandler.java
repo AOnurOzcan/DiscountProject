@@ -84,11 +84,13 @@ public class ErrorHandler {
                 builder.setPositiveButton("Tekrar Dene!", new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int id) {
                         Intent intent = null;
-                        if (activity.getLocalClassName().equals("activity.UserActivity")) {
+                        if (activity.getLocalClassName().equals("activity.UserActivity")) {//error un geldiği sınıf UserActivity ise UserActivity yenileniyor
                             UserActivity.removeAllCache();
                             UserActivity.reload = true;
                             intent = new Intent(activity, UserActivity.class);
-                        } else if (activity.getLocalClassName().equals("activity.MainActivity")) {
+                        } else if (activity.getLocalClassName().equals("activity.MainActivity")) {//error un geldiği sınıf MainActivity ise MainActivity yenileniyor
+                            intent = new Intent(activity, MainActivity.class);
+                        } else if (activity.getLocalClassName().equals("activity.RegisterActivity")) {//error un geldiği sınıf RegisterActivity ise MainActivity yenileniyor
                             intent = new Intent(activity, MainActivity.class);
                         }
                         activity.finish();
