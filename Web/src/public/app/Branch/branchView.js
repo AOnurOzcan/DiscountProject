@@ -77,19 +77,6 @@ define([
                 prompt: 'Çalışma Saatleri alanı boş geçilemez!'
               }
             ]
-          },
-          locationURL: {
-            identifier: 'locationURL',
-            rules: [
-              {
-                type: 'empty',
-                prompt: 'Konum alanı boş geçilemez!'
-              },
-              {
-                type: 'url',
-                prompt: 'Geçersiz URL!'
-              }
-            ]
           }
         }
       });
@@ -118,7 +105,7 @@ define([
       $("#locationModal").modal({
         observeChanges: true,
         onVisible: function () {
-          var latLon = $("input[name=locationURL]").val().split(',');
+          var latLon = $("input[name=coordinates]").val().split(',');
           var lat = latLon[0];
           var lon = latLon[1];
           that.googleMapsInitialize(lat, lon);
@@ -139,7 +126,7 @@ define([
             lng: e.latLng.lng(),
             title: 'Şube'
           });
-          $("input[name=locationURL]").val(e.latLng.lat() + "," + e.latLng.lng());
+          $("input[name=coordinates]").val(e.latLng.lat() + "," + e.latLng.lng());
         },
         open: function () {
           alert("aasd");

@@ -61,30 +61,17 @@ define([
               }
             ]
           },
-          password: {
-            identifier: 'password',
-            rules: [
-              {
-                type: 'empty',
-                prompt: 'Şifre alanı boş geçilemez!'
-              }
-            ]
-          },
           email: {
             identifier: 'email',
             rules: [
               {
-                type: 'empty',
-                prompt: 'Email alanı boş geçilemez!'
-              },
-              {
                 type: 'email',
-                prompt: 'Geçersiz Email!'
+                prompt: 'Geçerli bir e-posta adresi giriniz!'
               }
             ]
           },
           accountAuth: {
-            identifier: 'accountAuthDropdown',
+            identifier: 'accountAuth',
             rules: [
               {
                 type: 'minCount[1]',

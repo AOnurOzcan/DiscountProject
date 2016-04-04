@@ -31,43 +31,8 @@ define(['backbone', 'handlebars', 'text!Profile/profileTemplate.html'], function
             identifier: 'email',
             rules: [
               {
-                type: 'empty',
-                prompt: 'Email alanı boş geçilemez!'
-              },
-              {
                 type: 'email',
-                prompt: 'Geçersiz Email!'
-              }
-            ]
-          },
-          oldPassword: {
-            identifier: 'oldPassword',
-            rules: [
-              {
-                type: 'empty',
-                prompt: 'Eski şifre alanı boş geçilemez!'
-              }
-            ]
-          },
-          password: {
-            identifier: 'password',
-            rules: [
-              {
-                type: 'empty',
-                prompt: 'Yeni şifre alanı boş geçilemez!'
-              }
-            ]
-          },
-          password2: {
-            identifier: 'password2',
-            rules: [
-              {
-                type: 'empty',
-                prompt: 'Yeni şifre tekrar alanı boş geçilemez!'
-              },
-              {
-                type: 'match[password]',
-                prompt: 'Şifre eşleşmedi!'
+                prompt: 'Geçerli bir e-posta adresi giriniz!'
               }
             ]
           }

@@ -62,10 +62,6 @@ define([
             identifier: 'products',
             rules: [
               {
-                type: 'empty',
-                prompt: 'Ürünler alanı boş geçilemez!'
-              },
-              {
                 type: 'minCount[1]',
                 prompt: 'En az bir ürün seçiniz!'
               }
@@ -92,10 +88,6 @@ define([
           branches: {
             identifier: 'branches',
             rules: [
-              {
-                type: 'empty',
-                prompt: 'Şube alanı boş geçilemez!'
-              },
               {
                 type: 'minCount[1]',
                 prompt: 'En az bir şube seçiniz!'

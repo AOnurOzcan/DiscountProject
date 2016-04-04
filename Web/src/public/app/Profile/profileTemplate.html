@@ -7,19 +7,10 @@
                 {{#account}}
                 <input type="hidden" name="id" value="{{id}}">
                 <div class="field">
-                    <input type="text" name="username" placeholder="Kullanıcı Adı" value="{{username}}">
+                    <input type="text" name="username" placeholder="Kullanıcı Adı" disabled value="{{username}}">
                 </div>
                 <div class="field">
                     <input type="text" name="email" placeholder="E-Posta" value="{{email}}">
-                </div>
-                <div class="field">
-                    <input type="text" name="oldPassword" placeholder="Eski Şifre">
-                </div>
-                <div class="field">
-                    <input type="text" name="password" placeholder="Yeni Şifre">
-                </div>
-                <div class="field">
-                    <input type="text" name="password2" placeholder="Yeni Şifre Tekrar">
                 </div>
                 {{/account}}
                 <button class="fluid green ui button" id="saveProfileButton" data-id="{{id}}">Kaydet</button>

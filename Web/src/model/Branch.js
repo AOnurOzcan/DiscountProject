@@ -6,7 +6,7 @@ var Branch = project.db.define('Branch', {
   name: String,
   address: String,
   phone: String,
-  locationURL: String,
+  coordinates: String,
   workingHours: String
 });
 
