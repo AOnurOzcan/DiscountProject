@@ -20,9 +20,13 @@
             {{#can 'DELETE_ACCOUNT'}}
             <button class="red ui button deleteAccountButton" data-id="{{id}}">Sil</button>
             {{/can}}
+            {{#can 'RESET_PASSWORD'}}
             <button class="ui primary button recoverPassword" data-id="{{id}}" data-mail="{{email}}">Şifre Sıfırla
             </button>
+            {{/can}}
+            {{#can 'UPDATE_ACCOUNT'}}
             <a class="teal ui button editAccountButton" href="#account/edit/{{id}}">Düzenle</a>
+            {{/can}}
         </td>
     </tr>
     {{else}}

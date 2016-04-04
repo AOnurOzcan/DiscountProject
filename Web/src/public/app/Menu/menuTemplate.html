@@ -31,13 +31,13 @@
         </div>
     </div>
     <!--Kategoriler-->
+    {{#can 'CHOOSE_CATEGORY'}}
     <div class="ui simple dropdown item menuItem">Kategoriler<i class="dropdown icon"></i>
         <div class="menu">
-            {{#can 'CHOOSE_CATEGORY'}}
             <a class="item" href="#category/choose">Kategori Seç</a>
-            {{/can}}
         </div>
     </div>
+    {{/can}}
     <!--Yüklemeler-->
     <div class="ui simple dropdown item menuItem">Yüklemeler<i class="dropdown icon"></i>
         <div class="menu">
@@ -47,7 +47,9 @@
     <!--Hesaplar-->
     <div class="ui simple dropdown item onlyAdmin">Hesaplar<i class="dropdown icon"></i>
         <div class="menu">
+            {{#can 'CREATE_ACCOUNT'}}
             <a class="item" href="#account/add">Hesap Ekle</a>
+            {{/can}}
             <a class="item" href="#account/list">Hesap Listele</a>
         </div>
     </div>

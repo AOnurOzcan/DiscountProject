@@ -20,9 +20,13 @@
                         <div class="default text">Yetki Seçiniz</div>
                         <div class="menu">
                             {{#each authorities}}
+
+                            {{#checkAuthType authorityType}}
                             <div class="item" data-value="{{id}}">
                                 {{authorityValue}}
                             </div>
+                            {{/checkAuthType}}
+
                             {{/each}}
                         </div>
                     </div>
@@ -30,7 +34,9 @@
                 {{#account.id}}
                 <button class="fluid green ui button" id="saveAccountButton" data-id="{{id}}">Kaydet</button>
                 {{else}}
+                {{#can 'CREATE_ACCOUNT'}}
                 <button class="fluid ui primary button" id="addAccountButton">Oluştur</button>
+                {{/can}}
                 {{/account.id}}
                 <div class="ui error message"></div>
             </form>
