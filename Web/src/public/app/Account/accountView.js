@@ -89,12 +89,13 @@ define([
       this.removeAuthArray = [];
     },
     ChangeAccountType: function (e) {
+      var companyDropdown = $(".companyDropdown");
       var accountType = $(".accountTypeDropdown").dropdown('get value');
       if (accountType == "COMPANY") {
-        $(".companyDropdown").removeClass('disabled');
+        companyDropdown.removeClass('disabled');
       } else {
-        $(".companyDropdown").addClass('disabled');
-        $(".companyDropdown").dropdown('restore defaults');
+        companyDropdown.addClass('disabled');
+        companyDropdown.dropdown('restore defaults');
       }
     },
     saveAccount: function (e) {

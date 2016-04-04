@@ -103,7 +103,6 @@ define([
     selectLocation: function () {
       var that = this;
       $("#locationModal").modal({
-        observeChanges: true,
         onVisible: function () {
           var latLon = $("input[name=coordinates]").val().split(',');
           var lat = latLon[0];
@@ -121,21 +120,14 @@ define([
         lat: lat,
         lng: lng,
         click: function (e) {
+          map.removeMarkers();
           map.addMarker({
             lat: e.latLng.lat(),
             lng: e.latLng.lng(),
             title: 'Şube'
           });
           $("input[name=coordinates]").val(e.latLng.lat() + "," + e.latLng.lng());
-        },
-        open: function () {
-          alert("aasd");
         }
-      });
-      map.addMarker({
-        lat: lat,
-        lng: lon,
-        title: 'Şube'
       });
       map.addControl({
         position: 'top_right',
