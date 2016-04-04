@@ -71,7 +71,11 @@ window.define(['backbone', 'handlebars'], function (Backbone, Handlebars) {
      */
     "waitData": function (model, callback) {
       var page = $("#page");
-      page.hide();
+
+      //Fade in efektinin bir kere olmasını sağlıyoruz
+      if (this.$el.selector != ".menu" && this.$el.selector != "#modal") {
+        page.hide();
+      }
       var self = this;
       if (callback == undefined) {
         callback = this.render;
@@ -90,12 +94,9 @@ window.define(['backbone', 'handlebars'], function (Backbone, Handlebars) {
 
         $.when.apply($, group).then(function () {
 
-          //TODO eğer view menü ise fade in efekti kaldırılacak
           callback.call(self);
-          page.fadeIn(400);
-
-          if (self.ready) {
-            self.ready(); // Activate i18n
+          if (self.$el.selector != ".menu" && self.$el.selector != "#modal") {
+            page.fadeIn(400);
           }
         });
         return;
@@ -103,8 +104,9 @@ window.define(['backbone', 'handlebars'], function (Backbone, Handlebars) {
 
       $.when(model["fetch"]()).then(function () {
         callback.call(self);
-        page.fadeIn(400);
-
+        if (self.$el.selector != ".menu" && self.$el.selector != "#modal") {
+          page.fadeIn(400);
+        }
       });
     },
 
