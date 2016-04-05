@@ -16,6 +16,7 @@ project.app.get("/confirmationcode/send/:phoneNumber", function (req, res) {
     if (req.session.userConfirmationCode.count == 5) {//onay kodu gonderme limiti yarım saat sonra tekrar
 
     } else {
+      req.session.userConfirmationCode.confirmationCode = confirmationCode;
       req.session.userConfirmationCode.count++;
     }
   }

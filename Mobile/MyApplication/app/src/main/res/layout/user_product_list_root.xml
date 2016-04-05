@@ -10,5 +10,17 @@
         android:id="@+id/userProductsRootLayout"
         android:orientation="vertical">
 
+        <LinearLayout
+            android:orientation="vertical"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal">
+
+            <Button
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Listeyi Boşalt"
+                android:id="@+id/clearList" />
+        </LinearLayout>
     </LinearLayout>
 </ScrollView>

@@ -1,15 +1,25 @@
 package com.example.ooar.discountproject.fragment;
 
 import android.app.Activity;
+import android.app.Dialog;
 import android.content.Context;
 import android.content.SharedPreferences;
+import android.graphics.Bitmap;
+import android.graphics.Matrix;
+import android.graphics.PointF;
+import android.graphics.drawable.BitmapDrawable;
+import android.media.Image;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.util.FloatMath;
 import android.view.LayoutInflater;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.Window;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
+import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ScrollView;
@@ -27,6 +37,8 @@ import com.example.ooar.discountproject.util.ErrorHandler;
 import com.example.ooar.discountproject.util.FragmentChangeListener;
 import com.example.ooar.discountproject.util.RetrofitConfiguration;
 import com.example.ooar.discountproject.util.Util;
+
+import java.util.Map;
 
 import retrofit.Callback;
 import retrofit.RetrofitError;
@@ -88,9 +100,6 @@ public class NotificationDetailFragment extends Fragment {
         final LinearLayout notificationBranchLayout = (LinearLayout) parent.findViewById(R.id.notificationBranch);
         parent.removeView(notificationDetailLayout);
 
-        int[] pixels = Util.getScreenPixels(getActivity());
-        LinearLayout.LayoutParams imageViewParams = new LinearLayout.LayoutParams(pixels[0] / 3, pixels[1] / 6);
-
         //ürünler basılıyor
         for (int i = 0; i < notification.getProductList().size(); i++) {
             final Product product = notification.getProductList().get(i);
@@ -110,9 +119,6 @@ public class NotificationDetailFragment extends Fragment {
 
             TextView description = (TextView) custom.findViewById(R.id.description);//açıklama
             description.setText(product.getProductDescription());
-
-            ImageView image = (ImageView) custom.findViewById(R.id.productImage);//resim
-            image.setLayoutParams(imageViewParams);
 
             final CheckBox checkBox = (CheckBox) custom.findViewById(R.id.addToList);
             if (product.getFollower() != null) {
@@ -179,7 +185,36 @@ public class NotificationDetailFragment extends Fragment {
                 }
             });
 
+
+            int[] pixels = Util.getScreenPixels(getActivity());
+            FrameLayout.LayoutParams imageViewParams = new FrameLayout.LayoutParams(pixels[0] / 3, pixels[1] / 6);
+
+            final ImageView image = (ImageView) custom.findViewById(R.id.productImage);//resim
+            image.setLayoutParams(imageViewParams);
             new Util.DownloadImageTask(image).execute(product.getImageURL());
+            image.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    Dialog settingsDialog = new Dialog(getActivity());
+                    settingsDialog.getWindow().requestFeature(Window.FEATURE_NO_TITLE);
+                    LinearLayout linearLayout = (LinearLayout) getActivity().getLayoutInflater().inflate(R.layout.image_preview, null);
+                    settingsDialog.setContentView(linearLayout);
+                    final ImageView imageView = (ImageView) linearLayout.findViewById(R.id.imagePreview);
+                    if (image.getDrawable() != null) {
+                        imageView.setImageBitmap(((BitmapDrawable) image.getDrawable()).getBitmap());
+                        Util.initializeZoomVariables();
+                        imageView.setOnTouchListener(new View.OnTouchListener() {
+                            @Override
+                            public boolean onTouch(View v, MotionEvent event) {
+                                Util.imageZoom(v, event);
+                                return true;
+                            }
+                        });
+                        settingsDialog.show();
+                    }
+                }
+            });
+
             parent.addView(custom);
         }
 
@@ -231,5 +266,6 @@ public class NotificationDetailFragment extends Fragment {
         endDate.setText(notification.getEndDate());
         description.setText(notification.getDescription());
     }
+
 
 }

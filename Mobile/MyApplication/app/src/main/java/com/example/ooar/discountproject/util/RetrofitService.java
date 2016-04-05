@@ -105,4 +105,7 @@ public interface RetrofitService {
 //alışveris listesinden ürün silen servis
     void deleteUserProduct(@Query("tokenKey") String tokenKey, @Path("id") int id, Callback<Object> callback);
 
+    @DELETE("/user/product/delete/all")
+    void deleteAllUserProduct(@Query("tokenKey") String tokenKey, Callback<Object> callback);
+
 }

@@ -9,7 +9,7 @@ public class Branch {
     private String name;
     private String address;
     private String phone;
-    private String locationURL;
+    private String coordinates;
     private String workingHours;
     private Company companyId;
     private City cityId;
@@ -46,12 +46,12 @@ public class Branch {
         this.phone = phone;
     }
 
-    public String getLocationURL() {
-        return locationURL;
+    public String getCoordinates() {
+        return coordinates;
     }
 
-    public void setLocationURL(String locationURL) {
-        this.locationURL = locationURL;
+    public void setCoordinates(String coordinates) {
+        this.coordinates = coordinates;
     }
 
     public String getWorkingHours() {
