@@ -14,10 +14,15 @@ require.config({
     'googlemaps': '../lib/googlemaps',
     'async': '../lib/async',
     'gmaps': '../lib/gmaps.min',
-    'nprogress': '../lib/nprogress'
+    'nprogress': '../lib/nprogress',
+    'jqueryUi': '../lib/jquery-ui.min',
+    'util': 'Util/util'
   },
   shim: {
     semanticJs: {
+      deps: ['jquery']
+    },
+    jqueryUi: {
       deps: ['jquery']
     },
     jquery: {
@@ -37,6 +42,7 @@ require.config({
       deps: ["googlemaps"],
       exports: "gmaps"
     }
+
   },
   googlemaps: {
     params: {
@@ -59,7 +65,9 @@ require([
   'jquerySerialize',
   'async',
   'googlemaps',
-  'gmaps'
+  'gmaps',
+  'jqueryUi',
+  'util'
 ], function ($, _, Backbone, Core, Outer, Alertify, NProgress) {
   NProgress.configure({showSpinner: false});
   window.outer = new Outer();
@@ -70,16 +78,36 @@ require([
     Backbone.history.start();
   });
 
+  var tr = {
+    monthNames: ["Ocak", "Şubat", "Mart", "Nisan", "Mayıs", "Haziran", "Temmuz", "Ağustos", "Eylül", "Ekim", "Kasım", "Aralık"],
+    monthNamesShort: ["Oca", "Şub", "Mar", "Nis", "May", "Haz", "Tem", "Ağu", "Eyl", "Eki", "Kas", "Ara"],
+    dayNames: ["Pazar", "Pazartesi", "Salı", "Çarşamba", "Perşembe", "Cuma", "Cumartesi"],
+    dayNamesShort: ["Pz", "Pt", "Sa", "Ça", "Pe", "Cu", "Ct"],
+    dayNamesMin: ["Pz", "Pt", "Sa", "Ça", "Pe", "Cu", "Ct"],
+    weekHeader: "Hf",
+    dateFormat: "dd/mm/yy",
+    firstDay: 1,
+    changeMonth: true,
+    changeYear: true
+  };
+
+  $.datepicker.setDefaults($.extend(tr));
+
   var loading = $("#loading");
+  var page = $("#page");
 
   $(document).on({
     ajaxStart: function () {
+      $("button").addClass("disabled");
       //Login sayfasında değilse ve loading divinde active classı yoksa(sayfa refresh edilmediyse)
       if (window.location.hash != "" && !loading.hasClass("active")) {
         NProgress.start();
       }
     },
     ajaxStop: function () {
+      page.fadeIn(400);
+      $("button").removeClass("disabled");
+
       //loading divinde active classı varsa sil
       if (loading.hasClass("active")) {
         loading.removeClass("active");

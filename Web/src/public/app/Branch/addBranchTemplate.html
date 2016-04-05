@@ -28,7 +28,7 @@
 
                 <div class="field">
                     <div class="ui action input">
-                        <input type="text" name="coordinates" placeholder="Konum" disabled>
+                        <input type="text" name="coordinates" placeholder="Konum" readonly>
                         <button class="ui teal right button" id="selectLocation">
                             Haritadan Seç
                         </button>
@@ -53,12 +53,16 @@
         Haritadan Seçin
     </div>
     <div class="content">
-        <div class="ui big left icon input ">
-              <input type="text" placeholder="Search...">
-              <i class="search icon"></i>
-        </div>
-        <div id="googleMap" style="width: 100%; height:400px;">
-
+        <div class="ui center aligned padded grid">
+            <div class="ten wide column">
+                <div class="ui action fluid input">
+                    <input type="text" placeholder="Arama Yapın" id="searchAddressInput">
+                    <button class="ui icon button" id="searchAddressButton">
+                        <i class="search icon"></i>
+                    </button>
+                </div>
+            </div>
+            <div id="googleMap" style="width: 100%; height:400px;"></div>
         </div>
     </div>
     <div class="actions">

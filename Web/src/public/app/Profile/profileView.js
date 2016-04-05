@@ -5,8 +5,13 @@ define(['backbone', 'handlebars', 'text!Profile/profileTemplate.html'], function
 
   //------------------------------ Models & Collections ----------------------------//
   var Profile = Backbone.Model.extend({
+    urlRoot: "/profile"
+  });
+
+  var Account = Backbone.Model.extend({
     urlRoot: "/account"
   });
+
 
   var EditProfileView = core.CommonView.extend({
     el: "#page",
@@ -18,15 +23,6 @@ define(['backbone', 'handlebars', 'text!Profile/profileTemplate.html'], function
           that.saveProfile(e);
         },
         fields: {
-          username: {
-            identifier: 'username',
-            rules: [
-              {
-                type: 'empty',
-                prompt: 'Kullanıcı adı alanı boş geçilemez!'
-              }
-            ]
-          },
           email: {
             identifier: 'email',
             rules: [
@@ -40,19 +36,19 @@ define(['backbone', 'handlebars', 'text!Profile/profileTemplate.html'], function
       });
     },
     initialize: function () {
-      this.profile = new Profile();
+      this.account = new Account();
     },
     saveProfile: function (e) {
       e.preventDefault();
       var values = this.form().getValues;
-      this.profile.save(values, {
+      new Profile().save(values, {
         success: function () {
           alertify.success("Profil kaydetme başarılı.");
         }
       });
     },
     render: function () {
-      this.$el.html(profileTemplate({account: this.profile.toJSON()}));
+      this.$el.html(profileTemplate({account: this.account.toJSON()}));
       this.validation();
     }
   });

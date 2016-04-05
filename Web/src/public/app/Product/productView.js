@@ -3,7 +3,11 @@ define([
   'handlebars',
   'text!Product/addProductTemplate.html',
   'text!Product/listProductTemplate.html',
-  'text!Product/subCategorySelectTemplate.html'], function (Backbone, Handlebars, AddProductTemplate, ListProductTemplate, SubCategorySelectTemplate) {
+  'text!Product/subCategorySelectTemplate.html'], function (Backbone,
+                                                            Handlebars,
+                                                            AddProductTemplate,
+                                                            ListProductTemplate,
+                                                            SubCategorySelectTemplate) {
 
   //--------------- Templates --------------//
   var addProductTemplate = Handlebars.compile(AddProductTemplate);
@@ -174,7 +178,7 @@ define([
               images: that.imageCollection.toJSON()
             }));
             that.validation();
-            $("#productMainCategorySelect").dropdown("set selected", product.toJSON().categoryId.parentCategory);
+            $("#productMainCategorySelect").dropdown("set selected", product.toJSON().parentCategory);
           }
         });
       }

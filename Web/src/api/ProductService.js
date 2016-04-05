@@ -1,4 +1,5 @@
 var Product = require("../model/Product");
+var Category = require("../model/Category");
 
 /**
  * Bu fonksiyon ürünleri kaydeder. Geriye kaydettiği ürünün id'li halini döndürür.
@@ -82,8 +83,12 @@ project.app.get("/product/:id", function (req, res) {
     if (err) {
       return res.unknown();
     }
-    product.categoryId = product.Category;
-    delete product.Category;
-    res.json(product);
+    Category.get(product.categoryId, function (err, category) {
+      if (err) {
+        return res.unknown();
+      }
+      product.parentCategory = category.parentCategory;
+      res.json(product);
+    });
   });
 });

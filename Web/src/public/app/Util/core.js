@@ -72,10 +72,7 @@ window.define(['backbone', 'handlebars'], function (Backbone, Handlebars) {
     "waitData": function (model, callback) {
       var page = $("#page");
 
-      //Fade in efektinin bir kere olmasını sağlıyoruz
-      if (this.$el.selector != ".menu" && this.$el.selector != "#modal") {
-        page.hide();
-      }
+      page.hide();
       var self = this;
       if (callback == undefined) {
         callback = this.render;
@@ -95,18 +92,12 @@ window.define(['backbone', 'handlebars'], function (Backbone, Handlebars) {
         $.when.apply($, group).then(function () {
 
           callback.call(self);
-          if (self.$el.selector != ".menu" && self.$el.selector != "#modal") {
-            page.fadeIn(400);
-          }
         });
         return;
       }
 
       $.when(model["fetch"]()).then(function () {
         callback.call(self);
-        if (self.$el.selector != ".menu" && self.$el.selector != "#modal") {
-          page.fadeIn(400);
-        }
       });
     },
 

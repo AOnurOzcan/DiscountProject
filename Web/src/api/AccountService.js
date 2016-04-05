@@ -125,6 +125,17 @@ project.app.put('/account/:id', function (req, res) {
   });
 });
 
+project.app.put('/profile/:id', function (req, res) {
+  Account.get(req.params.id, function (err, account) {
+    if (err) return res.unknown();
+    account.email = req.body.email;
+    account.save(function (err) {
+      if (err) return res.unknown();
+      res.json({status: "success"});
+    });
+  });
+});
+
 //Oturum açmış olan kullanıcıya ait tüm hesapları getirir.
 project.app.get('/accounts', function (req, res) {
   var session = req.session.admin;

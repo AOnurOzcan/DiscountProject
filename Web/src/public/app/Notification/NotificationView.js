@@ -109,6 +109,10 @@ define([
       e.preventDefault();
       var that = this;
       var values = this.form().getValues;
+
+      values.startDate = values.startDate.convertSqlDate();
+      values.endDate = values.endDate.convertSqlDate();
+
       if (this.params == undefined) {
         values.products = values.products.split(',');
         values.branches = values.branches.split(',');
@@ -136,11 +140,14 @@ define([
     },
     render: function () {
       var that = this;
+
       if (this.params == undefined) {
         this.$el.html(addNotificationTemplate({
           products: this.productCollection.toJSON(),
           branches: this.branchCollection.toJSON()
         }));
+        $("#startDate").datepicker();
+        $("#endDate").datepicker();
         this.validation();
         $(".ui.dropdown").dropdown({
           message: {
@@ -156,7 +163,11 @@ define([
               products: that.productCollection.toJSON(),
               branches: that.branchCollection.toJSON()
             }));
+            $("#startDate").datepicker();
+            $("#endDate").datepicker();
             that.validation();
+            notification.set('startDate', notification.attributes.startDate.dateFmt());
+            notification.set('endDate', notification.attributes.endDate.dateFmt());
             that.form().setValues(notification.toJSON());
             $(".ui.dropdown").dropdown({
               message: {
@@ -290,12 +301,13 @@ define([
   });
 
   Handlebars.registerHelper('formatDate', function (date) {
-    var months = ["Ocak", "Şubat", "Mart", "Nisan", "Mayıs", "Haziran", "Temmuz", "Ağustos", "Eylül", "Ekim", "Kasım", "Aralık"];
+    //var months = ["Ocak", "Şubat", "Mart", "Nisan", "Mayıs", "Haziran", "Temmuz", "Ağustos", "Eylül", "Ekim", "Kasım", "Aralık"];
     var date = new Date(date);
     var day = date.getDate();
     var monthIndex = date.getMonth();
     var year = date.getFullYear();
-    return day + "/" + months[monthIndex] + "/" + year;
+    //return day + "/" + months[monthIndex] + "/" + year;
+    return day.addZero() + "/" + (monthIndex + 1).addZero() + "/" + year;
   });
 
   return {

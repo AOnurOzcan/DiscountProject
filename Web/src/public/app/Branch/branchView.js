@@ -83,6 +83,7 @@ define([
     },
     initialize: function () {
       this.cityCollection = new CityCollection();
+      this.mapInitialized = false;
     },
     saveBranch: function (e) {
       e.preventDefault();
@@ -100,28 +101,56 @@ define([
         }
       });
     },
-    selectLocation: function () {
+    selectLocation: function (e) {
+      e.preventDefault();
       var that = this;
       $("#locationModal").modal({
+        autofocus: false,
+        detachable: false,
         onVisible: function () {
-          var latLon = $("input[name=coordinates]").val().split(',');
+          var coordinatesInput = $("input[name=coordinates]");
+          var latLon = coordinatesInput.val().split(',');
           var lat = latLon[0];
           var lon = latLon[1];
-          that.googleMapsInitialize(lat, lon);
+          if (that.mapInitialized == false) {
+            that.googleMapsInitialize(lat, lon);
+            if (coordinatesInput.val().trim() != "") {
+              that.map.setZoom(15);
+              that.map.setCenter(lat, lon);
+            }
+          } else {
+            that.map.setCenter(lat, lon);
+            that.map.setZoom(14);
+          }
         }
       }).modal('show');
     },
+    searchAddress: function () {
+      var that = this;
+      GMaps.geocode({
+        address: $('#searchAddressInput').val(),
+        callback: function (results, status) {
+          if (status == 'OK') {
+            var latlng = results[0].geometry.location;
+            that.map.setCenter(latlng.lat(), latlng.lng());
+            that.map.setZoom(13);
+          }
+        }
+      });
+    },
     googleMapsInitialize: function (lat, lon) {
+      var that = this;
       //Google maps initializing
-      var lat = lat || 43.765346;
-      var lng = lon || 30.360312;
-      var map = new GMaps({
+      var lat = lat || 39.1667;
+      var lng = lon || 35.6667;
+      this.map = new GMaps({
         el: '#googleMap',
+        zoom: 6,
         lat: lat,
         lng: lng,
         click: function (e) {
-          map.removeMarkers();
-          map.addMarker({
+          that.map.removeMarkers();
+          that.map.addMarker({
             lat: e.latLng.lat(),
             lng: e.latLng.lng(),
             title: 'Şube'
@@ -129,7 +158,13 @@ define([
           $("input[name=coordinates]").val(e.latLng.lat() + "," + e.latLng.lng());
         }
       });
-      map.addControl({
+      this.mapInitialized = true;
+      this.map.addMarker({
+        lat: lat,
+        lng: lon,
+        title: 'Şube'
+      });
+      this.map.addControl({
         position: 'top_right',
         content: 'Konumuma git',
         style: {
@@ -142,7 +177,7 @@ define([
           click: function () {
             GMaps.geolocate({
               success: function (position) {
-                map.setCenter(position.coords.latitude, position.coords.longitude);
+                that.map.setCenter(position.coords.latitude, position.coords.longitude);
               },
               error: function (error) {
                 alert('Konum bulma başarısız. Sebep : ' + error.message);
@@ -157,8 +192,12 @@ define([
     },
     render: function () {
       var that = this;
+      this.mapInitialized = false;
       if (this.params == undefined) {
         this.$el.html(addBranchTemplate({cities: this.cityCollection.toJSON()}));
+        $("#searchAddressButton").on('click', function () {
+          that.searchAddress();
+        });
         this.validation();
         $('#cityDropdown').dropdown();
 
@@ -167,6 +206,9 @@ define([
         branchModel.fetch({
           success: function (branch) {
             that.$el.html(addBranchTemplate({branch: branch.toJSON(), cities: that.cityCollection.toJSON()}));
+            $("#searchAddressButton").on('click', function () {
+              that.searchAddress();
+            });
             that.validation();
             that.form().setValues(branch.toJSON());
             $('#cityDropdown').dropdown();
