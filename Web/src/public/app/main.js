@@ -98,7 +98,6 @@ require([
 
   $(document).on({
     ajaxStart: function () {
-      $("button").addClass("disabled");
       //Login sayfasında değilse ve loading divinde active classı yoksa(sayfa refresh edilmediyse)
       if (window.location.hash != "" && !loading.hasClass("active")) {
         NProgress.start();
@@ -106,7 +105,6 @@ require([
     },
     ajaxStop: function () {
       page.fadeIn(400);
-      $("button").removeClass("disabled");
 
       //loading divinde active classı varsa sil
       if (loading.hasClass("active")) {
