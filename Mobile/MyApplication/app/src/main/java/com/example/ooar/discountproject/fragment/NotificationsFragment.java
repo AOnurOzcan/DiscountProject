@@ -10,6 +10,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.LinearLayout;
+import android.widget.TextView;
 
 import com.example.ooar.discountproject.R;
 import com.example.ooar.discountproject.model.Notification;
@@ -101,58 +102,67 @@ public class NotificationsFragment extends Fragment {
         LayoutInflater inflater = (LayoutInflater) getActivity().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         LinearLayout parent = (LinearLayout) getActivity().findViewById(R.id.notificationRootLayout);
 
-        loadMoreLayout = (LinearLayout) parent.findViewById(R.id.loadMoreLayout);
-        loadMoreButton = (Button) parent.findViewById(R.id.loadMore);
-        parent.removeAllViews();
-
-        loadMoreButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                loadMore = true;
-                getUserNotifications(userNotificationList.size(), notificationLength);
-            }
-        });
-
-        for (int i = 0; i < userNotificationList.size(); i++) {
-            final Notification notification = userNotificationList.get(i).getNotificationId();
-            View custom = inflater.inflate(R.layout.notification_view, null);
-            final Button notificationButton = (Button) custom.findViewById(R.id.notificationButton);
-            notificationButton.setText(notification.getName());
-
-            notificationButton.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    int notificationId = 0;
-                    for (UserNotification userNotification : userNotificationList) {
-                        if (userNotification.getNotificationId().getName().equals(notificationButton.getText())) {
-                            notificationId = userNotification.getNotificationId().getId();
-                            break;
-                        }
-                    }
-
-                    Bundle bundle = new Bundle();
-                    bundle.putInt("notificationId", notificationId);
-                    Fragment notificationDetailFragment = new NotificationDetailFragment();
-                    notificationDetailFragment.setArguments(bundle);
-
-                    FragmentChangeListener fc = (FragmentChangeListener) getActivity();
-                    fc.replaceFragment(notificationDetailFragment, "notificationDetail");
-                }
-            });
+        if (userNotificationList.size() == 0) {
+            View custom = inflater.inflate(R.layout.empty_content_layout, null);
+            TextView textView = (TextView) custom.findViewById(R.id.emptyContentText);
+            textView.setText("Bildirimler sayfan boş.\nDaha fazla kategori ve firma takip ederek fırsat ürünlerinden haberdar olabilirsin.");
+            parent.removeAllViews();
             parent.addView(custom);
 
-        }
-
-        parent.addView(loadMoreLayout);
-        if (userNotificationList.size() >= notificationLength) {
-            loadMoreLayout.setVisibility(View.VISIBLE);
-        }
-        if (loadAllContent) {
-            loadMoreButton.setText("Tüm Bildirimlerin Bu Kadar");
-            loadMoreButton.setClickable(false);
         } else {
-            loadMoreButton.setText("Daha fazla yükle");
-            loadMoreButton.setClickable(true);
+            loadMoreLayout = (LinearLayout) parent.findViewById(R.id.loadMoreLayout);
+            loadMoreButton = (Button) parent.findViewById(R.id.loadMore);
+            parent.removeAllViews();
+
+            loadMoreButton.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    loadMore = true;
+                    getUserNotifications(userNotificationList.size(), notificationLength);
+                }
+            });
+
+            for (int i = 0; i < userNotificationList.size(); i++) {
+                final Notification notification = userNotificationList.get(i).getNotificationId();
+                View custom = inflater.inflate(R.layout.notification_view, null);
+                final Button notificationButton = (Button) custom.findViewById(R.id.notificationButton);
+                notificationButton.setText(notification.getName());
+
+                notificationButton.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        int notificationId = 0;
+                        for (UserNotification userNotification : userNotificationList) {
+                            if (userNotification.getNotificationId().getName().equals(notificationButton.getText())) {
+                                notificationId = userNotification.getNotificationId().getId();
+                                break;
+                            }
+                        }
+
+                        Bundle bundle = new Bundle();
+                        bundle.putInt("notificationId", notificationId);
+                        Fragment notificationDetailFragment = new NotificationDetailFragment();
+                        notificationDetailFragment.setArguments(bundle);
+
+                        FragmentChangeListener fc = (FragmentChangeListener) getActivity();
+                        fc.replaceFragment(notificationDetailFragment, "notificationDetail");
+                    }
+                });
+                parent.addView(custom);
+
+            }
+
+            parent.addView(loadMoreLayout);
+            if (userNotificationList.size() >= notificationLength) {
+                loadMoreLayout.setVisibility(View.VISIBLE);
+            }
+            if (loadAllContent) {
+                loadMoreButton.setText("Tüm Bildirimlerin Bu Kadar");
+                loadMoreButton.setClickable(false);
+            } else {
+                loadMoreButton.setText("Daha fazla yükle");
+                loadMoreButton.setClickable(true);
+            }
         }
     }
 

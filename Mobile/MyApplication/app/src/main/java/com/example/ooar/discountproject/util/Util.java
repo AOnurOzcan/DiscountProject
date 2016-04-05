@@ -6,16 +6,23 @@ import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Color;
+import android.graphics.Matrix;
+import android.graphics.PointF;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Environment;
 import android.util.DisplayMetrics;
 import android.util.Log;
+import android.view.MotionEvent;
+import android.view.View;
+import android.view.ViewGroup;
 import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.CheckBox;
+import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -57,6 +64,16 @@ import java.util.regex.Pattern;
 //Yardımcı fonksiyonların tanımlandığı sınıf
 public class Util {
     public static ProgressDialog progressDialog;
+
+    static Matrix matrix = new Matrix();
+    static Matrix savedMatrix = new Matrix();
+    static int NONE = 0;
+    static int DRAG = 1;
+    static int ZOOM = 2;
+    static int mode = NONE;
+    static PointF start = new PointF();
+    static PointF mid = new PointF();
+    static float oldDist = 1f;
 
     public static boolean checkValidation(Map<String, Object> object) {//validasyon fonksiyonu
         String pattern;
@@ -179,9 +196,13 @@ public class Util {
 
     public static class DownloadImageTask extends AsyncTask<String, Void, Bitmap> {//resim yükleme
         ImageView bmImage;
+        ProgressBar imageProgressBar;
 
         public DownloadImageTask(ImageView bmImage) {
             this.bmImage = bmImage;
+            View view = (View) bmImage.getParent();
+            this.imageProgressBar = (ProgressBar) view.findViewById(R.id.imageProgressBar);
+            imageProgressBar.setVisibility(View.VISIBLE);
         }
 
         protected Bitmap doInBackground(String... urls) {
@@ -203,6 +224,7 @@ public class Util {
 
         protected void onPostExecute(Bitmap result) {
             bmImage.setImageBitmap(result);
+            imageProgressBar.setVisibility(View.GONE);
         }
     }
 
@@ -369,6 +391,74 @@ public class Util {
             GoogleMapsFragment.googleMap.addPolyline(lineOptions);
 
         }
+    }
+
+    public static void initializeZoomVariables(){
+        matrix = new Matrix();
+        savedMatrix = new Matrix();
+        NONE = 0;
+        DRAG = 1;
+        ZOOM = 2;
+        mode = NONE;
+        start = new PointF();
+        mid = new PointF();
+        oldDist = 1f;
+    }
+
+    public static void imageZoom(View v, MotionEvent event){
+        ImageView imageView = (ImageView) v;
+
+        float scale;
+        switch (event.getAction() & MotionEvent.ACTION_MASK) {
+
+            case MotionEvent.ACTION_DOWN:
+                savedMatrix.set(matrix);
+                start.set(event.getX(), event.getY());
+                mode = DRAG;
+                break;
+            case MotionEvent.ACTION_UP:
+            case MotionEvent.ACTION_POINTER_UP:
+                mode = NONE;
+                break;
+            case MotionEvent.ACTION_POINTER_DOWN:
+                oldDist = spacing(event);
+                if (oldDist > 5f) {
+                    savedMatrix.set(matrix);
+                    midPoint(mid, event);
+                    mode = ZOOM;
+                }
+                break;
+
+            case MotionEvent.ACTION_MOVE:
+                if (mode == DRAG) { //movement of first finger
+                    matrix.set(savedMatrix);
+                    if (imageView.getLeft() >= -392) {
+                        matrix.postTranslate(event.getX() - start.x, event.getY() - start.y);
+                    }
+                } else if (mode == ZOOM) {
+                    float newDist = spacing(event);
+                    if (newDist > 5f) {
+                        matrix.set(savedMatrix);
+                        scale = newDist / oldDist;
+                        matrix.postScale(scale, scale, mid.x, mid.y);
+                    }
+                }
+                break;
+        }
+        imageView.setImageMatrix(matrix);
+    }
+
+
+    private static float spacing(MotionEvent event) {
+        float x = event.getX(0) - event.getX(1);
+        float y = event.getY(0) - event.getY(1);
+        return (float) Math.sqrt(x * x + y * y);
+    }
+
+    private static void midPoint(PointF point, MotionEvent event) {
+        float x = event.getX(0) + event.getX(1);
+        float y = event.getY(0) + event.getY(1);
+        point.set(x / 2, y / 2);
     }
 
 }

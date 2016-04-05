@@ -53,7 +53,7 @@ public class BranchDetailFragment extends Fragment {
             public void onClick(View v) {
 
                 Bundle bundle = new Bundle();
-                bundle.putString("url", branch.getLocationURL());
+                bundle.putString("url", branch.getCoordinates());
                 bundle.putString("branchName", branch.getName());
                 Fragment fragment = new GoogleMapsFragment();
                 fragment.setArguments(bundle);
