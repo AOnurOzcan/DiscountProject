@@ -12,30 +12,55 @@ define(['backbone', 'handlebars', 'jquery', 'text!Login/loginTemplate.html'], fu
 
   var LoginView = core.CommonView.extend({
     autoLoad: true,
-    events: {
-      'click #loginButton': 'login'
-    },
     el: "#page",
+    validation: function () {
+      var that = this;
+      $('#loginForm').form({
+        onSuccess: function (e) {
+          that.login(e);
+        },
+
+        fields: {
+          username: {
+            identifier: 'username',
+            rules: [
+              {
+                type: 'empty',
+                prompt: 'Kullanıcı adı alanı boş geçilemez.'
+              }
+            ]
+          },
+          password: {
+            identifier: 'password',
+            rules: [
+              {
+                type: 'empty',
+                prompt: 'Şifre alanı boş geçilemez!'
+              }
+            ]
+          }
+        }
+      });
+    },
     login: function (e) {
       e.preventDefault();
       var loginForm = $("#loginForm");
       loginForm.addClass("loading");
-      loginForm.removeClass("error");
-      var formValues = this.form("#loginForm").getValues; // Login Form'a girilen kullanıcı adı ve şifreyi al
+      var formValues = this.form().getValues; // Login Form'a girilen kullanıcı adı ve şifreyi al
       new LoginModel().save(formValues, { // Böyle bir kullanıcı olup olmadığını kontrol et
         success: function () { // Eğer var ise
           $("#page").html("");
           window.location.hash = 'statistics'; // Yönetim paneline yönlendir.
         },
-        error: function (error) {
+        error: function () {
+          loginForm.form('add errors', ['Kullanıcı Adınız ya da Şifreniz Yanlış! Lütfen Tekrar Deneyiniz!']);
           loginForm.removeClass("loading");
-          $(".error").html('<ul class="list"><li>Kullanıcı Adınız ya da Şifreniz Yanlış! Lütfen Tekrar Deneyiniz!</li></ul>');
-          loginForm.addClass("error");
         }
       });
     },
     render: function () {
       this.$el.html(loginTemplate);
+      this.validation();
     }
   });
 
