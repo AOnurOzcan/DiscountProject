@@ -60,6 +60,7 @@ project.app.get("/notification/send/:id", function (req, res) {
         sender.send(message, {registrationTokens: userRegistrationIds}, function (err, response) {
           if (err) {
             console.error(err);
+            return res.json({error: err});
           }
           else {
             notification.isSent = true;

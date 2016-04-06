@@ -279,6 +279,9 @@ define([
           that.notificationCollection.remove(that.notificationCollection.get(notificationId));
           alertify.success("Bildirim Başarıyla Gönderildi.");
           $("#sendNotificationModal").modal('hide');
+        },
+        error: function (e) {
+          alertify.alert(e.error);
         }
       });
     },
