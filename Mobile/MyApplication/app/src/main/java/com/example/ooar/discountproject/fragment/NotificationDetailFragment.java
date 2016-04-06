@@ -64,12 +64,29 @@ public class NotificationDetailFragment extends Fragment {
         return inflater.inflate(R.layout.notification_detail, container, false);//content basılıyor
     }
 
-    @Override
-    public void onViewCreated(final View view, Bundle savedInstanceState) {
-        getNotification();
-    }
-
-    public void getNotification() {// id ye göre bildirim getiren fonksiyon
+        @Override
+        public void onViewCreated(final View view, Bundle savedInstanceState) {
+            getNotification();
+        }
+        private void updateNotificationStatus() {
+            Callback callback = new Callback() {
+                @Override
+                public void success(Object o, Response response) {
+                    //notification = (Notification) o;
+                    renderPage();
+                    Util.stopProgressDialog();
+                }
+                @Override
+                public void failure(RetrofitError error) {
+                    Toast.makeText(getActivity().getApplicationContext(), "Sunucudan yanıt alınamadı!", Toast.LENGTH_LONG).show();
+                    Util.stopProgressDialog();
+                }
+            };
+            Util.startProgressDialog();
+            String tokenKey = getActivity().getSharedPreferences("Session", Activity.MODE_PRIVATE).getString("tokenKey", "");
+            RetrofitConfiguration.getRetrofitService().updateNotificationStatus(tokenKey, notificationId, callback);
+        }
+    public void getNotification() {
         Callback callback = new Callback() {
             @Override
             public void success(Object o, Response response) {
@@ -77,10 +94,8 @@ public class NotificationDetailFragment extends Fragment {
                 notification.setStartDate(Util.parseDate(notification.getStartDate()));
                 notification.setEndDate(Util.parseDate(notification.getEndDate()));
                 notification.setSendDate(Util.parseDate(notification.getSendDate()));
-                renderPage();
-                Util.stopProgressDialog();
+                updateNotificationStatus();
             }
-
             @Override
             public void failure(RetrofitError error) {
                 ErrorHandler.handleError(NotificationDetailFragment.this.getActivity(), error);

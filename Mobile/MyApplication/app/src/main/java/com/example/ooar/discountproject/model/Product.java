@@ -15,6 +15,18 @@ public class Product {
     private String productDescription;
     private String imageURL;
     private Category categoryId;
+    private List<UserProduct> followList;
+    private Company companyId;
+
+
+    public Company getCompanyId() {
+        return companyId;
+    }
+
+    public void setCompanyId(Company companyId) {
+        this.companyId = companyId;
+    }
+
     private UserProduct follower;
 
     public Integer getId() {

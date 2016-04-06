@@ -46,9 +46,20 @@
 
         <activity android:name=".activity.RegisterActivity"></activity>
 
-        <activity
-            android:name=".activity.UserActivity"
-            android:launchMode="singleTop"></activity>
+        <activity android:name=".activity.UserActivity"
+            android:launchMode="singleTop">
+            <intent-filter>
+                <action android:name="android.intent.action.SEARCH" />
+            </intent-filter>
+            <meta-data android:name="android.app.default_searchable"
+                android:value=".activity.UserActivity">
+
+            </meta-data>
+            <meta-data
+                android:name="android.app.searchable"
+                android:resource="@xml/searchable">
+            </meta-data>
+        </activity>
     </application>
 
 </manifest>
