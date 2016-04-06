@@ -44,7 +44,9 @@
             </intent-filter>
         </activity>
 
-        <activity android:name=".activity.RegisterActivity"></activity>
+        <activity
+            android:name=".activity.RegisterActivity"
+            android:theme="@style/RegisterTheme" />
 
         <activity android:name=".activity.UserActivity"
             android:launchMode="singleTop">

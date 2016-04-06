@@ -10,7 +10,9 @@ import android.widget.Button;
 import android.widget.EditText;
 
 import com.example.ooar.discountproject.R;
+import com.example.ooar.discountproject.fragment.HomeFragment;
 import com.example.ooar.discountproject.fragment.PhoneNumberFragment;
+import com.example.ooar.discountproject.fragment.RegisterTabFragment;
 import com.example.ooar.discountproject.util.FragmentChangeListener;
 import com.example.ooar.discountproject.util.Util;
 
@@ -20,12 +22,13 @@ import com.example.ooar.discountproject.util.Util;
  */
 public class RegisterActivity extends FragmentActivity implements FragmentChangeListener {
 
+    public static RegisterTabFragment registerTabFragment = new RegisterTabFragment();
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.register_layout);//content basılıp phononumberfragment çağrılıyor
         Util.setProgressDialog(this);
-        replaceFragment(new PhoneNumberFragment(), null);
+        replaceFragment(registerTabFragment, null);
     }
 
     @Override

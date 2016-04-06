@@ -5,11 +5,19 @@
     <color name="colorPrimaryDark">#303F9F</color>
     <color name="colorAccent">#FF4081</color>
     <color name="action_bar_backgorund">#da4336</color>
-    <color name="main_background">#ffffff</color>
-    <color name="background_color">#fcf8e3</color>
+    <color name="background_color">#FEF2E4</color>
     <color name="danger">#d9534f</color>
     <color name="light_background_color">#f2dede</color>
     <color name="text_color">#a94442</color>
     <color name="transparent">#00000000</color>
     <color name="menu_background">#FF4081</color>
+    <color name="main_background">#FF4081</color>
+
+    <color name="main_color_red">#CE0000</color>
+    <color name="main_color_blood_red">#8A0707</color>
+    <color name="main_color_mushroom">#FEF2E4</color>
+    <color name="main_color_onion">#FD974F</color>
+    <color name="main_color_driftwood">#805A3B</color>
+    <color name="main_color_white">#FFFFFFFF</color>
+    <color name="main_color_black">#FF000000</color>
 </resources>

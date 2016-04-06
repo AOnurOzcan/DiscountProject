@@ -3,13 +3,13 @@
     xmlns:fbutton="http://schemas.android.com/apk/res-auto"
     android:id="@+id/scrollView2"
     android:layout_width="match_parent"
-    android:fillViewport="true"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:fillViewport="true">
 
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:background="@color/background_color"
+        android:background="@color/main_color_red"
         android:orientation="vertical">
 
 
@@ -40,7 +40,7 @@
                     android:autoText="false"
                     android:text="@string/phoneNumberInput"
                     android:textAlignment="center"
-                    android:textColor="@color/text_color"
+                    android:textColor="@color/main_color_white"
                     android:textIsSelectable="false"
                     android:textSize="18sp"
                     android:textStyle="bold" />
@@ -57,19 +57,24 @@
 
                 android:orientation="vertical">
 
-                <EditText
-                    android:id="@+id/telNo"
+                <android.support.design.widget.TextInputLayout
+                    android:id="@+id/input_layout_telNo"
+                    android:theme="@style/TextLabel"
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="center_horizontal"
-                    android:background="@drawable/apptheme_textfield_activated_holo_light"
-                    android:ems="10"
-                    android:hint="@string/hintPhoneNumber"
-                    android:inputType="phone"
-                    android:letterSpacing="0.25"
-                    android:textAlignment="center"
-                    android:textSize="20sp"
-                    android:textStyle="bold" />
+                    android:layout_height="wrap_content">
+
+                    <EditText
+                        android:id="@+id/telNo"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center_horizontal"
+                        android:singleLine="true"
+                        android:hint="@string/hintPhoneNumber"
+                        android:inputType="phone"
+                        android:maxLength="14"
+                        android:letterSpacing="0.25"
+                        android:textAlignment="center" />
+                </android.support.design.widget.TextInputLayout>
             </LinearLayout>
 
             <LinearLayout
@@ -89,9 +94,9 @@
                     android:layout_gravity="center_horizontal"
                     android:layout_marginBottom="70sp"
                     android:text="@string/sendConfirmationCode"
-                    android:textColor="@color/background_color"
+                    android:textColor="@color/main_color_white"
                     android:textStyle="bold"
-                    fbutton:buttonColor="@color/danger"
+                    fbutton:buttonColor="@color/main_color_onion"
                     fbutton:cornerRadius="10sp"
                     fbutton:shadowEnabled="true"
                     fbutton:shadowHeight="3sp" />
