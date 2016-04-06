@@ -53,7 +53,7 @@ define(['backbone', 'handlebars', 'jquery', 'text!Login/loginTemplate.html'], fu
           window.location.hash = 'statistics'; // Yönetim paneline yönlendir.
         },
         error: function () {
-          loginForm.form('add errors', ['Kullanıcı Adınız ya da Şifreniz Yanlış! Lütfen Tekrar Deneyiniz!']);
+          loginForm.form('add errors', ['Kullanıcı adınız ya da şifreniz yanlış ' + '<br>' + 'Lütfen tekrar deneyiniz!']);
           loginForm.removeClass("loading");
         }
       });
