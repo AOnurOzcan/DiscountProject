@@ -9,6 +9,7 @@ import com.example.ooar.discountproject.model.CompanyCategory;
 import com.example.ooar.discountproject.model.ConfirmationCode;
 import com.example.ooar.discountproject.model.Notification;
 import com.example.ooar.discountproject.model.Preference;
+import com.example.ooar.discountproject.model.Product;
 import com.example.ooar.discountproject.model.User;
 import com.example.ooar.discountproject.model.UserNotification;
 import com.example.ooar.discountproject.model.UserProduct;
@@ -107,5 +108,11 @@ public interface RetrofitService {
 
     @DELETE("/user/product/delete/all")
     void deleteAllUserProduct(@Query("tokenKey") String tokenKey, Callback<Object> callback);
+
+    @GET("/notification/updateStatus/{id}")
+    void updateNotificationStatus(@Query("tokenKey") String tokenKey, @Path("id") Integer notificationId, Callback<Notification> callback);
+
+    @GET("/user/product/search")
+    void productSearch(@Query("tokenKey") String tokenKey, @Query("queryParam") String productName, Callback<List<Product>> callback);
 
 }

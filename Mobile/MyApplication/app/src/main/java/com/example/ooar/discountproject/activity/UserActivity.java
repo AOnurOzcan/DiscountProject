@@ -3,22 +3,44 @@ package com.example.ooar.discountproject.activity;
 
 import android.app.Activity;
 import android.app.AlertDialog;
+import android.app.SearchManager;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.res.Configuration;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Parcelable;
+import android.os.PersistableBundle;
+import android.preference.PreferenceManager;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentActivity;
+import android.support.v4.app.FragmentManager;
+import android.support.v4.app.FragmentTabHost;
+import android.support.v4.app.FragmentTransaction;
+import android.support.v4.view.MenuItemCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.view.menu.MenuItemImpl;
+import android.text.Editable;
+import android.util.AttributeSet;
+import android.util.Log;
+import android.view.InflateException;
+import android.view.LayoutInflater;
 import android.view.Menu;
+import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.WindowManager;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
+import android.support.v7.widget.SearchView;
+import android.widget.TabHost;
+import android.widget.TextView;
+import android.widget.Toast;
 
 import com.example.ooar.discountproject.R;
 import com.example.ooar.discountproject.fragment.ChoisesFragment;
@@ -27,12 +49,20 @@ import com.example.ooar.discountproject.fragment.NotificationSettings;
 import com.example.ooar.discountproject.fragment.NotificationsFragment;
 import com.example.ooar.discountproject.fragment.ProfileFragment;
 import com.example.ooar.discountproject.fragment.UserProductList;
+import com.example.ooar.discountproject.fragment.SearchResultFragment;
 import com.example.ooar.discountproject.fragment.UserTabsFragment;
 import com.example.ooar.discountproject.util.ErrorHandler;
+import com.example.ooar.discountproject.gcm.GcmBroadcastReceiver;
+import com.example.ooar.discountproject.model.Product;
 import com.example.ooar.discountproject.util.FragmentChangeListener;
 import com.example.ooar.discountproject.util.ImageCache;
 import com.example.ooar.discountproject.util.RetrofitConfiguration;
 import com.example.ooar.discountproject.util.Util;
+
+import java.io.Serializable;
+import java.lang.reflect.Array;
+import java.util.ArrayList;
+import java.util.List;
 
 import retrofit.Callback;
 import retrofit.RetrofitError;
@@ -41,7 +71,7 @@ import retrofit.client.Response;
 /**
  * Created by Onur Kuru on 5.3.2016.
  */
-public class UserActivity extends AppCompatActivity implements FragmentChangeListener {
+public class UserActivity extends AppCompatActivity implements FragmentChangeListener, SearchView.OnQueryTextListener {
     private String[] mPlanetTitles;
     private DrawerLayout mDrawerLayout;
     private ListView mDrawerList;
@@ -55,6 +85,7 @@ public class UserActivity extends AppCompatActivity implements FragmentChangeLis
     public static boolean reload = false;//sayfanın yenılenmek istenipistenmediğini tutan değişken
     public static ImageCache imageCache;
     private boolean backPressed = false;
+    private static List<Product> productList = null;
 
     public UserActivity() {
         userTabsFragment = new UserTabsFragment();
@@ -121,12 +152,12 @@ public class UserActivity extends AppCompatActivity implements FragmentChangeLis
         getSupportActionBar().setHomeButtonEnabled(true);
     }
 
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.mainmenu, menu);
-        return true;
-    }
+//    @Override
+//    public boolean onCreateOptionsMenu(Menu menu) {
+//        // Inflate the menu; this adds items to the action bar if it is present.
+//        getMenuInflater().inflate(R.menu.mainmenu, menu);
+//        return true;
+//    }
 
     @Override
     protected void onPostCreate(Bundle savedInstanceState) {
@@ -151,6 +182,22 @@ public class UserActivity extends AppCompatActivity implements FragmentChangeLis
         // Handle your other action bar items...
 
         return super.onOptionsItemSelected(item);
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        MenuInflater inflater = getMenuInflater();
+        inflater.inflate(R.menu.menu_main, menu);
+
+        SearchView searchView = (SearchView) MenuItemCompat.getActionView(menu.findItem(R.id.item_search));
+        searchView.setOnQueryTextListener((SearchView.OnQueryTextListener) this);
+        return super.onCreateOptionsMenu(menu);
+
+//        SearchView searchView = (SearchView) menu.findItem(R.id.item_search).getActionView();
+//        SearchManager searchManager = (SearchManager) getSystemService(Context.SEARCH_SERVICE);
+//        searchView.setSearchableInfo(
+//                searchManager.getSearchableInfo(getComponentName()));
+
     }
 
     /**
@@ -189,6 +236,49 @@ public class UserActivity extends AppCompatActivity implements FragmentChangeLis
     public void setTitle(CharSequence title) {
         mTitle = title;
         getSupportActionBar().setTitle(mTitle);
+    }
+
+    @Override
+    public boolean onQueryTextSubmit(String query) {
+        if (query.length() >= 2) {
+            getProductSearch(query);
+        }
+        return false;
+    }
+
+    public void getProductSearch(String query) {
+        Callback callback = new Callback() {
+            @Override
+            public void success(Object o, Response response) {
+                productList = (List<Product>) o;
+                goSearchFragment(productList);
+                Util.stopProgressDialog();
+            }
+            @Override
+            public void failure(RetrofitError error) {
+                Util.stopProgressDialog();
+            }
+        };
+
+        String tokenKey = this.getSharedPreferences("Session", Activity.MODE_PRIVATE).getString("tokenKey", "");
+        RetrofitConfiguration.getRetrofitService(true).productSearch(tokenKey, query, callback);
+    }
+    private void goSearchFragment(List<Product> productList) {
+        Bundle bundle = new Bundle();
+        bundle.putSerializable("list", (Serializable) productList);
+        Fragment searchResult = new SearchResultFragment();
+        searchResult.setArguments(bundle);
+        FragmentChangeListener fc = (FragmentChangeListener) this;
+        fc.replaceFragment(searchResult, "searchResult");
+    }
+
+    @Override
+    public boolean onQueryTextChange(String newText) {
+//        Fragment search = new SearchResultFragment();
+//        FragmentChangeListener fc = (FragmentChangeListener) this;
+//        fc.replaceFragment(search, "search");
+//        Toast.makeText(this,newText,Toast.LENGTH_SHORT).show();
+        return false;
     }
 
     private class DrawerItemClickListener implements ListView.OnItemClickListener {
