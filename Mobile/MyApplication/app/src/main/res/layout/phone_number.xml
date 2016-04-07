@@ -9,7 +9,6 @@
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:background="@color/main_color_red"
         android:orientation="vertical">
 
 
@@ -42,6 +41,7 @@
                     android:textAlignment="center"
                     android:textColor="@color/main_color_white"
                     android:textIsSelectable="false"
+                    android:background="@null"
                     android:textSize="18sp"
                     android:textStyle="bold" />
             </LinearLayout>

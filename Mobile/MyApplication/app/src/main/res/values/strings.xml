@@ -21,7 +21,7 @@
     <!-- Profile Fragment Strings End. -->
 
 
-    <string name="phoneNumberInput">Telefon Numaranızı Giriniz</string>
+    <string name="phoneNumberInput">Telefon Numaranızı Giriniz!</string>
     <string name="sendConfirmationCode">  Onay Kodu Gönder  </string>
     <string name="confirmationCodeInput">Onay Kodunu Giriniz</string>
     <string name="confirmationCode">Onay Kodu</string>

@@ -32,7 +32,7 @@ public class RegisterTabFragment extends Fragment {
             mTabHost.setup(getActivity(), getActivity().getSupportFragmentManager(), android.R.id.tabcontent);
 
             mTabHost.addTab(mTabHost.newTabSpec("home").setIndicator("Giriş", null), HomeFragment.class, null);
-            mTabHost.addTab(mTabHost.newTabSpec("phoneNumber").setIndicator("", null), PhoneNumberFragment.class, null);
+            mTabHost.addTab(mTabHost.newTabSpec("phoneNumber").setIndicator("Telefon Doğrulama", null), PhoneNumberFragment.class, null);
         }
     }
 }

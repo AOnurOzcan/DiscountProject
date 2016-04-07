@@ -256,6 +256,7 @@ define([
     openModal: function (e) {
       var that = this;
       $("#sendNotificationModal").modal({
+        detachable: false,
         onApprove: function () {
           $(".approveSending").addClass('loading');
           that.sendNotification(e);
@@ -276,11 +277,13 @@ define([
       var sendNotification = new NotificationModel({url: "/notification/send/" + notificationId});
       sendNotification.fetch({
         success: function () {
+          debugger;
           that.notificationCollection.remove(that.notificationCollection.get(notificationId));
           alertify.success("Bildirim Başarıyla Gönderildi.");
           $("#sendNotificationModal").modal('hide');
         },
         error: function (e) {
+          debugger;
           alertify.alert(e.error);
         }
       });
