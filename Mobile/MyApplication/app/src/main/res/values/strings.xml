@@ -27,9 +27,12 @@
     <string name="confirmationCode">Onay Kodu</string>
     <string name="byPhoneNumber">Nolu telefon numarası için</string>
     <string name="confirm">Onayla</string>
-    <string name="hintPhoneNumber">Telefon Numaranız : (5xx)xxx xxxx</string>
+    <string name="hintPhoneNumber">(5xx)xxx xxxx</string>
 
 
     <string name="drawer_open">Açık</string>
     <string name="drawer_close">Kapalı</string>
+    <string name="drawer_opened">Opened</string>
+    <string name="drawer_closed">Closed</string>
+
 </resources>

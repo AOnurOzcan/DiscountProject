@@ -3,64 +3,44 @@ package com.example.ooar.discountproject.activity;
 
 import android.app.Activity;
 import android.app.AlertDialog;
-import android.app.SearchManager;
-import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.content.res.Configuration;
 import android.os.Bundle;
-import android.os.Handler;
-import android.os.Parcelable;
-import android.os.PersistableBundle;
-import android.preference.PreferenceManager;
 import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentActivity;
-import android.support.v4.app.FragmentManager;
-import android.support.v4.app.FragmentTabHost;
-import android.support.v4.app.FragmentTransaction;
 import android.support.v4.view.MenuItemCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
-import android.support.v7.view.menu.MenuItemImpl;
-import android.text.Editable;
-import android.util.AttributeSet;
-import android.util.Log;
-import android.view.InflateException;
-import android.view.LayoutInflater;
+import android.support.v7.widget.SearchView;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.WindowManager;
 import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
 import android.widget.ListView;
-import android.support.v7.widget.SearchView;
-import android.widget.TabHost;
-import android.widget.TextView;
-import android.widget.Toast;
+import android.widget.RelativeLayout;
 
 import com.example.ooar.discountproject.R;
+import com.example.ooar.discountproject.adapter.SlidingMenuAdapter;
 import com.example.ooar.discountproject.fragment.ChoisesFragment;
 import com.example.ooar.discountproject.fragment.NotificationDetailFragment;
 import com.example.ooar.discountproject.fragment.NotificationSettings;
 import com.example.ooar.discountproject.fragment.NotificationsFragment;
 import com.example.ooar.discountproject.fragment.ProfileFragment;
-import com.example.ooar.discountproject.fragment.UserProductList;
 import com.example.ooar.discountproject.fragment.SearchResultFragment;
+import com.example.ooar.discountproject.fragment.UserProductList;
 import com.example.ooar.discountproject.fragment.UserTabsFragment;
-import com.example.ooar.discountproject.util.ErrorHandler;
-import com.example.ooar.discountproject.gcm.GcmBroadcastReceiver;
+import com.example.ooar.discountproject.model.ItemSlideMenu;
 import com.example.ooar.discountproject.model.Product;
+import com.example.ooar.discountproject.util.ErrorHandler;
 import com.example.ooar.discountproject.util.FragmentChangeListener;
 import com.example.ooar.discountproject.util.ImageCache;
 import com.example.ooar.discountproject.util.RetrofitConfiguration;
 import com.example.ooar.discountproject.util.Util;
 
 import java.io.Serializable;
-import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -72,20 +52,24 @@ import retrofit.client.Response;
  * Created by Onur Kuru on 5.3.2016.
  */
 public class UserActivity extends AppCompatActivity implements FragmentChangeListener, SearchView.OnQueryTextListener {
-    private String[] mPlanetTitles;
-    private DrawerLayout mDrawerLayout;
-    private ListView mDrawerList;
-    public static CharSequence mTitle;
-    private ActionBarDrawerToggle mDrawerToggle;
     int notificationId = 0;
     boolean isNotificationId = false;
     int check = 0;
+    public static CharSequence mTitle;
     public static UserTabsFragment userTabsFragment;
     public static boolean isOpen = false;//uygulamanın açık olup olmadığını tutan değişken
     public static boolean reload = false;//sayfanın yenılenmek istenipistenmediğini tutan değişken
     public static ImageCache imageCache;
     private boolean backPressed = false;
     private static List<Product> productList = null;
+
+
+    private List<ItemSlideMenu> listSliding;
+    private SlidingMenuAdapter adapter;
+    private ListView listViewSliding;
+    private DrawerLayout drawerLayout;
+    private RelativeLayout relativeLayout;
+    private ActionBarDrawerToggle actionBarDrawerToggle;
 
     public UserActivity() {
         userTabsFragment = new UserTabsFragment();
@@ -116,97 +100,84 @@ public class UserActivity extends AppCompatActivity implements FragmentChangeLis
             replaceFragment(userTabsFragment, "userTabs");//usertabsfragment basılıyor
         }
 
-        mTitle = "Menü";
+        //Init component
+        listViewSliding = (ListView) findViewById(R.id.lv_sliding_menu);
+        drawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
+        listSliding = new ArrayList<>();
+        //Add item for sliding list
+       // listSliding.add(new ItemSlideMenu(R.drawable.notification, "Bildirimler"));
+        listSliding.add(new ItemSlideMenu(R.drawable.profilemenu, "Profil"));
+        listSliding.add(new ItemSlideMenu(R.drawable.settings, "Bildirim Ayarları"));
+        listSliding.add(new ItemSlideMenu(R.drawable.star, "Alışveriş Listem"));
+        listSliding.add(new ItemSlideMenu(R.drawable.logout, "Oturumu Kapat"));
+        adapter = new SlidingMenuAdapter(this, listSliding);
+        listViewSliding.setAdapter(adapter);
+  ///
+        //Display icon to open/ close sliding list
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
-        mPlanetTitles = new String[]{"Profil", "Bildirim Ayarları", "Alışveriş Listem", "Oturumu Kapat"};
-        mDrawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
-        mDrawerList = (ListView) findViewById(R.id.left_drawer);
+        //Set title
+        setTitle(listSliding.get(0).getTitle());
+        //item selected
+        listViewSliding.setItemChecked(0, true);
+        //Close menu
+        drawerLayout.closeDrawer(listViewSliding);
 
-        // Set the adapter for the list view
-        mDrawerList.setAdapter(new ArrayAdapter<String>(this,
-                R.layout.drawer_list_item, mPlanetTitles));
-        // Set the list's click listener
-        mDrawerList.setOnItemClickListener(new DrawerItemClickListener());
-        mDrawerToggle = new ActionBarDrawerToggle(
-                this,                  /* host Activity */
-                mDrawerLayout,         /* DrawerLayout object */
-                // R.mipmap.ic_launcher,  /* nav drawer icon to replace 'Up' caret */
-                R.string.drawer_open,  /* "open drawer" description */
-                R.string.drawer_close  /* "close drawer" description */
-        ) {
 
-            /** Called when a drawer has settled in a completely closed state. */
-            public void onDrawerClosed(View view) {
-                getSupportActionBar().setTitle(mTitle);
+        //Hanlde on item click
+
+        listViewSliding.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                //Set title
+                setTitle(listSliding.get(position).getTitle());
+                //item selected
+                listViewSliding.setItemChecked(position, true);
+                //Replace fragment
+                selectItem(position);
+                //Close menu
+                drawerLayout.closeDrawer(listViewSliding);
+            }
+        });
+
+        actionBarDrawerToggle = new ActionBarDrawerToggle(this, drawerLayout, R.string.drawer_opened, R.string.drawer_closed){
+
+            @Override
+            public void onDrawerOpened(View drawerView) {
+                super.onDrawerOpened(drawerView);
+                invalidateOptionsMenu();
             }
 
-            /** Called when a drawer has settled in a completely open state. */
-            public void onDrawerOpened(View drawerView) {
-                getSupportActionBar().setTitle("Menü");
+            @Override
+            public void onDrawerClosed(View drawerView) {
+                super.onDrawerClosed(drawerView);
+                invalidateOptionsMenu();
             }
         };
-        // Set the drawer toggle as the DrawerListener
-        mDrawerLayout.setDrawerListener(mDrawerToggle);
 
-        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-        getSupportActionBar().setHomeButtonEnabled(true);
+        drawerLayout.setDrawerListener(actionBarDrawerToggle);
     }
-
-//    @Override
-//    public boolean onCreateOptionsMenu(Menu menu) {
-//        // Inflate the menu; this adds items to the action bar if it is present.
-//        getMenuInflater().inflate(R.menu.mainmenu, menu);
-//        return true;
-//    }
-
-    @Override
-    protected void onPostCreate(Bundle savedInstanceState) {
-        super.onPostCreate(savedInstanceState);
-        // Sync the toggle state after onRestoreInstanceState has occurred.
-        mDrawerToggle.syncState();
-    }
-
-    @Override
-    public void onConfigurationChanged(Configuration newConfig) {
-        super.onConfigurationChanged(newConfig);
-        mDrawerToggle.onConfigurationChanged(newConfig);
-    }
-
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        // Pass the event to ActionBarDrawerToggle, if it returns
-        // true, then it has handled the app icon touch event
-        if (mDrawerToggle.onOptionsItemSelected(item)) {
+
+        if(actionBarDrawerToggle.onOptionsItemSelected(item)) {
             return true;
         }
-        // Handle your other action bar items...
-
         return super.onOptionsItemSelected(item);
     }
 
     @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        MenuInflater inflater = getMenuInflater();
-        inflater.inflate(R.menu.menu_main, menu);
-
-        SearchView searchView = (SearchView) MenuItemCompat.getActionView(menu.findItem(R.id.item_search));
-        searchView.setOnQueryTextListener((SearchView.OnQueryTextListener) this);
-        return super.onCreateOptionsMenu(menu);
-
-//        SearchView searchView = (SearchView) menu.findItem(R.id.item_search).getActionView();
-//        SearchManager searchManager = (SearchManager) getSystemService(Context.SEARCH_SERVICE);
-//        searchView.setSearchableInfo(
-//                searchManager.getSearchableInfo(getComponentName()));
-
+    protected void onPostCreate(Bundle savedInstanceState) {
+        super.onPostCreate(savedInstanceState);
+        actionBarDrawerToggle.syncState();
     }
 
-    /**
-     * Swaps fragments in the main content view
-     */
-    private void selectItem(int position) {
+    //Create method replace fragment
+
+    private void selectItem(int pos) {
         Fragment fragment = null;
-        check = position;
-        switch (position) {
+        check = pos;
+        switch (pos) {
             case 0:
                 fragment = new ProfileFragment();
                 replaceFragment(fragment, "profileFragment");
@@ -225,18 +196,26 @@ public class UserActivity extends AppCompatActivity implements FragmentChangeLis
             default:
                 break;
         }
-
-        // Highlight the selected item, update the title, and close the drawer
-        mDrawerList.setItemChecked(position, true);
-        setTitle(mPlanetTitles[position]);
-        mDrawerLayout.closeDrawer(mDrawerList);
     }
+
 
     @Override
-    public void setTitle(CharSequence title) {
-        mTitle = title;
-        getSupportActionBar().setTitle(mTitle);
+    public boolean onCreateOptionsMenu(Menu menu) {
+        MenuInflater inflater = getMenuInflater();
+        inflater.inflate(R.menu.menu_main, menu);
+
+        SearchView searchView = (SearchView) MenuItemCompat.getActionView(menu.findItem(R.id.item_search));
+        searchView.setOnQueryTextListener((SearchView.OnQueryTextListener) this);
+        return super.onCreateOptionsMenu(menu);
+
+//        SearchView searchView = (SearchView) menu.findItem(R.id.item_search).getActionView();
+//        SearchManager searchManager = (SearchManager) getSystemService(Context.SEARCH_SERVICE);
+//        searchView.setSearchableInfo(
+//                searchManager.getSearchableInfo(getComponentName()));
+
     }
+
+
 
     @Override
     public boolean onQueryTextSubmit(String query) {
@@ -274,18 +253,7 @@ public class UserActivity extends AppCompatActivity implements FragmentChangeLis
 
     @Override
     public boolean onQueryTextChange(String newText) {
-//        Fragment search = new SearchResultFragment();
-//        FragmentChangeListener fc = (FragmentChangeListener) this;
-//        fc.replaceFragment(search, "search");
-//        Toast.makeText(this,newText,Toast.LENGTH_SHORT).show();
         return false;
-    }
-
-    private class DrawerItemClickListener implements ListView.OnItemClickListener {
-        @Override
-        public void onItemClick(AdapterView parent, View view, int position, long id) {
-            selectItem(position);
-        }
     }
 
     public void replaceFragment(Fragment fragment, String tagName) {//fragment değişimlerini yöneten fonksiyon

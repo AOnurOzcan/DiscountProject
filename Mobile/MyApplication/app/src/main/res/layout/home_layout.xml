@@ -39,7 +39,7 @@
                 android:text="Hemen Başla"
                 android:id="@+id/startRegister"
                 android:layout_gravity="center_horizontal"
-                android:background="#d9a440" />
+                android:background="@color/action_bar_backgorund" />
         </LinearLayout>
 
     </LinearLayout>
