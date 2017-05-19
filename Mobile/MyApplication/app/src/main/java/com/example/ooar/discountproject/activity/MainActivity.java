@@ -13,8 +13,7 @@ import com.example.ooar.discountproject.R;
 import com.example.ooar.discountproject.util.RetrofitConfiguration;
 import com.example.ooar.discountproject.util.Util;
 import com.google.android.gms.common.ConnectionResult;
-import com.google.android.gms.common.GooglePlayServicesUtil;
-import com.google.android.gms.gcm.GoogleCloudMessaging;
+import com.google.firebase.iid.FirebaseInstanceId;
 
 import java.io.IOException;
 
@@ -23,7 +22,7 @@ public class MainActivity extends AppCompatActivity {
     private final static int PLAY_SERVICES_RESOLUTION_REQUEST = 9000;
     String SENDER_ID = "279341591262";//gcm sender id
 
-    GoogleCloudMessaging gcm;
+    //    GoogleCloudMessaging gcm;
     Context context;
     String regId;
     int notificationId;
@@ -50,13 +49,13 @@ public class MainActivity extends AppCompatActivity {
         editor.putInt("NotificationCount", 0).commit();
 
         String regId = getSharedPreferences("Session", Activity.MODE_PRIVATE).getString("regId", "");
-        if (checkPlayServices()) {//play servis kontrol ediliyor
-            if (regId.equals("")) {
-                new Register().execute();//telefonun register id si yoksa oluşturuluyor
-            } else {
-                successRegistration();
-            }
+//        if (checkPlayServices()) {//play servis kontrol ediliyor
+        if (regId.equals("")) {
+            new Register().execute();//telefonun register id si yoksa oluşturuluyor
+        } else {
+            successRegistration();
         }
+//        }
     }
 
     public void successRegistration() {
@@ -76,19 +75,19 @@ public class MainActivity extends AppCompatActivity {
 
     }
 
-    private boolean checkPlayServices() {//play service olup olmadığını kontrol eden fonksiyon
-        int resultCode = GooglePlayServicesUtil.isGooglePlayServicesAvailable(this);
-        if (resultCode != ConnectionResult.SUCCESS) {
-            if (GooglePlayServicesUtil.isUserRecoverableError(resultCode)) {
-                GooglePlayServicesUtil.getErrorDialog(resultCode, this,
-                        PLAY_SERVICES_RESOLUTION_REQUEST).show();
-            } else {
-                finish();
-            }
-            return false;
-        }
-        return true;
-    }
+//    private boolean checkPlayServices() {//play service olup olmadığını kontrol eden fonksiyon
+//        int resultCode = GoogleApiAvailability.makeGooglePlayServicesAvailable();
+//        if (resultCode != ConnectionResult.SUCCESS) {
+//            if (GooglePlayServicesUtil.isUserRecoverableError(resultCode)) {
+//                GooglePlayServicesUtil.getErrorDialog(resultCode, this,
+//                        PLAY_SERVICES_RESOLUTION_REQUEST).show();
+//            } else {
+//                finish();
+//            }
+//            return false;
+//        }
+//        return true;
+//    }
 
     public class Register extends AsyncTask {//telefon için register id alan fonksiyon
         boolean success = true;
@@ -96,16 +95,15 @@ public class MainActivity extends AppCompatActivity {
         @Override
         protected Object doInBackground(Object[] params) {
 
-            try {
-                if (gcm == null) {
-                    gcm = GoogleCloudMessaging.getInstance(context);
-                }
-                regId = gcm.register(SENDER_ID);//register id alınıp sharedpreference ye yazılıyor
-                SharedPreferences.Editor editor = getSharedPreferences("Session", Activity.MODE_PRIVATE).edit();
-                editor.putString("regId", regId).commit();
-            } catch (IOException ex) {
-                this.success = false;
-            }
+//                if (gcm == null) {
+//                    gcm = GoogleCloudMessaging.getInstance(context);
+//                }
+//                regId = gcm.register(SENDER_ID);//register id alınıp sharedpreference ye yazılıyor
+
+            String refreshedToken = FirebaseInstanceId.getInstance().getToken();
+
+            SharedPreferences.Editor editor = getSharedPreferences("Session", Activity.MODE_PRIVATE).edit();
+            editor.putString("regId", refreshedToken).commit();
             return this.success;
         }
 

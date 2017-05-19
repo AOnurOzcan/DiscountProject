@@ -1,53 +1,47 @@
-package com.example.ooar.discountproject.gcm;
+package com.example.ooar.discountproject.fcm;
 
 /**
  * Created by Onur Kuru on 21.3.2016.
  */
 
+import com.example.ooar.discountproject.R;
+import com.example.ooar.discountproject.activity.MainActivity;
+import com.example.ooar.discountproject.activity.UserActivity;
+import com.google.firebase.messaging.FirebaseMessagingService;
+import com.google.firebase.messaging.RemoteMessage;
+
 import android.app.Activity;
 import android.app.Notification;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
-import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
-import android.media.RingtoneManager;
-import android.net.Uri;
-import android.opengl.Visibility;
-import android.os.Bundle;
-import android.support.v4.app.Fragment;
-import android.support.v4.app.NotificationCompat;
-import android.support.v4.app.NotificationManagerCompat;
-import android.support.v4.content.LocalBroadcastManager;
-import android.support.v4.content.WakefulBroadcastReceiver;
 import android.content.SharedPreferences;
-import android.support.v7.app.AppCompatActivity;
+import android.support.v4.app.NotificationCompat;
 
-import com.example.ooar.discountproject.R;
-import com.example.ooar.discountproject.activity.MainActivity;
-import com.example.ooar.discountproject.activity.UserActivity;
-import com.example.ooar.discountproject.fragment.NotificationDetailFragment;
-import com.example.ooar.discountproject.fragment.UserTabsFragment;
-import com.example.ooar.discountproject.util.FragmentChangeListener;
+public class FCMReceiver extends FirebaseMessagingService {
 
-public class GcmBroadcastReceiver extends WakefulBroadcastReceiver {
     private static final int MY_NOTIFICATION_ID = 1;
     private static int number = 0;
     NotificationManager notificationManager;
     Notification myNotification;
-    int notificationId = 0;
-    String notificationTitle;
-    String notificationContent;
+    Integer notificationId;
+    String notificationTitle = "";
+    String notificationContent = "";
     Intent myIntent;
+    private static final String TAG = "FCM Service";
 
     @Override
-    public void onReceive(Context context, Intent intent) {
-        String Temp = intent.getExtras().getString("notificationId");
-        if (Temp != null) {
+    public void onMessageReceived(RemoteMessage remoteMessage) {
 
-            notificationId = Integer.parseInt(intent.getExtras().getString("notificationId"));
-            notificationTitle = intent.getExtras().getString("notificationTitle");
-            notificationContent = intent.getExtras().getString("notificationContent");
+        if (remoteMessage != null) {
+
+//            notificationId = Integer.parseInt(intent.getExtras().getString("notificationId"));
+            notificationId = Integer.parseInt(remoteMessage.getData().get("id"));
+            notificationTitle = remoteMessage.getData().get("title");
+            notificationContent = remoteMessage.getData().get("content");
+            Context context = getApplicationContext();
+
             number = context.getSharedPreferences("Session", Activity.MODE_PRIVATE).getInt("NotificationCount", 0);
 
             if (number == 0) {
@@ -75,7 +69,6 @@ public class GcmBroadcastReceiver extends WakefulBroadcastReceiver {
                         .setAutoCancel(true)
                         .setSmallIcon(R.drawable.notification)
                         .build();
-                // editor.putInt("NotificationId", Integer.parseInt(intent.getExtras().getString("key1"))).commit();
             } else {
                 if (UserActivity.isOpen) {
                     myIntent = new Intent(context, UserActivity.class);

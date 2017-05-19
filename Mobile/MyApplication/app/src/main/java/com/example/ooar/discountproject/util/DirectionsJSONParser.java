@@ -1,6 +1,5 @@
 package com.example.ooar.discountproject.util;
 
-import com.google.android.gms.maps.model.LatLng;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -42,10 +41,10 @@ public class DirectionsJSONParser {
 
 /** Traversing all points */
                         for (int l = 0; l < list.size(); l++) {
-                            HashMap<String, String> hm = new HashMap<String, String>();
-                            hm.put("lat", Double.toString(((LatLng) list.get(l)).latitude));
-                            hm.put("lng", Double.toString(((LatLng) list.get(l)).longitude));
-                            path.add(hm);
+//                            HashMap<String, String> hm = new HashMap<String, String>();
+//                            hm.put("lat", Double.toString(((LatLng) list.get(l)).latitude));
+//                            hm.put("lng", Double.toString(((LatLng) list.get(l)).longitude));
+//                            path.add(hm);
                         }
                     }
                     routes.add(path);
@@ -90,9 +89,9 @@ public class DirectionsJSONParser {
             int dlng = ((result & 1) != 0 ? ~(result >> 1) : (result >> 1));
             lng += dlng;
 
-            LatLng p = new LatLng((((double) lat / 1E5)),
-                    (((double) lng / 1E5)));
-            poly.add(p);
+//            LatLng p = new LatLng((((double) lat / 1E5)),
+//                    (((double) lng / 1E5)));
+//            poly.add(p);
         }
 
         return poly;

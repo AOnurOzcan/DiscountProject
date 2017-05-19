@@ -13,11 +13,9 @@ import android.widget.TextView;
 import com.example.ooar.discountproject.R;
 import com.example.ooar.discountproject.model.Branch;
 import com.example.ooar.discountproject.util.FragmentChangeListener;
-import com.google.android.gms.maps.GoogleMap;
-import com.google.android.gms.maps.MapFragment;
 import com.google.android.gms.maps.model.LatLng;
-import com.google.android.gms.maps.model.Marker;
-import com.google.android.gms.maps.model.MarkerOptions;
+
+import java.util.Locale;
 
 /**
  * Created by Onur Kuru on 24.3.2016.
@@ -52,13 +50,13 @@ public class BranchDetailFragment extends Fragment {
             @Override
             public void onClick(View v) {
 
-                Bundle bundle = new Bundle();
-                bundle.putString("url", branch.getCoordinates());
-                bundle.putString("branchName", branch.getName());
-                Fragment fragment = new GoogleMapsFragment();
-                fragment.setArguments(bundle);
-                FragmentChangeListener fc = (FragmentChangeListener) getActivity();
-                fc.replaceFragment(fragment, "googleMapsFragment");
+                String latlng = branch.getCoordinates();
+                double lat = Double.parseDouble(latlng.split(",")[0]);
+                double lng = Double.parseDouble(latlng.split(",")[1]);
+
+                Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse("geo:<" + lat  + ">,<" + lng + ">?q=<" + lat  + ">,<" + lng + ">(" + branch.getName() + ")"));
+                startActivity(intent);
+                getActivity().startActivity(intent);
             }
         });
     }
