@@ -2,7 +2,7 @@
  * Created by Onur Kuru on 21.3.2016.
  */
 
-var GCM = require('node-gcm');
+var request = require('request');
 var User = require('../model/User');
 var Notification = require('../model/Notification');
 var NotificationProduct = require('../model/NotificationProduct');
@@ -38,18 +38,13 @@ project.app.get("/notification/send/:id", function (req, res) {
           return res.unknown();
         }
         if (users.length == 0) {
-          return res.json({error: "Gönderilecek Kullanıcı Bulunamadı"})
+          return res.error({error: "Gönderilecek Kullanıcı Bulunamadı"})
         }
+
         var userRegistrationIds = [];
         var userIds = [];
-        var message = new GCM.Message({
-          data: {
-            notificationId: notification.id,
-            notificationTitle: notification.name,
-            notificationContent: notification.description
-          }
-        });
-        var sender = new GCM.Sender(project.config.get("GCMApiKey").key);
+        var serverKey = "AAAAQQoOat4:APA91bFYhQXju60GjZCy8QN8PC0Nomuk4ppqUbH1SwPfcbMspEuc3rm1YyknWgYTkS5ELcLhBua-2Ns357LOk2AxRQQ4aa2Aa_w9XQ4_IUvq8NgmZWLdlWhoKfu6-9XbgPJ8WXmNzQVJ";
+
         if (err) {
           res.unknown();
         }
@@ -57,34 +52,52 @@ project.app.get("/notification/send/:id", function (req, res) {
           userRegistrationIds.push(user.registrationId);
           userIds.push(user.id);
         });
-        sender.send(message, {registrationTokens: userRegistrationIds}, function (err, response) {
+
+        var message = { //this may vary according to the message type (single recipient, multicast, topic, et cetera)
+          registration_ids: userRegistrationIds,
+          data: {
+            id: notification.id,
+            title: notification.name,
+            content: notification.description
+          }
+        };
+
+        request.post({
+          headers: {
+            'Authorization': 'key=' + serverKey,
+            'Content-Type': 'application/json'
+          },
+          url: "https://fcm.googleapis.com/fcm/send",
+          method: 'POST',
+          body: JSON.stringify(message)
+        }, function (err, response, body) {
           if (err) {
-            console.error(err);
-            return res.json({error: err});
+            console.log(err);
+            return res.unknown();
           }
-          else {
-            notification.isSent = true;
-            notification.sendDate = new Date();
-            notification.peopleCount = userRegistrationIds.length;
-            notification.save(function (err) {
-              if (err) {
-                return res.unknown();
-              }
-              userIds.asyncForEach(function (userId, done) {
-                UserNotification.create({
-                  notificationId: notification.id,
-                  userId: userId
-                }, function (err) {
-                  if (err) {
-                    return res.unknown();
-                  }
-                  done();
-                });
-              }, function () {
-                res.json({"success": true});
+
+          notification.isSent = true;
+          notification.sendDate = new Date();
+          notification.peopleCount = userRegistrationIds.length;
+          notification.save(function (err) {
+            if (err) {
+              return res.unknown();
+            }
+            userIds.asyncForEach(function (userId, done) {
+              UserNotification.create({
+                notificationId: notification.id,
+                userId: userId
+              }, function (err) {
+                if (err) {
+                  return res.unknown();
+                }
+                done();
               });
+            }, function () {
+              res.json({"success": true});
             });
-          }
+          });
+
         });
       });
   });

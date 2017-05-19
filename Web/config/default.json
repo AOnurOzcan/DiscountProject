@@ -1,10 +1,10 @@
 {
   "project": "discount-project-web",
   "database": {
-    "host": "37.139.26.44",
+    "host": "localhost",
     "database": "DiscountProject",
-    "user": "ooar",
-    "password": "Kajmerap123.",
+    "user": "root",
+    "password": "kasar5225",
     "protocol": "mysql",
     "port": "3306",
     "query": {
@@ -16,11 +16,11 @@
     "requestLogger": "true"
   },
   "S3Credentials": {
-    "accessKeyId": "AKIAI5MWYHAWGD4FLBZQ",
-    "secretAccessKey": "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",
+    "accessKeyId": "AKIAJIIQAKP5AOMK4VQQ",
+    "secretAccessKey": "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",
     "bucketName": "ooar1"
   },
-  "GCMApiKey": {
-    "key": "AIzaSyCzTBtP3qi08VBiRqhumIJVTpZKFMpYGCE"
+  "FCMServerKey": {
+    "key": "AAAAQQoOat4:APA91bFYhQXju60GjZCy8QN8PC0Nomuk4ppqUbH1SwPfcbMspEuc3rm1YyknWgYTkS5ELcLhBua-2Ns357LOk2AxRQQ4aa2Aa_w9XQ4_IUvq8NgmZWLdlWhoKfu6-9XbgPJ8WXmNzQVJ"
   }
 }

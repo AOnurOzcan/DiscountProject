@@ -282,9 +282,12 @@ define([
           alertify.success("Bildirim Başarıyla Gönderildi.");
           $("#sendNotificationModal").modal('hide');
         },
-        error: function (e) {
-          debugger;
-          alertify.alert(e.error);
+        error: function (e, response) {
+          if(response.responseText){
+            var error = JSON.parse(response.responseText);
+            alertify.error(error.error);
+          }
+          $("#sendNotificationModal").modal('hide');
         }
       });
     },
