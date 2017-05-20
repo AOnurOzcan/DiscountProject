@@ -29,6 +29,7 @@ import com.example.ooar.discountproject.util.ErrorHandler;
 import com.example.ooar.discountproject.util.FragmentChangeListener;
 import com.example.ooar.discountproject.util.RetrofitConfiguration;
 import com.example.ooar.discountproject.util.Util;
+import com.google.firebase.iid.FirebaseInstanceId;
 
 import org.w3c.dom.Text;
 
@@ -154,6 +155,7 @@ public class CreateProfilFragment extends Fragment {
 
                 String firstName = String.valueOf(firstNameText.getText());
                 String lastName = String.valueOf(lastNameText.getText());
+                String registerToken = "";
 
                 Map<String, Object> validationMapper = new Hashtable<String, Object>();
                 validationMapper.put("firstName", firstName);
@@ -166,10 +168,18 @@ public class CreateProfilFragment extends Fragment {
                     user.setFirstName(firstName);
                     user.setLastName(lastName);
                     user.setPhone(getActivity().getSharedPreferences("Session", Activity.MODE_PRIVATE).getString("phoneNumber", ""));
-                    user.setRegistrationId(getActivity().getSharedPreferences("Session", Activity.MODE_PRIVATE).getString("regId", ""));
                     user.setNotificationOpen(true);
                     user.setBirthday(String.valueOf(birthDayText.getSelectedItem().toString()));
                     user.setCityId(city);
+                    registerToken = getActivity().getSharedPreferences("Session", Activity.MODE_PRIVATE).getString("regId", "");
+
+                    if (registerToken.isEmpty()) {
+                        registerToken = FirebaseInstanceId.getInstance().getToken();
+                        SharedPreferences.Editor editor = getActivity().getSharedPreferences("Session", Activity.MODE_PRIVATE).edit();
+                        editor.putString("regId", registerToken).commit();
+                    }
+
+                    user.setRegistrationId(registerToken);
 
                     if (radioSexButton.getText().equals("Erkek")) {
                         user.setGender(true);

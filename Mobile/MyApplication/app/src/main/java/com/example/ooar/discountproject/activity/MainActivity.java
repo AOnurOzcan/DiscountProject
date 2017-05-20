@@ -49,13 +49,11 @@ public class MainActivity extends AppCompatActivity {
         editor.putInt("NotificationCount", 0).commit();
 
         String regId = getSharedPreferences("Session", Activity.MODE_PRIVATE).getString("regId", "");
-//        if (checkPlayServices()) {//play servis kontrol ediliyor
         if (regId.equals("")) {
-            new Register().execute();//telefonun register id si yoksa oluşturuluyor
-        } else {
-            successRegistration();
+            String refreshedToken = FirebaseInstanceId.getInstance().getToken();
+            editor.putString("regId", refreshedToken).commit();
         }
-//        }
+        successRegistration();
     }
 
     public void successRegistration() {
@@ -65,7 +63,7 @@ public class MainActivity extends AppCompatActivity {
         if (phoneNumber.equals("") || tokenKey.equals("") || tokenKey.equals("err")) {//telefonda tokenkey ve telefon numarası yoksa register işlemleri başlatılıyor
             Intent intent = new Intent(this, RegisterActivity.class);
             this.startActivity(intent);
-        } else {//Oturum varsa kullanıcı anasayfa başlatılıyor
+        } else {
             Intent intent = new Intent(MainActivity.this, UserActivity.class);
             if (notificationId != 0) {
                 intent.putExtra("notificationId", notificationId);
@@ -73,48 +71,5 @@ public class MainActivity extends AppCompatActivity {
             MainActivity.this.startActivity(intent);
         }
 
-    }
-
-//    private boolean checkPlayServices() {//play service olup olmadığını kontrol eden fonksiyon
-//        int resultCode = GoogleApiAvailability.makeGooglePlayServicesAvailable();
-//        if (resultCode != ConnectionResult.SUCCESS) {
-//            if (GooglePlayServicesUtil.isUserRecoverableError(resultCode)) {
-//                GooglePlayServicesUtil.getErrorDialog(resultCode, this,
-//                        PLAY_SERVICES_RESOLUTION_REQUEST).show();
-//            } else {
-//                finish();
-//            }
-//            return false;
-//        }
-//        return true;
-//    }
-
-    public class Register extends AsyncTask {//telefon için register id alan fonksiyon
-        boolean success = true;
-
-        @Override
-        protected Object doInBackground(Object[] params) {
-
-//                if (gcm == null) {
-//                    gcm = GoogleCloudMessaging.getInstance(context);
-//                }
-//                regId = gcm.register(SENDER_ID);//register id alınıp sharedpreference ye yazılıyor
-
-            String refreshedToken = FirebaseInstanceId.getInstance().getToken();
-
-            SharedPreferences.Editor editor = getSharedPreferences("Session", Activity.MODE_PRIVATE).edit();
-            editor.putString("regId", refreshedToken).commit();
-            return this.success;
-        }
-
-        @Override
-        protected void onPostExecute(Object o) {
-            super.onPostExecute(o);
-            if (this.success) {
-                successRegistration();
-            } else {
-                Toast.makeText(getApplicationContext(), "Google Sunucuna Bağlanılamıyor", Toast.LENGTH_LONG).show();
-            }
-        }
     }
 }
