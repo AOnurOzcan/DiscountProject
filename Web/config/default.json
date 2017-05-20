@@ -1,10 +1,10 @@
 {
   "project": "discount-project-web",
   "database": {
-    "host": "localhost",
+    "host": "198.199.126.151",
     "database": "DiscountProject",
-    "user": "root",
-    "password": "kasar5225",
+    "user": "ooar",
+    "password": "Kajmerap123.",
     "protocol": "mysql",
     "port": "3306",
     "query": {
